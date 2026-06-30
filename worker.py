@@ -13,7 +13,8 @@ Design notes
   (FOR UPDATE SKIP LOCKED) so two workers never grab the same brief.
 * Only doc_types this worker has a renderer for are claimed; everything else is
   left untouched in the queue. Today that's the CIR ('vertical_deepdive',
-  label "Cost Intelligence Report").
+  "Cost Intelligence Report") and the standalone Executive Opportunity Snapshot
+  ('opportunity_snapshot').
 * The CIR template is FROZEN. We never edit it. The cover letter is a separate
   template merged with pypdf.
 * Uses the service-role key -> bypasses RLS for claim/update + Storage writes.
@@ -22,7 +23,7 @@ Run modes
 ---------
     python worker.py                # poll loop (default)
     python worker.py --once         # claim+render one brief, then exit
-    python worker.py --selftest     # render CIR + snapshot + cover, merge, no DB
+    python worker.py --selftest     # render carmel.json + a sample cover, no DB
 
 Env
 ---
@@ -30,6 +31,7 @@ Env
     SUPABASE_SERVICE_ROLE_KEY    (required)
     STORAGE_BUCKET               (default: collateral)
     SUPPORTED_DOC_TYPES          (default: vertical_deepdive)  comma-separated
+    SNAPSHOT_DOC_TYPES           (default: opportunity_snapshot)  comma-separated
     POLL_SECONDS                 (default: 60)
 """
 import os, sys, json, time, re, tempfile, subprocess, datetime, traceback
@@ -37,11 +39,12 @@ import httpx
 from pypdf import PdfReader, PdfWriter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CIR_ENGINE      = os.path.join(HERE, "cir", "src", "cir_engine.py")
-SNAPSHOT_ENGINE = os.path.join(HERE, "snapshot", "snapshot_engine.py")
-FONTS_CONF      = os.path.join(HERE, "cir", "build", "fonts.conf")
+CIR_ENGINE   = os.path.join(HERE, "cir", "src", "cir_engine.py")
+FONTS_CONF   = os.path.join(HERE, "cir", "build", "fonts.conf")
 sys.path.insert(0, os.path.join(HERE, "cover"))
-import cover_engine  # noqa: E402
+sys.path.insert(0, os.path.join(HERE, "snapshot"))
+import cover_engine     # noqa: E402
+import snapshot_engine  # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
@@ -49,6 +52,10 @@ SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
 BUCKET       = os.environ.get("STORAGE_BUCKET", "collateral")
 SUPPORTED    = [s.strip() for s in os.environ.get("SUPPORTED_DOC_TYPES",
                                                    "vertical_deepdive").split(",") if s.strip()]
+SNAPSHOT_DOC_TYPES = [s.strip() for s in os.environ.get("SNAPSHOT_DOC_TYPES",
+                                                   "opportunity_snapshot").split(",") if s.strip()]
+# Claim CIR + snapshot doc_types by default — no Railway env edit required.
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in SNAPSHOT_DOC_TYPES if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -77,7 +84,7 @@ def _client():
 
 def claim_brief(cx):
     r = cx.post(f"{SUPABASE_URL}/rest/v1/rpc/claim_next_brief",
-                headers=_headers(), json={"p_doc_types": SUPPORTED})
+                headers=_headers(), json={"p_doc_types": CLAIM_DOC_TYPES})
     if r.status_code >= 400:
         print(f"[diag] claim HTTP {r.status_code} body={r.text[:300]!r} "
               f"key_fp={SERVICE_KEY[:6]!r} key_len={len(SERVICE_KEY)} "
@@ -167,40 +174,15 @@ def render_cir(content, out_pdf):
     return out_pdf
 
 
-def render_snapshot(content, out_pdf):
-    """Render the one-page Executive Opportunity Snapshot via its standalone
-    engine (CLI, exactly like the CIR engine). Reads the SAME content JSON the
-    CIR uses -- dollars from `opportunity`, framing from `org.vertical`/`org.type`
-    -- so no extra inputs are required. Letter page; merges cleanly with the CIR."""
-    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
-        json.dump(content, f)
-        src = f.name
-    env = dict(os.environ)
-    if os.path.exists(FONTS_CONF):
-        env["FONTCONFIG_FILE"] = FONTS_CONF
-    try:
-        proc = subprocess.run([sys.executable, SNAPSHOT_ENGINE, src, out_pdf],
-                              capture_output=True, text=True, env=env, timeout=180)
-    finally:
-        os.unlink(src)
-    if proc.returncode != 0:
-        raise RenderError(f"snapshot engine failed: {proc.stderr.strip()[:400]}")
-    return out_pdf
-
-
-def merge_pdfs(parts, out_pdf):
-    """Concatenate `parts` (list of PDF paths, in order) into one PDF."""
+def merge_front(cover_pdf, body_pdf, out_pdf):
     w = PdfWriter()
-    for part in parts:
-        for p in PdfReader(part).pages:
-            w.add_page(p)
+    for p in PdfReader(cover_pdf).pages:
+        w.add_page(p)
+    for p in PdfReader(body_pdf).pages:
+        w.add_page(p)
     with open(out_pdf, "wb") as fh:
         w.write(fh)
     return out_pdf
-
-
-def merge_front(cover_pdf, body_pdf, out_pdf):
-    return merge_pdfs([cover_pdf, body_pdf], out_pdf)
 
 
 def cover_config(brief, params):
@@ -220,41 +202,33 @@ def cover_config(brief, params):
     return mode, size, letter_block
 
 
-def snapshot_config(params):
-    """Resolve snapshot delivery mode: 'none' | 'bundled' | 'separate'.
-
-      - bundled : the one-page snapshot is merged in FRONT of the CIR (after the
-                  cover letter, if any) -> part of the single Opportunity Brief PDF.
-      - separate: rendered as its OWN standalone Letter PDF (a leave-behind),
-                  uploaded alongside the CIR and surfaced via snapshot_url.
-    Gated entirely by params.snapshot.mode; no snapshot content is needed -- the
-    engine derives everything from the same CIR content JSON."""
-    sc = params.get("snapshot") or {}
-    return sc.get("mode") or "none"
-
-
 def build_pdf(cx, brief, workdir):
-    """Render the brief. Returns a dict:
-        { final, npages, cover_path, cover_size, snapshot_path }
-    `final` is the deliverable CIR PDF with any bundled fronts merged in.
-    `cover_path` / `snapshot_path` are non-None only for that artifact's
-    'separate' mode -> standalone files uploaded in addition to the CIR.
+    """Render the brief; return (final_path, page_count, cover_path|None, cover_size|None, kind).
 
-    Bundled front order (outermost first): cover letter, then snapshot, then CIR."""
+    kind is 'cir' or 'snapshot' and selects the storage prefix. cover_path is
+    non-None only for CIR mode='separate' (a second, standalone file)."""
     params = brief.get("params") or {}
     content = extract_cir_content(params)
 
+    # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
+    # Reuses the carmel-shaped content (needs org + opportunity). No cover, no CIR.
+    if brief.get("doc_type") in SNAPSHOT_DOC_TYPES:
+        opp = content.get("opportunity") or {}
+        if opp.get("low_usd") is None or opp.get("high_usd") is None:
+            raise RenderError("snapshot requires params.content.opportunity "
+                              "low_usd and high_usd")
+        snap_pdf = os.path.join(workdir, "snapshot.pdf")
+        snapshot_engine.render(content, snap_pdf)
+        return snap_pdf, len(PdfReader(snap_pdf).pages), None, None, "snapshot"
+
     cir_pdf = os.path.join(workdir, "cir.pdf")
     render_cir(content, cir_pdf)
-
-    fronts = []                 # bundled pieces, in order, merged before the CIR
+    final = cir_pdf
     cover_path = None
     cover_size_used = None
-    snapshot_path = None
 
-    # ---- cover letter (personalized; needs a recipient) --------------------
-    cmode, csize, letter_block = cover_config(brief, params)
-    if cmode in ("bundled", "separate"):
+    mode, size, letter_block = cover_config(brief, params)
+    if mode in ("bundled", "separate"):
         recipient = fetch_contact(cx, brief.get("contact_id"))
         company = (content.get("org") or {}).get("name") or \
                   fetch_account_name(cx, brief.get("account_id"))
@@ -263,40 +237,18 @@ def build_pdf(cx, brief, workdir):
             raise RenderError("cover letter requested but no recipient resolved "
                               "(set contact_id or params.cover.letter.recipient)")
         cover = cover_engine.build_cover(letter_block, recipient, company)
-        if cmode == "bundled":
+        if mode == "bundled":
             cover_pdf = os.path.join(workdir, "cover.pdf")
             cover_engine.render_cover(cover, cover_pdf, page_size="letter")
-            fronts.append(cover_pdf)
+            final = os.path.join(workdir, "final.pdf")
+            merge_front(cover_pdf, cir_pdf, final)
             cover_size_used = "letter"
         else:  # separate
             cover_path = os.path.join(workdir, "cover.pdf")
-            cover_engine.render_cover(cover, cover_path, page_size=csize)
-            cover_size_used = csize
+            cover_engine.render_cover(cover, cover_path, page_size=size)
+            cover_size_used = size
 
-    # ---- snapshot (data-driven; no recipient, derived from CIR content) -----
-    smode = snapshot_config(params)
-    if smode == "bundled":
-        snap_pdf = os.path.join(workdir, "snapshot.pdf")
-        render_snapshot(content, snap_pdf)
-        fronts.append(snap_pdf)         # after the cover letter, before the CIR
-    elif smode == "separate":
-        snapshot_path = os.path.join(workdir, "snapshot.pdf")
-        render_snapshot(content, snapshot_path)
-
-    # ---- assemble the deliverable ------------------------------------------
-    if fronts:
-        final = os.path.join(workdir, "final.pdf")
-        merge_pdfs([*fronts, cir_pdf], final)
-    else:
-        final = cir_pdf
-
-    return {
-        "final": final,
-        "npages": len(PdfReader(final).pages),
-        "cover_path": cover_path,
-        "cover_size": cover_size_used,
-        "snapshot_path": snapshot_path,
-    }
+    return final, len(PdfReader(final).pages), cover_path, cover_size_used, "cir"
 
 
 # ---------------------------------------------------------------- loop
@@ -309,34 +261,27 @@ def process_one(cx):
           f"cover={brief.get('cover_letter')} account={brief.get('account_id')}")
     try:
         with tempfile.TemporaryDirectory() as wd:
-            res = build_pdf(cx, brief, wd)
+            final, npages, cover_path, cover_size, kind = build_pdf(cx, brief, wd)
             company = ((brief.get("params") or {}).get("content") or
                        brief.get("params") or {}).get("org", {}).get("name")
             name = _slug(company or brief.get("title") or f"brief-{bid}")
-            base = f"cir/{brief.get('account_id') or 'misc'}/{bid}-{name}"
-            with open(res["final"], "rb") as fh:
+            base = f"{kind}/{brief.get('account_id') or 'misc'}/{bid}-{name}"
+            with open(final, "rb") as fh:
                 url = upload_pdf(cx, f"{base}.pdf", fh.read())
             cover_url = None
-            if res["cover_path"]:  # cover mode='separate' -> standalone file
-                with open(res["cover_path"], "rb") as fh:
+            if cover_path:  # mode='separate' -> upload the standalone cover too
+                with open(cover_path, "rb") as fh:
                     cover_url = upload_pdf(cx, f"{base}-cover.pdf", fh.read())
-            snapshot_url = None
-            if res["snapshot_path"]:  # snapshot mode='separate' -> standalone file
-                with open(res["snapshot_path"], "rb") as fh:
-                    snapshot_url = upload_pdf(cx, f"{base}-snapshot.pdf", fh.read())
         patch = {
             "status": "rendered", "rendered_url": url,
             "rendered_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "error": None}
         if cover_url:
             patch["cover_url"] = cover_url
-            patch["cover_size"] = res["cover_size"]
-        if snapshot_url:
-            patch["snapshot_url"] = snapshot_url
+            patch["cover_size"] = cover_size
         update_brief(cx, bid, patch)
-        print(f"[done]  brief {bid} -> {url} ({res['npages']}pp)"
-              + (f" + cover[{res['cover_size']}] -> {cover_url}" if cover_url else "")
-              + (f" + snapshot -> {snapshot_url}" if snapshot_url else ""))
+        print(f"[done]  brief {bid} -> {url} ({npages}pp)"
+              + (f" + cover[{cover_size}] -> {cover_url}" if cover_url else ""))
     except Exception as e:
         msg = str(e) if isinstance(e, RenderError) else f"{type(e).__name__}: {e}"
         print(f"[fail]  brief {bid}: {msg}")
@@ -352,7 +297,7 @@ def main():
     if not SUPABASE_URL or not SERVICE_KEY:
         sys.exit("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
     once = "--once" in sys.argv
-    print(f"[worker] supported doc_types={SUPPORTED} bucket={BUCKET} "
+    print(f"[worker] claim doc_types={CLAIM_DOC_TYPES} bucket={BUCKET} "
           f"poll={POLL_SECONDS}s once={once}")
     print(f"[diag] startup url={SUPABASE_URL!r} key_fp={SERVICE_KEY[:6]!r} "
           f"key_len={len(SERVICE_KEY)} sent_bearer={SERVICE_KEY.startswith('eyJ')}",
@@ -371,25 +316,18 @@ def main():
 
 
 def selftest():
-    """Render CIR + snapshot + cover, merge all three, no DB. Proves the toolchain.
-
-    Snapshot is rendered from snapshot/carmel.json (guaranteed snapshot-shaped);
-    the CIR from cir/content/carmel.json. Bundled order: cover, snapshot, CIR."""
+    """Render carmel.json + a sample cover, merge, no DB. Proves the toolchain."""
     wd = tempfile.mkdtemp()
-    cir_content = json.load(open(os.path.join(HERE, "cir", "content", "carmel.json")))
-    cir_pdf = render_cir(cir_content, os.path.join(wd, "cir.pdf"))
-
-    snap_src = os.path.join(HERE, "snapshot", "carmel.json")
-    snap_content = json.load(open(snap_src)) if os.path.exists(snap_src) else cir_content
-    snap_pdf = render_snapshot(snap_content, os.path.join(wd, "snapshot.pdf"))
-
+    content = json.load(open(os.path.join(HERE, "cir", "content", "carmel.json")))
+    cir_pdf = render_cir(content, os.path.join(wd, "cir.pdf"))
     cover = cover_engine.build_cover(
         None, {"name": "Nick Jacobi", "title": "General Manager"},
-        cir_content["org"]["name"])
+        content["org"]["name"])
     cover_pdf = cover_engine.render_cover(cover, os.path.join(wd, "cover.pdf"))
-
-    final = merge_pdfs([cover_pdf, snap_pdf, cir_pdf], os.path.join(wd, "final.pdf"))
-    print(f"[selftest] {final}  ({len(PdfReader(final).pages)}pp: cover + snapshot + CIR)")
+    final = merge_front(cover_pdf, cir_pdf, os.path.join(wd, "final.pdf"))
+    snap_pdf = snapshot_engine.render(content, os.path.join(wd, "snapshot.pdf"))
+    print(f"[selftest] CIR+cover {final} ({len(PdfReader(final).pages)}pp); "
+          f"snapshot {snap_pdf} ({len(PdfReader(snap_pdf).pages)}pp)")
     print(final)
 
 
