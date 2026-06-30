@@ -23,7 +23,7 @@
     "lead": "Most Clubs Don't Overspend.",
     "accent": "They Stop Benchmarking."
   },
-  "intro_md": "At a club the size of Carmel, indirect costs are spread across every department and hundreds of routine purchasing decisions, renewing with little independent market validation.\n\nRarely is this obvious overspending — costs quietly drift upward, eroding the operating surplus that funds reinvestment, capital improvements, and the member experience.",
+  "intro_md": "In a club the size of Carmel, no one person owns the indirect cost base. Purchasing runs department by department, and agreements renew quietly with no independent market test.\n\nCosts don't spike; they drift — paid out of the operating surplus that funds reinvestment and holds dues steady.",
   "reasons": [
     {
       "icon": "costbase",
@@ -53,16 +53,16 @@
     "basis_note": "From Carmel's FY2024 Form 990 and ERA category benchmarks; validated in the 30-day baseline review."
   },
   "observations": [
-    "Operating supply (~$2.0M) is the largest disclosed line — concentrated enough that re-pricing moves real dollars to the surplus.",
-    "Spend spans six-plus departments with no central procurement, so pricing fragments and savings go unclaimed.",
-    "Food & beverage isn't disclosed, so the true addressable base — and the recoverable opportunity — is larger than shown.",
-    "The 990 shows what Carmel spends, not what it contracted or when terms were last tested — the gap is where value sits."
+    "Operating supply (~$2.0M) is the largest disclosed line — concentrated enough that re-pricing moves real dollars.",
+    "Spend spans six-plus departments with no central procurement — where pricing quietly fragments.",
+    "Food & beverage isn't broken out, so the real addressable base is larger than disclosed.",
+    "The 990 shows what Carmel spends — not what it contracted, or when terms were last tested."
   ],
   "categories": [
     {
       "name": "Operating Supply",
       "tagline": "Golf, grounds & operating materials",
-      "why_md": "One of the largest controllable operating categories. Bought across many vendors, it is where consolidation and an independent market test produce the most recoverable surplus.",
+      "why_md": "The largest disclosed line. Course inputs, equipment, and operating materials are bought across many vendors — the category where consolidation and a market re-test return the most.",
       "icon": "operating",
       "annual_spend_display": "$1.98M",
       "pct_low": 12,
@@ -73,7 +73,7 @@
     {
       "name": "Professional Services",
       "tagline": "Corporate & administrative fees",
-      "why_md": "Professional-service agreements often renew untouched for years — making both scope and rate among the highest-return targets for independent benchmarking.",
+      "why_md": "Among the least-tested lines in a club budget. Both scope and rate reward an independent market check, not another incumbent renewal.",
       "icon": "professional",
       "annual_spend_display": "$1.20M",
       "pct_low": 8,
@@ -84,7 +84,7 @@
     {
       "name": "Office Supplies",
       "tagline": "Office consumables & equipment",
-      "why_md": "High purchasing volume and fragmented buying create recurring opportunities for cost recovery — among the fastest, lowest-disruption gains available.",
+      "why_md": "High transaction volume, little oversight. Consolidating fragmented purchasing is one of the fastest, lowest-disruption recoveries available.",
       "icon": "office",
       "annual_spend_display": "$850K",
       "pct_low": 12,
@@ -95,7 +95,7 @@
     {
       "name": "Maintenance",
       "tagline": "Clubhouse & grounds upkeep",
-      "why_md": "Service agreements renew on incumbent terms across clubhouse and grounds; re-testing scope and pricing at renewal turns routine spend into recurring savings.",
+      "why_md": "Service agreements renew on incumbent terms across clubhouse and grounds. Re-testing scope and pricing at renewal is where the value sits.",
       "icon": "maintenance",
       "annual_spend_display": "$751K",
       "pct_low": 10,
@@ -106,7 +106,7 @@
     {
       "name": "Utilities",
       "tagline": "Electricity, gas & occupancy",
-      "why_md": "Tariffs, meter configuration, and billing errors are recurring sources of recovery — independent of usage, so savings reach the surplus without touching operations.",
+      "why_md": "Tariffs, meter configuration, and billing errors are recurring sources of recovery — and independent of usage, so savings never touch operations.",
       "icon": "utilities",
       "annual_spend_display": "$856K",
       "pct_low": 8,
@@ -117,7 +117,7 @@
     {
       "name": "Insurance",
       "tagline": "Property, liability & benefits",
-      "why_md": "Periodic re-marketing tests both the rate and the broker compensation embedded in it — costs that rarely surface on their own but compound year over year.",
+      "why_md": "Coverage rewards periodic re-marketing — it tests the rate and the broker compensation built into it, which rarely surfaces on its own.",
       "icon": "insurance",
       "annual_spend_display": "$400K",
       "pct_low": 8,
@@ -160,5 +160,17 @@
     "with_savings": "2,656",
     "wtd_avg": "27.5%",
     "categories_reviewed": "50-plus"
+  },
+  "snapshot": {
+    "date": "June 30, 2026",
+    "headline": "Your next capital project may already be hiding in your operating budget.",
+    "intro": "The opportunities most clubs miss are not the ones anyone is hiding. They are the recurring, unglamorous line items leadership assumes are already handled — the costs no single person owns, behind a market almost no one re-tests. At a club of this size, the drift in those categories compounds quietly, year over year, and rarely surfaces in anything the board reviews.",
+    "equivalent": {
+      "value_per_unit": 27400,
+      "unit_label": "full golf memberships in equivalent annual dues",
+      "qualifier": "without adding a member"
+    },
+    "horizon_years": 5,
+    "horizon_label": "toward capital projects over five years, with no new member assessment"
   }
 }
