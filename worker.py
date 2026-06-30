@@ -43,7 +43,7 @@ sys.path.insert(0, os.path.join(HERE, "cover"))
 import cover_engine  # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
-SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
 BUCKET       = os.environ.get("STORAGE_BUCKET", "collateral")
 SUPPORTED    = [s.strip() for s in os.environ.get("SUPPORTED_DOC_TYPES",
                                                    "vertical_deepdive").split(",") if s.strip()]
@@ -56,8 +56,14 @@ class RenderError(Exception):
 
 # ---------------------------------------------------------------- Supabase REST
 def _headers(extra=None):
-    h = {"apikey": SERVICE_KEY, "Authorization": f"Bearer {SERVICE_KEY}",
-         "Content-Type": "application/json"}
+    # The key always goes on the apikey header. Legacy service_role keys are
+    # JWTs (eyJ...) and ALSO go on Authorization: Bearer. The new sb_secret_/
+    # sb_publishable_ keys are NOT JWTs -- if sent as a Bearer token the gateway
+    # tries to parse them as a JWT and rejects the request with 401. So send
+    # them on apikey only and let the gateway resolve the role.
+    h = {"apikey": SERVICE_KEY, "Content-Type": "application/json"}
+    if SERVICE_KEY.startswith("eyJ"):
+        h["Authorization"] = f"Bearer {SERVICE_KEY}"
     if extra:
         h.update(extra)
     return h
