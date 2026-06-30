@@ -279,6 +279,8 @@ def process_one(cx):
         if cover_url:
             patch["cover_url"] = cover_url
             patch["cover_size"] = cover_size
+        if kind == "snapshot":
+            patch["snapshot_url"] = url
         update_brief(cx, bid, patch)
         print(f"[done]  brief {bid} -> {url} ({npages}pp)"
               + (f" + cover[{cover_size}] -> {cover_url}" if cover_url else ""))
