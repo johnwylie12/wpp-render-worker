@@ -43,7 +43,8 @@ sys.path.insert(0, os.path.join(HERE, "cover"))
 import cover_engine  # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
-SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
+                or os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")).strip()
 BUCKET       = os.environ.get("STORAGE_BUCKET", "collateral")
 SUPPORTED    = [s.strip() for s in os.environ.get("SUPPORTED_DOC_TYPES",
                                                    "vertical_deepdive").split(",") if s.strip()]
