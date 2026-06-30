@@ -76,6 +76,11 @@ def _client():
 def claim_brief(cx):
     r = cx.post(f"{SUPABASE_URL}/rest/v1/rpc/claim_next_brief",
                 headers=_headers(), json={"p_doc_types": SUPPORTED})
+    if r.status_code >= 400:
+        print(f"[diag] claim HTTP {r.status_code} body={r.text[:300]!r} "
+              f"key_fp={SERVICE_KEY[:6]!r} key_len={len(SERVICE_KEY)} "
+              f"sent_bearer={SERVICE_KEY.startswith('eyJ')}",
+              file=sys.stderr, flush=True)
     r.raise_for_status()
     rows = r.json()
     return rows[0] if rows else None
@@ -273,6 +278,9 @@ def main():
     once = "--once" in sys.argv
     print(f"[worker] supported doc_types={SUPPORTED} bucket={BUCKET} "
           f"poll={POLL_SECONDS}s once={once}")
+    print(f"[diag] startup url={SUPABASE_URL!r} key_fp={SERVICE_KEY[:6]!r} "
+          f"key_len={len(SERVICE_KEY)} sent_bearer={SERVICE_KEY.startswith('eyJ')}",
+          file=sys.stderr, flush=True)
     with _client() as cx:
         while True:
             try:
