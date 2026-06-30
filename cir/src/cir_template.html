@@ -1,270 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<style>
-  @page { size: Letter; margin: 0; }
-  :root{
-    --navy:#003A70; --ink-head:#16243F; --gold:#FF9C00; --gold-dark:#C07400;
-    --body:#3C4658; --muted:#6C7686; --muted-2:#8A93A3;
-    --on-navy:#C7D6EC; --on-navy-2:#DCE7F5;
-    --card:#F5F7FB; --row-alt:#EAF0F8; --line:#DCE3ED; --cream:#FEF4E2; --cream-line:#F0D8A6;
-    --font-head:"Trebuchet MS","Arial Nova",Arial,sans-serif;
-    --font-body:"Arial Nova","Trebuchet MS",Arial,sans-serif;
-  }
-  *{ box-sizing:border-box; margin:0; padding:0; }
-  html,body{ font-family:var(--font-body); color:var(--body); -weasy-hyphens:none; }
-  .sheet{ position:relative; width:8.5in; height:11in; overflow:hidden; page-break-after:always; }
-  .sheet:last-child{ page-break-after:auto; }
-  .pad{ padding:0 40pt; }
-  h1,h2,h3,.eyebrow{ font-family:var(--font-head); }
+ERA SPEND BENCHMARK  ·  PREPARED EXCLUSIVELY FOR
+{{ org.name }}
+{{ org.vertical_label }}
 
-  /* ---------- Footer (fixed clearance on all pages) ---------- */
-  .footer{ position:absolute; left:0; right:0; bottom:26px; padding:0 40pt; }
-  .footer .hair{ border-top:1px solid var(--line); margin-bottom:7px; }
-  .footer .row{ display:flex; justify-content:space-between; align-items:center; }
-  .footer .vti{ font-family:var(--font-head); font-weight:bold; font-size:7.5pt; color:var(--navy); }
-  .footer .vti em{ color:var(--gold); font-style:normal; font-weight:normal; }
-  .footer .mid{ font-size:8pt; font-weight:bold; color:var(--ink-head); }
-  .footer .pg{ font-size:7pt; color:var(--muted); letter-spacing:.04em; }
+{{ thesis.lead }} {{ thesis.accent }}
+{% for para in intro_paras %}
+{{ para }}
+{% endfor %}
+{% for r in reasons %} {{ icons[r.icon] }}
+{{ r.title }}
+{{ r.body }}
+{% endfor %}
+ESTIMATED ANNUAL SAVINGS RANGE
+{{ opportunity.display }}
+{{ caption_line1 }}
+{{ caption_line2 }}
+Executive Observations
+{{ obs_intro }}
+	•	{% for o in obs_left %}
+	•	{{ o }}
+	•	{% endfor %}
+	•	{% for o in obs_right %}
+	•	{{ o }}
+	•	{% endfor %}
 
-  /* ---------- Page 1 header hero ---------- */
-  .hero{ position:relative; height:85pt; background:linear-gradient(100deg,#002851 0%,#003A70 55%,#0a4a86 100%); }
-  .hero .pad{ position:absolute; bottom:13pt; left:0; right:0; }
-  .hero .eyebrow{ color:var(--gold); font-size:8pt; font-weight:bold; letter-spacing:.16em; text-transform:uppercase; margin-bottom:5pt; }
-  .hero h1{ color:#fff; font-size:25pt; font-weight:bold; line-height:1.02; letter-spacing:-.01em; }
-  .hero .sub{ color:var(--on-navy-2); font-size:10.5pt; font-weight:600; margin-top:3pt; }
-  .orule{ height:4pt; background:var(--gold); }
+value through insight™
+Prepared exclusively for {{ org.name }}
+PAGE 1 OF 3
+￼
 
-  /* ---------- Page 1 body (block flow, margin rhythm) ---------- */
-  .p1body{ position:absolute; top:calc(85pt + 4pt); left:0; right:0; bottom:62px; padding:22px 40pt 6px; display:flex; flex-direction:column; justify-content:space-between; }
-  .lead h2{ font-family:var(--font-head); font-size:21pt; font-weight:bold; color:var(--ink-head); line-height:1.06; text-wrap:balance; }
-  .lead h2 .accent{ color:var(--gold); }
-  .lead p{ font-size:9pt; line-height:1.45; margin-top:11px; }
-  .lead p + p{ margin-top:9px; }
+Estimated Savings by Category
+{{ cat_intro }}
+{% for c in categories %} {% endfor %}
+CATEGORY
+WHY THIS CATEGORY WARRANTS REVIEW
+ANNUAL SPEND
+BENCHMARK
+EST. SAVINGS
+{{ table_icons[c.icon] }}
+{{ c.name }}
+{{ c.tagline }}
+{{ c.why_md }}
+{{ c.annual_spend_display }}
+{{ c.pct_low }}–{{ c.pct_high }}%
+{{ c.est_display }}
 
-  .cards{ display:flex; flex-wrap:wrap; gap:11px 12px; }
-  .card{ width:calc(50% - 6px); background:var(--card); border-radius:6px; border-left:3px solid var(--gold);
-         padding:13px 14px 13px 13px; display:flex; gap:11px; min-height:92px; }
-  .card .ico{ flex:0 0 30px; height:30px; border-radius:6px; background:var(--navy); display:flex; align-items:center; justify-content:center; margin-top:1px; }
-  .card .ico svg{ width:17px; height:17px; }
-  .card h3{ font-family:var(--font-head); font-size:9.3pt; font-weight:bold; color:var(--ink-head); line-height:1.12; margin-bottom:3px; }
-  .card p{ font-size:7.9pt; line-height:1.32; color:var(--body); }
+value through insight™
+Prepared exclusively for {{ org.name }}
+PAGE 2 OF 3
+￼
 
-  .savings{ background:var(--navy); border-radius:8px; padding:20px 22px 21px; text-align:center; }
-  .savings .lbl{ font-family:var(--font-head); color:var(--gold); font-size:8pt; font-weight:bold; letter-spacing:.16em; text-transform:uppercase; }
-  .savings .fig{ font-family:var(--font-head); color:#fff; font-size:26pt; font-weight:bold; line-height:1.05; margin:7px 0 8px; }
-  .savings .cap{ color:var(--on-navy); font-size:7.4pt; line-height:1.34; max-width:78%; margin:0 auto; }
+How This Estimate Was Built
+{{ method_intro }}
+REPORTED REVENUE
+{{ methodology.revenue_display }}
+{{ methodology.revenue_note }}
+×
+ADDRESSABLE INDIRECT SPEND
+~{{ methodology.addressable_pct }}%
+{{ methodology.addressable_note }}
+×
+BENCHMARK RECOVERY RANGE
+{{ methodology.recovery_low }}–{{ methodology.recovery_high }}%
+{{ methodology.recovery_note }}
+→
+ESTIMATED ANNUAL SAVINGS
+{{ methodology.result_display }}
+{{ methodology.result_note }}
+ERA AGGREGATE · SINCE 2022
+{{ aggregate.clients }}
+CLIENTS
+{{ aggregate.spend }}
+SPEND REVIEWED
+{{ aggregate.projects }}
+PROJECTS
+{{ aggregate.with_savings }}
+WITH SAVINGS
+{{ aggregate.wtd_avg }}
+WTD-AVG RECOVERY
+Aggregate program results across all ERA clients — not a result for any single company.
+Limits of an Outside-In Estimate
+{{ honesty.cannot_know_md }}
+What the Baseline Review Resolves
+{{ honesty.baseline_md }}
+Recommended Next Steps
+{% for s in next_steps %}
+{{ s.n }}
+{{ s.title }}
+{{ s.body }}
+{% endfor %}
+No savings, no fee. {{ reassurance_tail }}
+{{ signoff.name }} · {{ signoff.title }} · {{ signoff.email }} · {{ signoff.phone }}
+{{ source_line }}
 
-  .obs{ background:var(--card); border-radius:8px; padding:16px 18px 18px; }
-  .obs h3{ font-family:var(--font-head); font-size:13pt; font-weight:bold; color:var(--ink-head); }
-  .obs .intro{ font-size:7.6pt; color:var(--muted); margin:2px 0 8px; }
-  .ipcols{ font-size:0; }                 /* inline-block 2-col (WeasyPrint flex collapses) */
-  .ipcols .col{ display:inline-block; vertical-align:top; width:49%; }
-  .ipcols .col:first-child{ margin-right:2%; }
-  .ipcols li{ font-size:8pt; line-height:1.3; color:var(--body); list-style:none; padding-left:13px; position:relative; margin-bottom:8px; }
-  .ipcols li:last-child{ margin-bottom:0; }
-  .ipcols li::before{ content:"•"; color:var(--gold); position:absolute; left:0; top:-1px; font-size:9pt; }
-
-  /* ---------- Inner header (p2/p3) ---------- */
-  .ihead{ padding-top:0; }
-  .ihead .orule{ } 
-  .ihead .pad{ padding-top:26px; }
-  .brandmark{ font-family:var(--font-head); font-weight:bold; font-size:11pt; color:var(--navy); margin-bottom:8px; }
-  .brandmark span{ color:var(--gold); }
-  .ptitle{ font-family:var(--font-head); font-size:19pt; font-weight:bold; color:var(--ink-head); }
-  .pintro{ font-size:9pt; line-height:1.42; color:var(--body); margin-top:12px; }
-
-  /* ---------- Category table (p2) ---------- */
-  .cat{ width:100%; border-collapse:collapse; table-layout:fixed; margin-top:14px; }
-  .cat col.c-cat{ width:21%; } .cat col.c-why{ width:42%; } .cat col.c-spend{ width:13%; } .cat col.c-bench{ width:12%; } .cat col.c-est{ width:12%; }
-  .cat thead th{ background:var(--navy); color:#fff; font-family:var(--font-head); font-size:8pt; font-weight:bold; letter-spacing:.04em; text-transform:uppercase; text-align:left; padding:9px 8px; vertical-align:middle; }
-  .cat thead th.r{ text-align:right; }
-  .cat tbody tr{ border-bottom:1px solid var(--line); }
-  .cat tbody tr:nth-child(even){ background:var(--row-alt); }
-  .cat td{ padding:9px 8px; vertical-align:top; }
-  .cat .cname{ display:flex; gap:9px; }
-  .cat .cname .ico svg{ width:18px; height:18px; }
-  .cat .cname .ico{ flex:0 0 18px; margin-top:1px; }
-  .cat .cname .ico svg *{ stroke:var(--navy); }
-  .cat .nm{ font-family:var(--font-head); font-size:11pt; font-weight:bold; color:var(--ink-head); line-height:1.05; }
-  .cat .tg{ font-size:7.4pt; color:var(--muted); margin-top:2px; line-height:1.2; }
-  .cat .why{ font-size:8.4pt; line-height:1.32; color:var(--body); }
-  .cat .spend,.cat .bench,.cat .est{ font-family:var(--font-head); font-weight:bold; color:var(--navy); text-align:right; }
-  .cat .spend{ font-size:11pt; } .cat .bench{ font-size:10.5pt; } .cat .est{ font-size:10.5pt; line-height:1.12; }
-
-  /* ---------- Methodology / aggregate / honesty / next (p3) ---------- */
-  .inputs{ display:flex; gap:10px; margin-top:14px; align-items:stretch; }
-  .ibox{ flex:1; background:var(--card); border-radius:8px; padding:13px 13px 14px; position:relative; }
-  .ibox.navy{ background:var(--navy); }
-  .ibox .k{ font-family:var(--font-head); font-size:7.4pt; font-weight:bold; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); line-height:1.2; }
-  .ibox.navy .k{ color:var(--gold); }
-  .ibox .v{ font-family:var(--font-head); font-size:19pt; font-weight:bold; color:var(--navy); margin:5px 0 4px; line-height:1.0; }
-  .ibox.navy .v{ color:#fff; font-size:16pt; }
-  .ibox .n{ font-size:7.2pt; color:var(--muted); line-height:1.28; }
-  .ibox.navy .n{ color:var(--on-navy); }
-  .isep{ position:absolute; top:50%; right:-8px; transform:translateY(-50%); color:var(--gold); font-weight:bold; font-size:13pt; z-index:2; }
-
-  .agg{ background:var(--navy); border-radius:8px; margin-top:11px; padding:12px 18px; display:flex; align-items:center; }
-  .agg .lab{ font-family:var(--font-head); font-size:9pt; font-weight:bold; color:#fff; letter-spacing:.04em; text-transform:uppercase; flex:0 0 130px; line-height:1.15; }
-  .agg .stats{ display:flex; flex:1; justify-content:space-between; }
-  .agg .st{ text-align:center; }
-  .agg .st .num{ font-family:var(--font-head); font-size:15pt; font-weight:bold; color:#fff; }
-  .agg .st .cap{ font-size:6.6pt; color:var(--on-navy); letter-spacing:.06em; text-transform:uppercase; margin-top:1px; }
-  .aggcap{ font-size:7.2pt; color:var(--muted); margin-top:7px; }
-
-  .honesty{ display:flex; gap:14px; margin-top:14px; }
-  .hbox{ flex:1; background:var(--card); border-radius:8px; padding:13px 15px 14px; }
-  .hbox.cream{ background:var(--cream); }
-  .hbox h4{ font-family:var(--font-head); font-size:11.5pt; font-weight:bold; color:var(--navy); margin-bottom:5px; }
-  .hbox.cream h4{ color:var(--gold-dark); }
-  .hbox p{ font-size:8.4pt; line-height:1.36; color:var(--body); }
-
-  .nexttitle{ font-family:var(--font-head); font-size:17pt; font-weight:bold; color:var(--ink-head); margin-top:16px; }
-  .steps{ display:flex; gap:14px; margin-top:10px; }
-  .step{ flex:1; background:var(--card); border-radius:8px; padding:12px 14px 14px; }
-  .step .no{ font-family:var(--font-head); font-size:18pt; font-weight:bold; color:var(--gold); line-height:1; }
-  .step h5{ font-family:var(--font-head); font-size:11pt; font-weight:bold; color:var(--ink-head); margin:5px 0 4px; }
-  .step p{ font-size:8.2pt; line-height:1.3; color:var(--body); }
-  .reassure{ text-align:center; margin-top:13px; font-size:9.5pt; }
-  .reassure b{ font-family:var(--font-head); color:var(--gold-dark); }
-  .signoff{ text-align:center; font-size:8.6pt; color:var(--muted); margin-top:5px; }
-  .srcline{ font-size:6.8pt; color:var(--muted); line-height:1.3; margin-top:12px; }
-</style>
-</head>
-<body>
-
-<!-- ============ PAGE 1 ============ -->
-<section class="sheet p1">
-  <div class="hero">
-    <div class="pad">
-      <div class="eyebrow">ERA Spend Benchmark&nbsp;&nbsp;·&nbsp;&nbsp;Prepared Exclusively For</div>
-      <h1>{{ org.name }}</h1>
-      <div class="sub">{{ org.vertical_label }}</div>
-    </div>
-  </div>
-  <div class="orule"></div>
-
-  <div class="p1body">
-    <div class="lead">
-      <h2>{{ thesis.lead }} <span class="accent">{{ thesis.accent }}</span></h2>
-      {% for para in intro_paras %}<p>{{ para }}</p>{% endfor %}
-    </div>
-
-    <div class="cards">
-      {% for r in reasons %}
-      <div class="card">
-        <div class="ico">{{ icons[r.icon] }}</div>
-        <div><h3>{{ r.title }}</h3><p>{{ r.body }}</p></div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <div class="savings">
-      <div class="lbl">Estimated Annual Savings Range</div>
-      <div class="fig">{{ opportunity.display }}</div>
-      <div class="cap">{{ caption_line1 }}<br>{{ caption_line2 }}</div>
-    </div>
-
-    <div class="obs">
-      <h3>Executive Observations</h3>
-      <div class="intro">{{ obs_intro }}</div>
-      <div class="ipcols">
-        <div class="col"><ul>{% for o in obs_left %}<li>{{ o }}</li>{% endfor %}</ul></div><div class="col"><ul>{% for o in obs_right %}<li>{{ o }}</li>{% endfor %}</ul></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer"><div class="hair"></div><div class="row">
-    <div class="vti">value through <em>insight</em>™</div>
-    <div class="mid">Prepared exclusively for {{ org.name }}</div>
-    <div class="pg">PAGE 1 OF 3</div>
-  </div></div>
-</section>
-
-<!-- ============ PAGE 2 ============ -->
-<section class="sheet p2">
-  <div class="orule"></div>
-  <div class="ihead"><div class="pad">
-    <div class="brandmark">(<span>era</span></div>
-    <div class="ptitle">Estimated Savings by Category</div>
-    <div class="pintro">{{ cat_intro }}</div>
-    <table class="cat">
-      <colgroup><col class="c-cat"><col class="c-why"><col class="c-spend"><col class="c-bench"><col class="c-est"></colgroup>
-      <thead><tr>
-        <th>Category</th><th>Why This Category Warrants Review</th>
-        <th class="r">Annual Spend</th><th class="r">Benchmark</th><th class="r">Est. Savings</th>
-      </tr></thead>
-      <tbody>
-        {% for c in categories %}
-        <tr style="height:{{ row_h }}px">
-          <td><div class="cname"><div class="ico">{{ table_icons[c.icon] }}</div><div><div class="nm">{{ c.name }}</div><div class="tg">{{ c.tagline }}</div></div></div></td>
-          <td class="why">{{ c.why_md }}</td>
-          <td class="spend">{{ c.annual_spend_display }}</td>
-          <td class="bench">{{ c.pct_low }}–{{ c.pct_high }}%</td>
-          <td class="est">{{ c.est_display }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div></div>
-  <div class="footer"><div class="hair"></div><div class="row">
-    <div class="vti">value through <em>insight</em>™</div>
-    <div class="mid">Prepared exclusively for {{ org.name }}</div>
-    <div class="pg">PAGE 2 OF 3</div>
-  </div></div>
-</section>
-
-<!-- ============ PAGE 3 ============ -->
-<section class="sheet p3">
-  <div class="orule"></div>
-  <div class="ihead"><div class="pad">
-    <div class="brandmark">(<span>era</span></div>
-    <div class="ptitle">How This Estimate Was Built</div>
-    <div class="pintro">{{ method_intro }}</div>
-
-    <div class="inputs">
-      <div class="ibox"><div class="k">Reported Revenue</div><div class="v">{{ methodology.revenue_display }}</div><div class="n">{{ methodology.revenue_note }}</div><div class="isep">×</div></div>
-      <div class="ibox"><div class="k">Addressable Indirect Spend</div><div class="v">~{{ methodology.addressable_pct }}%</div><div class="n">{{ methodology.addressable_note }}</div><div class="isep">×</div></div>
-      <div class="ibox"><div class="k">Benchmark Recovery Range</div><div class="v">{{ methodology.recovery_low }}–{{ methodology.recovery_high }}%</div><div class="n">{{ methodology.recovery_note }}</div><div class="isep">→</div></div>
-      <div class="ibox navy"><div class="k">Estimated Annual Savings</div><div class="v">{{ methodology.result_display }}</div><div class="n">{{ methodology.result_note }}</div></div>
-    </div>
-
-    <div class="agg">
-      <div class="lab">ERA Aggregate · Since 2022</div>
-      <div class="stats">
-        <div class="st"><div class="num">{{ aggregate.clients }}</div><div class="cap">Clients</div></div>
-        <div class="st"><div class="num">{{ aggregate.spend }}</div><div class="cap">Spend Reviewed</div></div>
-        <div class="st"><div class="num">{{ aggregate.projects }}</div><div class="cap">Projects</div></div>
-        <div class="st"><div class="num">{{ aggregate.with_savings }}</div><div class="cap">With Savings</div></div>
-        <div class="st"><div class="num">{{ aggregate.wtd_avg }}</div><div class="cap">Wtd-Avg Recovery</div></div>
-      </div>
-    </div>
-    <div class="aggcap">Aggregate program results across all ERA clients — not a result for any single company.</div>
-
-    <div class="honesty">
-      <div class="hbox"><h4>Limits of an Outside-In Estimate</h4><p>{{ honesty.cannot_know_md }}</p></div>
-      <div class="hbox cream"><h4>What the Baseline Review Resolves</h4><p>{{ honesty.baseline_md }}</p></div>
-    </div>
-
-    <div class="nexttitle">Recommended Next Steps</div>
-    <div class="steps">
-      {% for s in next_steps %}
-      <div class="step"><div class="no">{{ s.n }}</div><h5>{{ s.title }}</h5><p>{{ s.body }}</p></div>
-      {% endfor %}
-    </div>
-
-    <div class="reassure"><b>No savings, no fee.</b> {{ reassurance_tail }}</div>
-    <div class="signoff">{{ signoff.name }} · {{ signoff.title }} · {{ signoff.email }} · {{ signoff.phone }}</div>
-    <div class="srcline">{{ source_line }}</div>
-  </div></div>
-
-  <div class="footer"><div class="hair"></div><div class="row">
-    <div class="vti">value through <em>insight</em>™</div>
-    <div class="mid">Prepared exclusively for {{ org.name }}</div>
-    <div class="pg">PAGE 3 OF 3</div>
-  </div></div>
-</section>
-
-</body>
-</html>
+value through insight™
+Prepared exclusively for {{ org.name }}
+PAGE 3 OF 3
