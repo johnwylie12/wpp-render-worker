@@ -1,0 +1,164 @@
+{
+  "org": {
+    "name": "Carmel Country Club",
+    "vertical": "private_club",
+    "vertical_label": "Private Member Club",
+    "type": "nonprofit",
+    "revenue_usd": 36500000,
+    "location_count": 1,
+    "has_990": true,
+    "form_990": {
+      "ein": null,
+      "fy_end": "FY2024",
+      "filed": null
+    },
+    "financials": {
+      "operating_surplus_usd": 3900000
+    }
+  },
+  "assets": {
+    "hero": "heroes/private_club.png"
+  },
+  "thesis": {
+    "lead": "Most Clubs Don't Overspend.",
+    "accent": "They Stop Benchmarking."
+  },
+  "intro_md": "At a club the size of Carmel, indirect costs are spread across every department and hundreds of routine purchasing decisions, renewing with little independent market validation.\n\nRarely is this obvious overspending — costs quietly drift upward, eroding the operating surplus that funds reinvestment, capital improvements, and the member experience.",
+  "reasons": [
+    {
+      "icon": "costbase",
+      "title": "A Fragmented Vendor Base",
+      "body": "Golf, grounds, dining, and facilities each source on their own. No single function sees total volume — so the club never buys as the $6M-plus purchaser it is, and rates drift above market."
+    },
+    {
+      "icon": "contracts",
+      "title": "Inherited, Auto-Renewing Terms",
+      "body": "Agreements renew on incumbent terms — rebates, escalators, and fees set years ago. The value is recovered by re-testing the contract you hold, not by switching vendors."
+    },
+    {
+      "icon": "operating",
+      "title": "A Member-Funded Cost Base",
+      "body": "FY2024 revenue of $36.5M produced a $3.9M operating surplus. Every dollar of recurring indirect cost is dues pressure or reinvestment forgone — making sourcing a matter of stewardship."
+    },
+    {
+      "icon": "disclosure",
+      "title": "Food & Beverage Is Not Disclosed",
+      "body": "The Form 990 doesn't break out food & beverage — usually a club's single largest member-facing cost. Built from disclosed lines only, this understates the true base; F&B is sized directly in the baseline."
+    }
+  ],
+  "opportunity": {
+    "low_usd": 610000,
+    "high_usd": 1370000,
+    "display": "$610K – $1.37M",
+    "basis_note": "From Carmel's FY2024 Form 990 and ERA category benchmarks; validated in the 30-day baseline review."
+  },
+  "observations": [
+    "Operating supply (~$2.0M) is the largest disclosed line — concentrated enough that re-pricing moves real dollars to the surplus.",
+    "Spend spans six-plus departments with no central procurement, so pricing fragments and savings go unclaimed.",
+    "Food & beverage isn't disclosed, so the true addressable base — and the recoverable opportunity — is larger than shown.",
+    "The 990 shows what Carmel spends, not what it contracted or when terms were last tested — the gap is where value sits."
+  ],
+  "categories": [
+    {
+      "name": "Operating Supply",
+      "tagline": "Golf, grounds & operating materials",
+      "why_md": "One of the largest controllable operating categories. Bought across many vendors, it is where consolidation and an independent market test produce the most recoverable surplus.",
+      "icon": "operating",
+      "annual_spend_display": "$1.98M",
+      "pct_low": 12,
+      "pct_high": 25,
+      "est_low": 240000,
+      "est_high": 495000
+    },
+    {
+      "name": "Professional Services",
+      "tagline": "Corporate & administrative fees",
+      "why_md": "Professional-service agreements often renew untouched for years — making both scope and rate among the highest-return targets for independent benchmarking.",
+      "icon": "professional",
+      "annual_spend_display": "$1.20M",
+      "pct_low": 8,
+      "pct_high": 20,
+      "est_low": 95000,
+      "est_high": 240000
+    },
+    {
+      "name": "Office Supplies",
+      "tagline": "Office consumables & equipment",
+      "why_md": "High purchasing volume and fragmented buying create recurring opportunities for cost recovery — among the fastest, lowest-disruption gains available.",
+      "icon": "office",
+      "annual_spend_display": "$850K",
+      "pct_low": 12,
+      "pct_high": 25,
+      "est_low": 100000,
+      "est_high": 215000
+    },
+    {
+      "name": "Maintenance",
+      "tagline": "Clubhouse & grounds upkeep",
+      "why_md": "Service agreements renew on incumbent terms across clubhouse and grounds; re-testing scope and pricing at renewal turns routine spend into recurring savings.",
+      "icon": "maintenance",
+      "annual_spend_display": "$751K",
+      "pct_low": 10,
+      "pct_high": 22,
+      "est_low": 75000,
+      "est_high": 165000
+    },
+    {
+      "name": "Utilities",
+      "tagline": "Electricity, gas & occupancy",
+      "why_md": "Tariffs, meter configuration, and billing errors are recurring sources of recovery — independent of usage, so savings reach the surplus without touching operations.",
+      "icon": "utilities",
+      "annual_spend_display": "$856K",
+      "pct_low": 8,
+      "pct_high": 18,
+      "est_low": 70000,
+      "est_high": 155000
+    },
+    {
+      "name": "Insurance",
+      "tagline": "Property, liability & benefits",
+      "why_md": "Periodic re-marketing tests both the rate and the broker compensation embedded in it — costs that rarely surface on their own but compound year over year.",
+      "icon": "insurance",
+      "annual_spend_display": "$400K",
+      "pct_low": 8,
+      "pct_high": 25,
+      "est_low": 30000,
+      "est_high": 100000
+    }
+  ],
+  "methodology": {
+    "revenue_display": "~$36.5M",
+    "revenue_note": "$36.5M filed (FY2024 Form 990)",
+    "addressable_pct": 17,
+    "addressable_note": "~$6.2M indirect operating pool",
+    "recovery_low": 10,
+    "recovery_high": 22,
+    "recovery_note": "blend of ERA category rates; contract-timing haircuts applied at baseline",
+    "result_display": "$610K – $1.37M",
+    "result_note": "validated in the 30-day baseline"
+  },
+  "honesty": {
+    "cannot_know_md": "Built from Carmel's public FY2024 Form 990 and ERA category benchmarks. Contract terms and current pricing are not visible from outside — some lines may be recently bid, others may hold more room than shown. The 990 also omits food & beverage — typically a club's largest member-facing cost — so the true base is likely larger. A starting estimate, not a finding.",
+    "baseline_md": "The no-cost 30-day baseline replaces these estimates with actual contract data — across every applicable category, not only the six shown — and quantifies food & beverage, which the filing omits. It confirms where the real room is and where Carmel is already competitive. The result is a finding, not an estimate."
+  },
+  "reassurance": "No savings, no fee. No upfront cost. 90%+ of incumbent suppliers retained.",
+  "signoff": {
+    "name": "John Wylie",
+    "title": "Senior Advisor",
+    "org": "ERA Group",
+    "email": "jwylie@eragroup.com",
+    "phone": "703.244.9868"
+  },
+  "source": {
+    "filing": "Carmel Country Club FY2024 IRS Form 990 — Part IX Statement of Functional Expenses",
+    "basis": "Mapped functional-expense lines; direct compensation, depreciation, interest, and taxes excluded."
+  },
+  "aggregate": {
+    "clients": 916,
+    "spend": "$2.25B",
+    "projects": "6,420",
+    "with_savings": "2,656",
+    "wtd_avg": "27.5%",
+    "categories_reviewed": "50-plus"
+  }
+}
