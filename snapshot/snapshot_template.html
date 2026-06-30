@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --navy:#003A70; --ink-head:#16243F; --gold:#FF9C00; --gold-dark:#C07400;
+    --body:#3C4658; --muted:#6C7686; --muted-2:#8A93A3; --line:#DCE3ED;
+    --font-head:"Trebuchet MS","Arial Nova",Arial,sans-serif;
+    --font-body:"Arial Nova","Trebuchet MS",Arial,sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ font-family:var(--font-body); color:var(--body); -weasy-hyphens:none; }
+  .sheet{ position:relative; width:8.5in; height:11in; overflow:hidden; }
+
+  /* ---------- header ---------- */
+  .head{ padding:40pt 66pt 0; display:flex; justify-content:space-between; align-items:flex-start; }
+  .head .logo{ height:18pt; }
+  .head .pf{ text-align:right; }
+  .head .pf .k{ font-family:var(--font-head); color:var(--gold); font-size:8pt; font-weight:bold; letter-spacing:.14em; text-transform:uppercase; }
+  .head .pf .org{ font-family:var(--font-head); color:var(--navy); font-size:11.5pt; font-weight:bold; margin-top:4pt; }
+  .head .pf .dt{ color:var(--muted); font-size:9pt; margin-top:3pt; }
+
+  /* body sits in a band that stops above the reserved footer zone */
+  .wrap{ padding:0 66pt; }
+  .rule-gold{ height:3pt; background:var(--gold); width:100%; }
+  .rule-thin{ height:1px; background:var(--line); width:100%; }
+
+  .eyebrow{ font-family:var(--font-head); color:var(--gold); font-size:9pt; font-weight:bold; letter-spacing:.14em; text-transform:uppercase; }
+  h1.title{ font-family:var(--font-head); color:var(--navy); font-size:26pt; font-weight:bold; line-height:1.08; letter-spacing:-.01em; margin-top:9pt; }
+  .intro{ font-size:11pt; line-height:1.46; color:var(--body); margin-top:11pt; }
+
+  .seclabel{ font-family:var(--font-head); color:var(--muted); font-size:9pt; font-weight:bold; letter-spacing:.12em; text-transform:uppercase; }
+
+  .bigfig{ font-family:var(--font-head); color:var(--navy); font-size:34pt; font-weight:bold; line-height:1.0; margin-top:7pt; }
+  .subhead{ font-family:var(--font-head); color:var(--navy); font-size:14pt; font-weight:bold; line-height:1.16; margin-top:6pt; }
+  .recovery{ color:var(--muted); font-size:9pt; line-height:1.35; margin-top:6pt; }
+
+  .horizon{ display:flex; gap:11pt; align-items:baseline; margin-top:9pt; }
+  .horizon .hf{ font-family:var(--font-head); color:var(--navy); font-size:15pt; font-weight:bold; white-space:nowrap; }
+  .horizon .hf .ap{ color:var(--gold); }
+  .horizon .hl{ font-size:10.5pt; line-height:1.34; color:var(--body); }
+
+  ol.cred{ counter-reset:c; list-style:none; margin-top:9pt; }
+  ol.cred li{ position:relative; padding-left:24pt; font-size:10.5pt; line-height:1.4; color:var(--body); margin-bottom:7pt; counter-increment:c; }
+  ol.cred li:last-child{ margin-bottom:0; }
+  ol.cred li::before{ content:counter(c); position:absolute; left:2pt; top:0; font-family:var(--font-head); color:var(--gold); font-weight:bold; font-size:11pt; }
+
+  .lead-in{ font-size:10.5pt; line-height:1.44; color:var(--body); }
+  .closing{ font-family:var(--font-head); color:var(--navy); font-size:11pt; font-weight:bold; line-height:1.44; }
+
+  /* ---------- footer (reserved band; body never reaches it) ---------- */
+  .footer{ position:absolute; left:0; right:0; bottom:26px; padding:0 66pt; }
+  .footer .hair{ border-top:1px solid var(--line); margin-bottom:7px; }
+  .footer .row{ display:flex; justify-content:space-between; align-items:center; }
+  .footer .sign{ font-size:8.6pt; color:var(--muted); }
+  .footer .sign b{ color:var(--navy); }
+  .footer .vti{ font-family:var(--font-head); font-weight:bold; font-size:8.5pt; color:var(--navy); }
+  .footer .vti em{ color:var(--gold); font-style:normal; font-weight:normal; }
+</style>
+</head>
+<body>
+<section class="sheet">
+
+  <div class="head">
+    {% if logo_uri %}<img class="logo" src="{{ logo_uri }}" alt="ERA Group">{% else %}<div class="logo" style="font-family:var(--font-head);font-weight:bold;font-size:18pt;color:var(--navy)">(<span style="color:var(--gold)">era</span></div>{% endif %}
+    <div class="pf">
+      <div class="k">Prepared Exclusively For</div>
+      <div class="org">{{ org.name }}</div>
+      <div class="dt">{{ prepared_date }}</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="rule-gold" style="margin-top:14pt"></div>
+
+    <div class="eyebrow" style="margin-top:16pt">{{ eyebrow }}</div>
+    <h1 class="title">{{ headline }}</h1>
+    <p class="intro">{{ intro }}</p>
+
+    <div class="rule-gold" style="margin-top:15pt"></div>
+
+    <div class="seclabel" style="margin-top:14pt">What This Opportunity Represents</div>
+    <div class="bigfig">{{ units_display }}</div>
+    <div class="subhead">{{ subhead }}</div>
+    <div class="recovery">{{ annual_line }}</div>
+
+    <div class="horizon">
+      <span class="hf"><span class="ap">&#8776;</span>&nbsp;{{ horizon_display }}</span>
+      <span class="hl">{{ horizon_label }}</span>
+    </div>
+
+    <div class="rule-thin" style="margin-top:13pt"></div>
+
+    <div class="seclabel" style="margin-top:12pt">Why The Figure Is Credible</div>
+    <ol class="cred">
+      {% for item in credibility %}<li>{{ item }}</li>{% endfor %}
+    </ol>
+
+    <p class="lead-in" style="margin-top:11pt">{{ lead_in }}</p>
+    <p class="closing" style="margin-top:10pt">{{ closing }}</p>
+  </div>
+
+  <div class="footer">
+    <div class="hair"></div>
+    <div class="row">
+      <div class="sign"><b>{{ signoff.name }}</b> &middot; {{ signoff.title }} &middot; {{ signoff.org }} &middot; {{ signoff.email }} &middot; {{ signoff.phone }}</div>
+      <div class="vti">value through <em>insight</em>&trade;</div>
+    </div>
+  </div>
+
+</section>
+</body>
+</html>
