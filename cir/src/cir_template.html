@@ -230,7 +230,7 @@
     <div class="pintro">{{ method_intro }}</div>
 
     <div class="inputs">
-      <div class="ibox"><div class="k">Reported Revenue</div><div class="v">{{ methodology.revenue_display }}</div><div class="n">{{ methodology.revenue_note }}</div></div>
+      <div class="ibox"><div class="k">{{ methodology.revenue_label or 'Reported Revenue' }}</div><div class="v">{{ methodology.revenue_display }}</div><div class="n">{{ methodology.revenue_note }}</div></div>
       <div class="isep">×</div>
       <div class="ibox"><div class="k">Addressable Indirect Spend</div><div class="v">~{{ methodology.addressable_pct }}%</div><div class="n">{{ methodology.addressable_note }}</div></div>
       <div class="isep">×</div>
@@ -245,7 +245,6 @@
         <div class="st"><div class="num">{{ aggregate.clients }}</div><div class="cap">Clients</div></div>
         <div class="st"><div class="num">{{ aggregate.spend }}</div><div class="cap">Spend Reviewed</div></div>
         <div class="st"><div class="num">{{ aggregate.projects }}</div><div class="cap">Projects</div></div>
-        <div class="st"><div class="num">{{ aggregate.with_savings }}</div><div class="cap">With Savings</div></div>
         <div class="st"><div class="num">{{ aggregate.wtd_avg }}</div><div class="cap">Wtd-Avg Recovery</div></div>
       </div>
     </div>
