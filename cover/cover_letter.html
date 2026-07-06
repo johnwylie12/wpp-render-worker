@@ -12,6 +12,10 @@
     color: #1a1a1a; -webkit-print-color-adjust: exact; print-color-adjust: exact;
   }
   .sheet { padding: 60pt 72pt 54pt 72pt; }      /* ~0.83in top, 1in sides */
+  /* Printing on pre-printed ERA letterhead stock: drop the logo block and
+     push the body down to clear a standard letterhead logo band (~1.8in). */
+  .sheet.letterhead-paper { padding-top: 100pt; }
+  .sheet.letterhead-paper .date { margin-top: 30pt; }
 
   .head { border-bottom: 2pt solid #003A70; padding-bottom: 11pt; }
   .head .logo { height: 34px; width: auto; display: block; }
@@ -35,12 +39,14 @@
 
   .ps { margin-top: 18pt; font-size: 10pt; color: #555; line-height: 1.45; }
 </style></head>
-<body><div class="sheet">
+<body><div class="sheet{% if letterhead_paper %} letterhead-paper{% endif %}">
 
+  {% if not letterhead_paper %}
   <div class="head">
     <img class="logo" src="data:image/jpeg;base64,{{ logo_b64 }}" alt="ERA Group">
     <div class="gold-rule"></div>
   </div>
+  {% endif %}
 
   <div class="date">{{ date_str }}</div>
 
