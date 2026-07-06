@@ -81,7 +81,7 @@ def build_cover(params_cover: dict | None,
         body = [
             f"I have put together a short, no-obligation cost intelligence read on "
             f"where indirect spend may be drifting across {co} \u2014 the categories "
-            f"most operators never re-test, and a sized, outside-in estimate of what "
+            f"most finance teams rarely re-test, and a sized, outside-in estimate of what "
             f"a baseline could recover.",
             "ERA works strictly on contingency: a share of verified savings, with no "
             "fee if there are none and no upfront cost. We typically retain 90%+ of a "
@@ -102,6 +102,9 @@ def build_cover(params_cover: dict | None,
         "body_paras": body,
         "ps": pc.get("ps"),
         "signoff": signoff,
+        # True -> render logo-free with a cleared top for printing on physical
+        # ERA letterhead stock. Set via params.cover.letter.letterhead_paper.
+        "letterhead_paper": bool(pc.get("letterhead_paper")),
     }
 
 
@@ -138,6 +141,7 @@ def render_cover(cover: dict, out_pdf: str, page_size: str | None = "Letter") ->
         "ps": cover.get("ps"),
         "signoff": {**SIGNOFF_CANON, **(cover.get("signoff") or {})},
         "page_css": resolve_page_size(page_size),
+        "letterhead_paper": bool(cover.get("letterhead_paper")),
     }
     HTML(string=_TPL.render(**ctx)).write_pdf(out_pdf)
     return out_pdf
