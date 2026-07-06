@@ -37,7 +37,7 @@
   .orule{ height:4pt; background:var(--gold); }
 
   /* ---------- Page 1 body (block flow, margin rhythm) ---------- */
-  .p1body{ position:absolute; top:calc(110pt + 4pt); left:0; right:0; bottom:62px; padding:22px 40pt 6px; }
+  .p1body{ position:absolute; top:calc(110pt + 4pt); left:0; right:0; bottom:62px; padding:22px 40pt 6px; overflow:hidden; }
   .lead h2{ font-family:var(--font-head); font-size:21pt; font-weight:bold; color:var(--ink-head); line-height:1.06; text-wrap:balance; }
   .lead h2 .accent{ color:var(--gold); }
   .lead p{ font-size:11pt; line-height:1.4; margin-top:12px; }
@@ -56,13 +56,13 @@
   .savings .fig{ font-family:var(--font-head); color:#fff; font-size:26pt; font-weight:bold; line-height:1.05; margin:7px 0 8px; }
   .savings .cap{ color:#fff; font-size:11pt; line-height:1.32; max-width:84%; margin:0 auto; }
 
-  .obs{ background:var(--card); border-radius:8px; padding:14px 18px 15px; margin-top:10px; }
+  .obs{ background:var(--card); border-radius:8px; padding:12px 18px 12px; margin-top:8px; }
   .obs h3{ font-family:var(--font-head); font-size:13pt; font-weight:bold; color:var(--ink-head); }
   .obs .intro{ font-size:9pt; color:var(--muted); margin:2px 0 8px; }
   .ipcols{ font-size:0; }                 /* inline-block 2-col (WeasyPrint flex collapses) */
   .ipcols .col{ display:inline-block; vertical-align:top; width:49%; }
   .ipcols .col:first-child{ margin-right:2%; }
-  .ipcols li{ font-size:11pt; line-height:1.32; color:var(--body); list-style:none; padding-left:13px; position:relative; margin-bottom:9px; }
+  .ipcols li{ font-size:11pt; line-height:1.28; color:var(--body); list-style:none; padding-left:13px; position:relative; margin-bottom:6px; }
   .ipcols li:last-child{ margin-bottom:0; }
   .ipcols li::before{ content:"•"; color:var(--gold); position:absolute; left:0; top:-1px; font-size:9pt; }
 
