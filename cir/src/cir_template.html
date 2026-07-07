@@ -14,13 +14,15 @@
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
   html,body{ font-family:var(--font-body); color:var(--body); -weasy-hyphens:none; }
-  .sheet{ position:relative; width:8.5in; height:11in; overflow:hidden; page-break-after:always; }
+  .sheet{ position:relative; width:8.5in; height:11in; overflow:hidden; page-break-after:always; display:flex; flex-direction:column; }
   .sheet:last-child{ page-break-after:auto; }
+  .sheet > .hero{ flex:0 0 auto; }
+  .sheet > .pad, .sheet > .ihead{ flex:1 1 auto; min-height:0; overflow:hidden; }
   .pad{ padding:0 40pt; }
   h1,h2,h3,.eyebrow{ font-family:var(--font-head); }
 
   /* ---------- Footer (fixed clearance on all pages) ---------- */
-  .footer{ position:absolute; left:0; right:0; bottom:26px; padding:0 40pt; }
+  .footer{ position:static; flex:0 0 auto; margin:10px 0 24px; padding:0 40pt; }
   .footer .hair{ border-top:1px solid var(--line); margin-bottom:7px; }
   .footer .row{ display:flex; justify-content:space-between; align-items:center; }
   .footer .vti{ font-family:var(--font-head); font-weight:bold; font-size:7.5pt; color:var(--navy); }
