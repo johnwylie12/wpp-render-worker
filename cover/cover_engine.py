@@ -78,15 +78,24 @@ def build_cover(params_cover: dict | None,
     body = pc.get("body_paras") or pc.get("body")
     if not body:
         co = org or "your organization"
-        body = [
+        # Paragraph 1 is the enqueued `opening` hook when the frontend supplies
+        # one (built with the account's provenance), else a safe generic opener.
+        # Paragraphs 2-3 are LOCKED CANON and live ONLY here, so ERA's promises
+        # can't drift or be model-fabricated.
+        opening = pc.get("opening")
+        generic_opener = (
             f"I have put together a short, no-obligation cost intelligence read on "
             f"where indirect spend may be drifting across {co} \u2014 the categories "
             f"most finance teams rarely re-test, and a sized, outside-in estimate of what "
-            f"a baseline could recover.",
+            f"a baseline could recover."
+        )
+        para1 = opening.strip() if isinstance(opening, str) and opening.strip() else generic_opener
+        body = [
+            para1,
             "ERA works strictly on contingency: a share of verified savings, with no "
-            "fee if there are none and no upfront cost. We typically retain 90%+ of a "
-            "client's incumbent suppliers \u2014 this is about price and terms, not "
-            "switching vendors.",
+            "fee if there are none and no upfront cost. We re-price the contracts you "
+            "already hold, not your vendors \u2014 this is about price and terms, not "
+            "switching suppliers.",
             "The attached report lays out the opportunity. If it is useful, I would "
             "welcome a brief call to confirm which categories are worth a no-cost "
             "baseline.",
