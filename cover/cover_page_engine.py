@@ -67,8 +67,6 @@ def build(org, *, title=None, subtitle=None, statement=None, date_str=None, doc_
     longest = max((len(w) for w in name.split()), default=6)
     name_size = 53 if longest <= 9 else (46 if longest <= 12 else 40)
     return {
-        "fonts_css": open(os.path.join(HERE, "assets", "_fonts.css")).read(),
-        "logo_uri":  _b64_img(os.path.join(HERE, "assets", "era_white.png")),
         "hero_uri":  hero_uri(org),
         "hero_pos":  "70% 50%" if vert == "community_health" else "52% 50%",
         "org_name":  _esc(name),
