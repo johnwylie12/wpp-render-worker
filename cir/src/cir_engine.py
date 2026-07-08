@@ -114,7 +114,7 @@ def render(content, out_pdf):
         method_intro=c.get("method_intro","A transparent, outside-in estimate built from three inputs — and a candid account of what an external view can and cannot establish."),
         methodology=c["methodology"], aggregate=agg, honesty=c["honesty"],
         next_steps=c.get("next_steps", DEFAULT_STEPS),
-        reassurance_tail=c.get("reassurance","No savings, no fee. No upfront cost. 90%+ of incumbent suppliers retained.").replace("No savings, no fee. ","").replace(". 90%",".<br>90%",1),
+        reassurance_tail=c.get("reassurance","No savings, no fee. No upfront cost. Nothing changes without your approval.").replace("No savings, no fee. ","").replace(". 90%",".<br>90%",1),
         signoff=so, source_line=src_line,
         hero_bg=hero_background(c),
         icons={k:icon_svg(k,"#FFFFFF") for k in _GLYPH},
