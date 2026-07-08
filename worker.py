@@ -43,8 +43,9 @@ CIR_ENGINE   = os.path.join(HERE, "cir", "src", "cir_engine.py")
 FONTS_CONF   = os.path.join(HERE, "cir", "build", "fonts.conf")
 sys.path.insert(0, os.path.join(HERE, "cover"))
 sys.path.insert(0, os.path.join(HERE, "snapshot"))
-import cover_engine     # noqa: E402
-import snapshot_engine  # noqa: E402
+import cover_engine       # noqa: E402
+import snapshot_engine    # noqa: E402
+import cover_page_engine  # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
@@ -54,8 +55,10 @@ SUPPORTED    = [s.strip() for s in os.environ.get("SUPPORTED_DOC_TYPES",
                                                    "vertical_deepdive").split(",") if s.strip()]
 SNAPSHOT_DOC_TYPES = [s.strip() for s in os.environ.get("SNAPSHOT_DOC_TYPES",
                                                    "opportunity_snapshot").split(",") if s.strip()]
-# Claim CIR + snapshot doc_types by default — no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in SNAPSHOT_DOC_TYPES if s not in SUPPORTED]
+COVER_PAGE_DOC_TYPES = [s.strip() for s in os.environ.get("COVER_PAGE_DOC_TYPES",
+                                                   "cover_page").split(",") if s.strip()]
+# Claim CIR + snapshot + cover_page doc_types by default — no Railway env edit required.
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -220,6 +223,25 @@ def build_pdf(cx, brief, workdir):
         snap_pdf = os.path.join(workdir, "snapshot.pdf")
         snapshot_engine.render(content, snap_pdf)
         return snap_pdf, len(PdfReader(snap_pdf).pages), None, None, "snapshot"
+
+    # ---- cover page: standalone premium cover for any collateral. Fields come
+    # from `org`; the centered `title` varies by collateral (default per
+    # for_doc_type); the hero is auto-picked per vertical from the CIR library.
+    if brief.get("doc_type") in COVER_PAGE_DOC_TYPES:
+        org = content.get("org") or {}
+        if not org.get("name"):
+            raise RenderError("cover_page requires params.content.org.name")
+        cp = params.get("cover_page") or {}
+        cover_pdf = os.path.join(workdir, "cover_page.pdf")
+        cover_page_engine.render(
+            org, cover_pdf,
+            title=cp.get("title"),
+            subtitle=cp.get("subtitle"),
+            statement=cp.get("statement"),
+            date_str=cp.get("date"),
+            doc_type=cp.get("for_doc_type", "package"),
+        )
+        return cover_pdf, len(PdfReader(cover_pdf).pages), None, None, "cover"
 
     cir_pdf = os.path.join(workdir, "cir.pdf")
     render_cir(content, cir_pdf)
