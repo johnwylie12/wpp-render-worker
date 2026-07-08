@@ -37,25 +37,23 @@ DEFAULT_AGG = {"clients": 916, "spend": "$2.25B", "projects": "6,420",
 # ---- intro variants (swap the noun the reader self-identifies with) --------
 INTRO = {
     "club": ("The opportunities most clubs miss are not the ones anyone is hiding. They are the "
-             "recurring, unglamorous line items leadership assumes are already handled \u2014 the costs "
-             "no single person owns, behind a market almost no one re-tests. At a club of this size, "
-             "the drift in those categories compounds quietly, year over year, and rarely surfaces in "
-             "anything the board reviews."),
+             "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by "
+             "a market almost no one re-tests. In clubs this size, those categories tend to drift above "
+             "market quietly, year over year, rarely surfacing in the numbers leadership reviews."),
     "company": ("The opportunities most companies miss are not the ones anyone is hiding. They are the "
-                "recurring, unglamorous line items leadership assumes are already handled \u2014 the costs "
-                "no single person owns, behind a market almost no one re-tests. At an operation this size, "
-                "the drift in those categories compounds quietly, year over year, and rarely surfaces in "
-                "anything the leadership team reviews."),
+                "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by "
+                "a market almost no one re-tests. In operations this size, those categories tend to drift "
+                "above market quietly, year over year, rarely surfacing in the numbers leadership reviews."),
     "care": ("The opportunities most organizations miss are not the ones anyone is hiding. They are the "
-             "recurring, unglamorous line items leadership assumes are already handled \u2014 the costs no "
-             "single person owns, behind a market almost no one re-tests. At an organization this size, the "
-             "drift compounds quietly, year over year \u2014 dollars that could fund care, staffing, or "
-             "reinvestment instead leaking out through contracts no one re-tests."),
+             "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by a "
+             "market almost no one re-tests. In organizations this size, those categories tend to drift "
+             "above market quietly, year over year \u2014 dollars that could fund care, staffing, or "
+             "reinvestment instead leaking out through contracts that go untested."),
     "university": ("The opportunities most institutions miss are not the ones anyone is hiding. They are the "
-                   "recurring, unglamorous line items leadership assumes are already handled \u2014 the costs "
-                   "no single person owns, behind a market almost no one re-tests. At an institution this size, "
-                   "the drift compounds quietly, year over year \u2014 dollars that could fund aid, faculty, or "
-                   "facilities instead leaking out through contracts no one re-tests."),
+                   "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by "
+                   "a market almost no one re-tests. In institutions this size, those categories tend to drift "
+                   "above market quietly, year over year \u2014 dollars that could fund aid, faculty, or "
+                   "facilities instead leaking out through contracts that go untested."),
 }
 
 # ---- per-vertical defaults -------------------------------------------------
@@ -243,8 +241,8 @@ def render(content, out_pdf):
             (f"Built from {org['name']}'s own public financial filings and ERA's benchmark "
              f"database \u2014 {agg['spend']} of spend reviewed across {agg['projects']} completed "
              f"engagements at {agg['clients']} organizations."),
-            ("Validation is a no-cost, 30-day baseline. Incumbent suppliers typically stay \u2014 "
-             "more than 90% are retained \u2014 so operations, service, and vendor relationships remain in place."),
+            ("Validation is a no-cost, 30-day baseline that replaces these outside-in estimates with your "
+             "actual contract data. Nothing changes without your approval \u2014 every recommendation is yours to accept or decline."),
             ("The engagement is contingency-based: a share of verified savings only \u2014 "
              "no savings, no fee, and no upfront cost."),
         ]
