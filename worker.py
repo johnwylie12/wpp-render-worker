@@ -43,9 +43,11 @@ CIR_ENGINE   = os.path.join(HERE, "cir", "src", "cir_engine.py")
 FONTS_CONF   = os.path.join(HERE, "cir", "build", "fonts.conf")
 sys.path.insert(0, os.path.join(HERE, "cover"))
 sys.path.insert(0, os.path.join(HERE, "snapshot"))
+sys.path.insert(0, os.path.join(HERE, "benchmark"))
 import cover_engine       # noqa: E402
 import snapshot_engine    # noqa: E402
 import cover_page_engine  # noqa: E402
+import benchmark_engine   # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
@@ -57,8 +59,10 @@ SNAPSHOT_DOC_TYPES = [s.strip() for s in os.environ.get("SNAPSHOT_DOC_TYPES",
                                                    "opportunity_snapshot").split(",") if s.strip()]
 COVER_PAGE_DOC_TYPES = [s.strip() for s in os.environ.get("COVER_PAGE_DOC_TYPES",
                                                    "cover_page").split(",") if s.strip()]
+BENCHMARK_DOC_TYPES = [s.strip() for s in os.environ.get("BENCHMARK_DOC_TYPES",
+                                                   "sector_benchmark").split(",") if s.strip()]
 # Claim CIR + snapshot + cover_page doc_types by default — no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES) if s not in SUPPORTED]
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -242,6 +246,22 @@ def build_pdf(cx, brief, workdir):
             doc_type=cp.get("for_doc_type", "package"),
         )
         return cover_pdf, len(PdfReader(cover_pdf).pages), None, None, "cover"
+
+    # ---- sector benchmark: standalone one-page "Benchmark Behind This Analysis".
+    # params.benchmark.sector selects the sector data block (e.g. 'healthcare',
+    # 'not_for_profit'). Sector-level content; no org required.
+    if brief.get("doc_type") in BENCHMARK_DOC_TYPES:
+        bm = params.get("benchmark") or {}
+        sector = bm.get("sector")
+        if not sector:
+            raise RenderError("sector_benchmark requires params.benchmark.sector "
+                              "(e.g. 'healthcare' or 'not_for_profit')")
+        bm_pdf = os.path.join(workdir, "benchmark.pdf")
+        try:
+            benchmark_engine.render(sector, bm_pdf)
+        except ValueError as e:
+            raise RenderError(str(e))
+        return bm_pdf, len(PdfReader(bm_pdf).pages), None, None, "benchmark"
 
     cir_pdf = os.path.join(workdir, "cir.pdf")
     render_cir(content, cir_pdf)
