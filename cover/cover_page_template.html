@@ -1,0 +1,60 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+{{ fonts_css }}
+@page { size: 8.5in 11in; margin: 0; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:8.5in; height:11in; }
+:root{ --navy:#01426F; --navy2:#013861; --gold:#E9B417; --grey:#F3F3F1; --ink:#12304F; --sub:#5b6675; }
+.page{ position:relative; width:8.5in; height:11in; overflow:hidden; font-family:'Poppins',sans-serif; }
+.hero{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:{{ hero_pos }}; }
+.navysvg{ position:absolute; inset:0; width:100%; height:100%; z-index:1; }
+.foot{ position:absolute; left:0; right:0; top:80%; height:15.6%; background:var(--grey); z-index:2; }
+.bar{ position:absolute; left:0; right:0; top:95.6%; bottom:0; background:var(--navy2); z-index:2; }
+.content{ position:absolute; inset:0; z-index:4; }
+.pad{ position:absolute; left:7.4%; }
+.logo{ position:absolute; left:7.4%; top:7.8%; width:15.5%; }
+.kicker{ top:18.6%; color:var(--gold); font-weight:500; font-size:11.5pt; letter-spacing:.28em; }
+.krule{ position:absolute; left:7.4%; top:22.2%; width:8%; height:3px; background:var(--gold); }
+.name{ top:25.6%; color:#fff; font-family:'Lora',serif; font-weight:400; font-size:{{ name_size }}pt;
+       line-height:1.02; letter-spacing:-.5px; max-width:46%; }
+.nrule{ position:absolute; left:7.4%; top:46.8%; width:30%; height:3px; background:var(--gold); }
+.snap{ top:49.6%; color:#fff; font-weight:500; font-size:10pt; letter-spacing:.12em; max-width:42%; }
+.ind{ top:52.3%; color:var(--gold); font-weight:500; font-size:10pt; letter-spacing:.12em; }
+.stmt{ top:56.6%; padding-left:20px; border-left:4px solid var(--gold); color:#fff;
+       font-weight:400; font-size:14pt; line-height:1.5; max-width:34%; }
+.stmt .g{ color:var(--gold); }
+.date{ top:74.6%; color:#dfe6ef; font-weight:500; font-size:10.5pt; letter-spacing:.22em; }
+.fcol{ position:absolute; top:82.4%; width:30%; text-align:center; }
+.c1{ left:4%; } .c2{ left:35%; } .c3{ left:66%; }
+.circ{ width:0.52in; height:0.52in; border-radius:50%; background:var(--navy);
+       margin:0 auto 12px; display:flex; align-items:center; justify-content:center; }
+.ftitle{ color:var(--ink); font-weight:700; font-size:10.5pt; letter-spacing:.11em; }
+.fsub{ color:var(--sub); font-weight:500; font-size:8.7pt; letter-spacing:.06em; line-height:1.7; margin-top:6px; }
+.fsub b{ color:var(--ink); font-weight:700; }
+.fdiv{ position:absolute; top:83.5%; width:2px; height:8.8%; background:var(--gold); opacity:.85; }
+.tag{ position:absolute; left:0; right:0; top:96.7%; text-align:center; color:var(--gold);
+      font-weight:500; font-size:12pt; letter-spacing:.42em; }
+</style></head><body>
+<div class="page">
+  <img class="hero" src="{{ hero_uri }}">
+  <svg class="navysvg" viewBox="0 0 816 1056" preserveAspectRatio="none">
+    <polygon points="0,0 522,0 343,845 0,845" fill="#01426F"/>
+    <line x1="522" y1="0" x2="343" y2="845" stroke="#E9B417" stroke-width="3.5"/>
+  </svg>
+  <div class="foot"></div><div class="bar"></div>
+  <div class="content">
+    <img class="logo" src="{{ logo_uri }}">
+    <div class="pad kicker">PREPARED EXCLUSIVELY FOR</div>
+    <div class="krule"></div>
+    <div class="pad name">{{ org_name }}</div>
+    <div class="nrule"></div>
+    <div class="pad snap">{{ title }}</div>
+    <div class="pad ind">{{ subtitle }}</div>
+    <div class="pad stmt">{{ statement_html }}</div>
+    <div class="pad date">{{ date_str }}</div>
+    <div class="fcol c1"><div class="circ"><svg width="30" height="30" viewBox="0 0 24 24" fill="#E9B417"><path d="M12 2 2 7v2h20V7L12 2zM4 10v7H3v3h18v-3h-1v-7h-2v7h-3v-7h-2v7h-2v-7H9v7H6v-7H4z"/></svg></div><div class="ftitle">OUTSIDE-IN ANALYSIS</div><div class="fsub">INFORMED PERSPECTIVE<br><b>BEFORE ANY MEETING</b></div></div>
+    <div class="fcol c2"><div class="circ"><svg width="28" height="28" viewBox="0 0 24 24" fill="#E9B417"><path d="M12 1 3 5v6c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V5l-9-4zm-1.2 15L7 12.2l1.4-1.4 2.4 2.4 5-5L17.2 9l-6.4 7z"/></svg></div><div class="ftitle">MISSION FOCUSED</div><div class="fsub">STEWARDSHIP TODAY.<br>STRENGTH TOMORROW.</div></div>
+    <div class="fcol c3"><div class="circ"><svg width="28" height="28" viewBox="0 0 24 24" fill="#E9B417"><path d="M4 13h3v7H4v-7zm6.5-6h3v13h-3V7zM17 10h3v10h-3V10z"/></svg></div><div class="ftitle">MEASURABLE IMPACT</div><div class="fsub">DOLLARS RECOVERED.<br>OPPORTUNITIES FUNDED.</div></div>
+    <div class="fdiv" style="left:33.5%;"></div><div class="fdiv" style="left:64.5%;"></div>
+    <div class="tag">VALUE THROUGH INSIGHT&#8482;</div>
+  </div>
+</div></body></html>
