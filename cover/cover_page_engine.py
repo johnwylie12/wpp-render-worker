@@ -42,6 +42,9 @@ STATEMENTS = {
     "construction":           ("Your next ", "project margin",   " may already be hiding in your operating budget."),
     "wholesale_distribution": ("Your next ", "margin point",     " may already be hiding in your operating budget."),
     "business_services":      ("Your next ", "growth hire",      " may already be hiding in your operating budget."),
+    "health_system":          ("Your next ", "service line",     " may already be hiding in your operating budget."),
+    "human_services":         ("Your next ", "program",          " may already be hiding in your operating budget."),
+    "hospice_living":         ("Your next ", "care team",        " may already be hiding in your operating budget."),
 }
 DEFAULT_STMT = ("Your next ", "opportunity", " may already be hiding in your operating budget.")
 
