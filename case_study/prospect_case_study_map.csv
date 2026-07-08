@@ -1,0 +1,20 @@
+prospect,likely_org_type,vertical,primary_study,additional_study,note
+Carolina Health Centers,FQHC / community health,community_health,one_community_health,,
+Tri County Community Health Council,FQHC / community health,community_health,one_community_health,,
+Rural Health Services,FQHC / community health,community_health,one_community_health,,
+Family Health Centers,FQHC / community health,community_health,one_community_health,,
+New Horizon Family Health Services,FQHC / community health,community_health,one_community_health,,
+Planned Parenthood South Atlantic,Multi-site health clinics,community_health,one_community_health,,mission-driven clinic network
+Penick Village,Faith-based CCRC / senior living,senior_living,methodist_retirement_communities,bethesda_health_group,Episcopal
+South Carolina Episcopal Home At Still Hopes,Faith-based CCRC / senior living,senior_living,methodist_retirement_communities,bethesda_health_group,Episcopal
+Moravian Home,Faith-based CCRC / senior living,senior_living,methodist_retirement_communities,bethesda_health_group,Moravian
+Maryfield Inc,Faith-based CCRC / senior living,senior_living,methodist_retirement_communities,bethesda_health_group,Catholic (Pennybyrn)
+Genesis Healthcare,Skilled nursing / senior care,senior_living,bethesda_health_group,methodist_retirement_communities,
+PACE of Guilford & Rockingham Counties,All-inclusive elderly care,senior_living,bethesda_health_group,methodist_retirement_communities,
+The ARC of North Carolina,Human services (I/DD),human_services,catholic_charities_denver,north_texas_food_bank,
+Thompson Child & Family Focus,Human services (child & family),human_services,catholic_charities_denver,north_texas_food_bank,
+Transylvania Vocational Services,Human services (vocational / I/DD),human_services,catholic_charities_denver,north_texas_food_bank,
+McLeod Health,Hospital system,health_system,delaware_hospice,,sub_industry confirmed = Medical & Surgical Hospitals; no true hospital study exists
+Pender Memorial Hospital,Community hospital,health_system,delaware_hospice,one_community_health,small hospital; One Community may be more scale-appropriate than $3.5M
+NCHA,Healthcare association (not a provider),FLAG,catholic_charities_denver,,weak fit; membership/trade org - review before including
+HonorBridge,Organ procurement organization,FLAG,delaware_hospice,catholic_charities_denver,weak fit; health-mission nonprofit, not a provider - review
