@@ -23,12 +23,12 @@
     "lead": "Most Clubs Don't Overspend.",
     "accent": "They Stop Benchmarking."
   },
-  "intro_md": "In a club the size of Carmel, no one person owns the indirect cost base. Purchasing runs department by department, and agreements renew quietly with no independent market test.\n\nCosts don't spike; they drift — paid out of the operating surplus that funds reinvestment and holds dues steady.",
+  "intro_md": "For a private member club company the size of Carmel Country Club, indirect spend spreads across many routine categories — the kind that, in most organizations, renew with little independent market validation.\n\nThis is rarely obvious overspending; left untested, indirect costs tend to drift above market — quietly eroding the operating surplus that funds reinvestment, capital improvements, and the member experience.",
   "reasons": [
     {
       "icon": "costbase",
-      "title": "A Fragmented Vendor Base",
-      "body": "Golf, grounds, dining, and facilities each source on their own. No single function sees total volume — so the club never buys as the $6M-plus purchaser it is, and rates drift above market."
+      "title": "Where Indirect Cost Hides",
+      "body": "Direct spend concentrates — ~80% of dollars in ~20% of vendors — and gets actively managed. Indirect spend runs the opposite way: ~20% of dollars spread across ~80% of vendors. Where spend fragments like that, pricing tends to drift above market and volume leverage goes uncaptured — which is what an independent test confirms or rules out."
     },
     {
       "icon": "contracts",
@@ -141,7 +141,7 @@
     "cannot_know_md": "Built from Carmel's public FY2024 Form 990 and ERA category benchmarks. Contract terms and current pricing are not visible from outside — some lines may be recently bid, others may hold more room than shown. The 990 also omits food & beverage — typically a club's largest member-facing cost — so the true base is likely larger. A starting estimate, not a finding.",
     "baseline_md": "The no-cost 30-day baseline replaces these estimates with actual contract data — across every applicable category, not only the six shown — and quantifies food & beverage, which the filing omits. It confirms where the real room is and where Carmel is already competitive. The result is a finding, not an estimate."
   },
-  "reassurance": "No savings, no fee. No upfront cost. 90%+ of incumbent suppliers retained.",
+  "reassurance": "No savings, no fee. No upfront cost. Nothing changes without your approval.",
   "signoff": {
     "name": "John Wylie",
     "title": "Senior Advisor",
