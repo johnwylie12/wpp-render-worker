@@ -70,11 +70,11 @@ SECTORS = {
   "not_for_profit": {
     "KICK": "PREPARED FOR NOT-FOR-PROFIT LEADERS",
     "SUB": "Not-for-Profit", "SUBU": "NOT-FOR-PROFIT",
-    "LEAD": "The opportunity in your Snapshot is not a guess. It is grounded in independent nonprofit-sector "
-            "research and what ERA has recovered across thousands of similar engagements. A no-risk baseline "
-            "review is the next step that confirms it against your own contracts.",
-    "CTX": "So the real question is not whether savings exist in the sector &mdash; the authorities below settle "
-           "that. It is how much is sitting in your cost base, and what it would free for the mission.",
+    "LEAD": "The opportunity in your Snapshot is grounded in independent nonprofit-sector "
+            "research and what ERA has recovered across thousands of similar engagements. "
+            "",
+    "CTX": "The question is not whether savings exist &mdash; the authorities below settle "
+           "that. It is how much sits in your cost base, and what it would free for the mission.",
     "BN": "$50M+", "S1N": "604", "S1L": "NOT-FOR-PROFIT<br>CLIENTS", "S2N": "1,057", "S3N": "$300M+",
     "OSN": "$1&ndash;3M",
     "OST": "<b>a year likely recoverable for an organization your size</b> &mdash; from indirect spend you "
