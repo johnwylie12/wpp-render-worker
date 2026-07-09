@@ -37,21 +37,21 @@ DEFAULT_AGG = {"clients": 916, "spend": "$2.25B", "projects": "6,420",
 # ---- intro variants (swap the noun the reader self-identifies with) --------
 INTRO = {
     "club": ("The opportunities most clubs miss are not the ones anyone is hiding. They are the "
-             "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by "
-             "a market almost no one re-tests. In clubs this size, those categories tend to drift above "
+             "recurring, unglamorous line items leadership assumes are already handled \u2014 priced under agreements "
+             "few ever re-test. In clubs this size, those categories tend to drift above "
              "market quietly, year over year, rarely surfacing in the numbers leadership reviews."),
     "company": ("The opportunities most companies miss are not the ones anyone is hiding. They are the "
-                "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by "
-                "a market almost no one re-tests. In operations this size, those categories tend to drift "
+                "recurring, unglamorous line items leadership assumes are already handled \u2014 priced under agreements "
+                "few ever re-test. In operations this size, those categories tend to drift "
                 "above market quietly, year over year, rarely surfacing in the numbers leadership reviews."),
     "care": ("The opportunities most organizations miss are not the ones anyone is hiding. They are the "
-             "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by a "
-             "market almost no one re-tests. In organizations this size, those categories tend to drift "
+             "recurring, unglamorous line items leadership assumes are already handled \u2014 priced under agreements "
+             "few ever re-test. In organizations this size, those categories tend to drift "
              "above market quietly, year over year \u2014 dollars that could fund care, staffing, or "
              "reinvestment instead leaking out through contracts that go untested."),
     "university": ("The opportunities most institutions miss are not the ones anyone is hiding. They are the "
-                   "recurring, unglamorous line items leadership assumes are already handled \u2014 priced by "
-                   "a market almost no one re-tests. In institutions this size, those categories tend to drift "
+                   "recurring, unglamorous line items leadership assumes are already handled \u2014 priced under agreements "
+                   "few ever re-test. In institutions this size, those categories tend to drift "
                    "above market quietly, year over year \u2014 dollars that could fund aid, faculty, or "
                    "facilities instead leaking out through contracts that go untested."),
 }
@@ -254,11 +254,11 @@ def render(content, out_pdf):
     cred = snap.get("credibility")
     if not cred:
         cred = [
-            (f"Built from {org['name']}'s own public financial filings and ERA's benchmark "
+            (f"Built from {org['name']}'s own <b>public financial filings</b> and ERA's benchmark "
              f"database \u2014 {agg['spend']} of spend reviewed across {agg['projects']} completed "
              f"engagements at {agg['clients']} organizations."),
             ("Validation is a no-cost, 30-day baseline that replaces these outside-in estimates with your "
-             "actual contract data. Nothing changes without your approval \u2014 every recommendation is yours to accept or decline."),
+             "actual contract data. Nothing changes without your approval \u2014 every recommendation is yours to accept or decline. Most organizations are already competitive in some categories; the baseline identifies both the opportunities and the areas performing well."),
             ("The engagement is contingency-based: a share of verified savings only \u2014 "
              "no savings, no fee, and no upfront cost."),
         ]
