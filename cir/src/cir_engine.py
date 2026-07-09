@@ -70,6 +70,10 @@ def hero_background(content):
     """Resolve the per-vertical hero photo and return a CSS background-image value.
     Prefers content.assets.hero, else assets/heroes/<org.vertical>.png. Falls back
     to the navy gradient (master look) when no photo exists (e.g. manufacturing)."""
+    # Explicit suppression (the "packaged" copy that ships behind a cover) ->
+    # clean navy header, skipping the per-vertical photo fallback.
+    if content.get("suppress_hero"):
+        return NAVY_GRADIENT
     rel  = (content.get("assets") or {}).get("hero")
     vert = (content.get("org") or {}).get("vertical")
     candidates = []
