@@ -269,10 +269,18 @@ def render(content, out_pdf):
         ("Our outside-in analysis points to an opportunity comparable to those identified across "
          "similar organizations. The remaining question is whether the same conditions exist within "
          f"{org['name']}."))
-    lead_in = snap.get("lead_in",
-        (f"The three pages that follow summarize a preliminary, outside-in analysis already completed on "
-         f"{org['name']} \u2014 before any meeting, using public filings and ERA's category benchmarks. "
-         "The remaining step is to validate those observations against information available only inside the organization."))
+    if snap.get("lead_in"):
+        lead_in = snap["lead_in"]
+    elif snap.get("package") or c.get("package"):
+        lead_in = (f"What follows is a preliminary, outside-in analysis of {org['name']}, completed before "
+                   f"any meeting from public filings and ERA's category benchmarks: a category-by-category "
+                   f"view of where the opportunity sits, sector benchmarks showing where indirect spend "
+                   f"concentrates, and a client case study of results ERA has delivered. The remaining step "
+                   f"is to validate these observations against the contract data held only inside the organization.")
+    else:
+        lead_in = (f"The three pages that follow summarize a preliminary, outside-in analysis already completed on "
+                   f"{org['name']} \u2014 before any meeting, using public filings and ERA's category benchmarks. "
+                   "The remaining step is to validate those observations against information available only inside the organization.")
 
     so = c.get("signoff", {"name": "John Wylie", "title": "Senior Advisor", "org": "ERA Group",
                            "email": "jwylie@eragroup.com", "phone": "703.244.9868"})
