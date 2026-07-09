@@ -169,7 +169,7 @@ def render_cir(content, out_pdf, hero=True):
     # the "packaged" copy that ships behind a cover; the standalone copy keeps
     # the per-vertical hero. One content payload, rendered two ways.
     if not hero:
-        content = {**content, "assets": {**(content.get("assets") or {}), "hero": ""}}
+        content = {**content, "suppress_hero": True}
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         json.dump(content, f)
         src = f.name
