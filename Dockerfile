@@ -1,7 +1,6 @@
 FROM python:3.12-slim
 
-# WeasyPrint 69 runtime libraries + Liberation fonts (the locked CIR was
-# rendered against Liberation via fonts.conf, so these guarantee pixel parity).
+# WeasyPrint 69 runtime libraries + Liberation (last-resort fallback only).
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libpango-1.0-0 \
         libpangocairo-1.0-0 \
@@ -19,8 +18,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Trebuchet/Arial Nova -> Liberation Sans mapping (CIR parity) for BOTH the
-# CIR engine and the cover letter.
+# Install the committed brand fonts (Trebuchet + Paralucent) so the CIR,
+# snapshot, and cover render in real brand type on Railway (not Liberation).
+RUN mkdir -p /usr/share/fonts/brand \
+    && cp fonts/*.ttf fonts/*.otf /usr/share/fonts/brand/ 2>/dev/null || true \
+    && fc-cache -f >/dev/null 2>&1
+
+# fonts.conf maps Arial Nova/Arial -> Trebuchet and lets Trebuchet/Paralucent
+# resolve to the installed brand fonts (Liberation only as last-resort fallback).
 ENV FONTCONFIG_FILE=/app/cir/build/fonts.conf
 ENV POLL_SECONDS=60
 ENV STORAGE_BUCKET=collateral
