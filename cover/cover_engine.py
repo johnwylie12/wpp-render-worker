@@ -93,9 +93,8 @@ def build_cover(params_cover: dict | None,
         body = [
             para1,
             "ERA works strictly on contingency: a share of verified savings, with no "
-            "fee if there are none and no upfront cost. We re-price the contracts you "
-            "already hold, not your vendors \u2014 this is about price and terms, not "
-            "switching suppliers.",
+            "fee if there are none and no upfront cost. Nothing changes without your "
+            "approval \u2014 every recommendation is yours to accept or decline.",
             "The attached report lays out the opportunity. If it is useful, I would "
             "welcome a brief call to confirm which categories are worth a no-cost "
             "baseline.",
