@@ -83,6 +83,22 @@ VERTICAL_DEFAULTS = {
                        "label": "full-time nurses funded for a year",
                        "qualifier": "without adding to the clinical budget"},
     },
+    "community_health": {
+        "intro": "care",
+        "headline": "Your next clinician may already be hiding in your operating budget.",
+        "horizon_label": "toward patient care and community programs over five years",
+        "equivalent": {"mode": "count", "value_per_unit": 90000,
+                       "label": "full-time clinicians funded for a year",
+                       "qualifier": "without adding to the care budget"},
+    },
+    "human_services": {
+        "intro": "care",
+        "headline": "Your next program may already be hiding in your operating budget.",
+        "horizon_label": "toward the programs and people you serve over five years",
+        "equivalent": {"mode": "count", "value_per_unit": 55000,
+                       "label": "full-time direct-support staff funded for a year",
+                       "qualifier": "without cutting a single program"},
+    },
     "senior_living": {
         "intro": "care",
         "headline": "Your next community upgrade may already be hiding in your operating budget.",
