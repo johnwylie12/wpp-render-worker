@@ -67,8 +67,16 @@ def build(org, *, title=None, subtitle=None, statement=None, date_str=None, doc_
         date_str = "%s %d, %d" % (d.strftime("%B").upper(), d.day, d.year)
     else:
         date_str = date_str.upper()
-    longest = max((len(w) for w in name.split()), default=6)
-    name_size = 53 if longest <= 9 else (46 if longest <= 12 else 40)
+    words = name.split()
+    longest = max((len(w) for w in words), default=6)
+    if len(words) >= 4 or len(name) > 26:
+        name_size = 34
+    elif longest <= 9:
+        name_size = 53
+    elif longest <= 12:
+        name_size = 44
+    else:
+        name_size = 38
     return {
         "hero_uri":  hero_uri(org),
         "hero_pos":  "70% 50%" if vert == "community_health" else "52% 50%",
