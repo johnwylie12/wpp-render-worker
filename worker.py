@@ -164,7 +164,12 @@ def extract_cir_content(params):
         "CIR content yet.")
 
 
-def render_cir(content, out_pdf):
+def render_cir(content, out_pdf, hero=True):
+    # hero=False suppresses the page-1 photo band -> clean navy header. This is
+    # the "packaged" copy that ships behind a cover; the standalone copy keeps
+    # the per-vertical hero. One content payload, rendered two ways.
+    if not hero:
+        content = {**content, "assets": {**(content.get("assets") or {}), "hero": ""}}
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         json.dump(content, f)
         src = f.name
@@ -264,12 +269,18 @@ def build_pdf(cx, brief, workdir):
         return bm_pdf, len(PdfReader(bm_pdf).pages), None, None, "benchmark"
 
     cir_pdf = os.path.join(workdir, "cir.pdf")
-    render_cir(content, cir_pdf)
+    mode, size, letter_block = cover_config(brief, params)
+    # Hero rule: a packaged CIR (a cover ships in front, bundled or separate)
+    # suppresses the photo band for a clean navy header; a standalone CIR keeps
+    # the per-vertical hero. Explicit params.cir.hero (bool) overrides the rule.
+    cir_cfg = params.get("cir") or {}
+    hero_on = cir_cfg.get("hero")
+    if hero_on is None:
+        hero_on = (mode == "none")
+    render_cir(content, cir_pdf, hero=bool(hero_on))
     final = cir_pdf
     cover_path = None
     cover_size_used = None
-
-    mode, size, letter_block = cover_config(brief, params)
     if mode in ("bundled", "separate"):
         recipient = fetch_contact(cx, brief.get("contact_id"))
         company = (content.get("org") or {}).get("name") or \
