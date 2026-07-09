@@ -63,7 +63,7 @@ SECTORS = {
     "I3N": "Zero cuts", "I3T": "Recovered non-clinical spend drops straight to margin &mdash; without touching "
            "staffing, service lines, or patient care. The rare lever with no trade-off.", "I3S": "The ERA model",
     "COLA": _HC_A, "COLB": _HC_B,
-    "CAP": "Ranges are typical savings as a share of category spend, from prior healthcare engagements and "
+    "CAP": "These are a sample of the 50-plus indirect categories ERA benchmarks. Ranges are typical savings as a share of category spend, from prior healthcare engagements and "
            "independent benchmarking &mdash; not a forecast. Which categories apply is confirmed only in the "
            "no-risk baseline review.",
   },
@@ -89,7 +89,7 @@ SECTORS = {
     "I3N": "100%", "I3T": "of recovered overhead funds programs directly &mdash; and lifts the program-expense "
            "ratio funders and watchdogs judge you on. No trade-off against mission.", "I3S": "Charity Navigator",
     "COLA": _NFP_A, "COLB": _NFP_B,
-    "CAP": "Ranges are typical savings as a share of category spend, from prior not-for-profit engagements and "
+    "CAP": "These are a sample of the 50-plus indirect categories ERA benchmarks. Ranges are typical savings as a share of category spend, from prior not-for-profit engagements and "
            "independent benchmarking &mdash; not a forecast. Which categories apply is confirmed only in the "
            "no-risk baseline review.",
   },
