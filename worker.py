@@ -68,7 +68,7 @@ BENCHMARK_DOC_TYPES = [s.strip() for s in os.environ.get("BENCHMARK_DOC_TYPES",
 CASE_STUDY_DOC_TYPES = [s.strip() for s in os.environ.get("CASE_STUDY_DOC_TYPES",
                                                    "case_study").split(",") if s.strip()]
 CLOSING_DOC_TYPES = [s.strip() for s in os.environ.get("CLOSING_DOC_TYPES",
-                                                   "closing").split(",") if s.strip()]
+                                                   "closing_page").split(",") if s.strip()]
 # Claim CIR + snapshot + cover_page + benchmark + case_study + closing by default — no Railway env edit required.
 CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
