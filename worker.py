@@ -400,7 +400,7 @@ def build_pdf(cx, brief, workdir):
         accts = params.get("accounts") or []
         if not accts:
             raise RenderError("wave requires a non-empty params.accounts list")
-        pkg_paths, letter_paths, card_paths, index_rows = [], [], [], []
+        pkg_paths, card_paths, index_rows = [], [], []
         for i, a in enumerate(accts, 1):
             seq = a.get("seq") or i
             pp = a.get("package") or {}
@@ -408,9 +408,6 @@ def build_pdf(cx, brief, workdir):
             awd = os.path.join(workdir, "a{}".format(seq))
             os.makedirs(awd, exist_ok=True)
             piece_paths = [_render_piece(pc, c, pp, awd) for pc in BOUND_PIECES]
-            bound = os.path.join(awd, "pkg.pdf")
-            stitch_pdfs(piece_paths, bound)
-            pkg_paths.append(bound)
             name = a.get("name") or (c.get("org") or {}).get("name") or "Account {}".format(seq)
             recip = ""
             lb = pp.get("cover_letter")
@@ -419,8 +416,11 @@ def build_pdf(cx, brief, workdir):
                 cover = cover_engine.build_cover(lb, lb.get("recipient"), company)
                 lp = os.path.join(awd, "letter.pdf")
                 cover_engine.render_cover(cover, lp, page_size="letter")
-                letter_paths.append(lp)
+                piece_paths = [lp] + piece_paths   # bind letter as page 1
                 recip = (lb.get("recipient") or {}).get("name") or ""
+            bound = os.path.join(awd, "pkg.pdf")
+            stitch_pdfs(piece_paths, bound)
+            pkg_paths.append(bound)
             nc = a.get("note_card") or {}
             cardp = os.path.join(awd, "card.pdf")
             note_card_engine.render(nc, cardp)
@@ -429,17 +429,13 @@ def build_pdf(cx, brief, workdir):
                                "recipient": recip or nc.get("recipient_first") or ""})
         wave_cards = os.path.join(workdir, "wave_cards.pdf"); stitch_pdfs(card_paths, wave_cards)
         wave_pkgs = os.path.join(workdir, "wave_packages.pdf"); stitch_pdfs(pkg_paths, wave_pkgs)
-        wave_letters = None
-        if letter_paths:
-            wave_letters = os.path.join(workdir, "wave_letters.pdf")
-            stitch_pdfs(letter_paths, wave_letters)
         wave_index = os.path.join(workdir, "wave_index.pdf")
         render_wave_index(index_rows, params.get("mail_date"), wave_index)
         bid = brief["id"]
         prefix = "wave/{}".format(bid)
         urls = {"count": len(accts)}
         for label, path in [("index", wave_index), ("cards", wave_cards),
-                            ("letters", wave_letters), ("packages", wave_pkgs)]:
+                            ("packages", wave_pkgs)]:
             if path and os.path.exists(path):
                 with open(path, "rb") as fh:
                     urls[label] = upload_pdf(cx, "{}/wave_{}.pdf".format(prefix, label), fh.read())
@@ -455,9 +451,6 @@ def build_pdf(cx, brief, workdir):
     # note stays outside the worker.
     if brief.get("doc_type") in PACKAGE_DOC_TYPES:
         piece_paths = [_render_piece(pc, content, params, workdir) for pc in BOUND_PIECES]
-        bound = os.path.join(workdir, "eop_bound.pdf")
-        stitch_pdfs(piece_paths, bound)
-        letter_path = None
         letter_block = params.get("cover_letter")
         if letter_block:
             recipient = fetch_contact(cx, brief.get("contact_id"))
@@ -469,7 +462,10 @@ def build_pdf(cx, brief, workdir):
             cover = cover_engine.build_cover(letter_block, recipient, company)
             letter_path = os.path.join(workdir, "cover_letter.pdf")
             cover_engine.render_cover(cover, letter_path, page_size="letter")
-        return bound, len(PdfReader(bound).pages), letter_path, ("letter" if letter_path else None), "package"
+            piece_paths = [letter_path] + piece_paths   # bind letter as page 1 (plain-paper package)
+        bound = os.path.join(workdir, "eop_bound.pdf")
+        stitch_pdfs(piece_paths, bound)
+        return bound, len(PdfReader(bound).pages), None, None, "package"
 
     # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
     # Reuses the carmel-shaped content (needs org + opportunity). No cover, no CIR.
