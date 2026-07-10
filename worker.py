@@ -44,10 +44,14 @@ FONTS_CONF   = os.path.join(HERE, "cir", "build", "fonts.conf")
 sys.path.insert(0, os.path.join(HERE, "cover"))
 sys.path.insert(0, os.path.join(HERE, "snapshot"))
 sys.path.insert(0, os.path.join(HERE, "benchmark"))
+sys.path.insert(0, os.path.join(HERE, "case_study"))
+sys.path.insert(0, os.path.join(HERE, "closing"))
 import cover_engine       # noqa: E402
 import snapshot_engine    # noqa: E402
 import cover_page_engine  # noqa: E402
 import benchmark_engine   # noqa: E402
+import case_study_engine  # noqa: E402
+import closing_engine     # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
@@ -61,8 +65,12 @@ COVER_PAGE_DOC_TYPES = [s.strip() for s in os.environ.get("COVER_PAGE_DOC_TYPES"
                                                    "cover_page").split(",") if s.strip()]
 BENCHMARK_DOC_TYPES = [s.strip() for s in os.environ.get("BENCHMARK_DOC_TYPES",
                                                    "sector_benchmark").split(",") if s.strip()]
-# Claim CIR + snapshot + cover_page doc_types by default — no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES) if s not in SUPPORTED]
+CASE_STUDY_DOC_TYPES = [s.strip() for s in os.environ.get("CASE_STUDY_DOC_TYPES",
+                                                   "case_study").split(",") if s.strip()]
+CLOSING_DOC_TYPES = [s.strip() for s in os.environ.get("CLOSING_DOC_TYPES",
+                                                   "closing").split(",") if s.strip()]
+# Claim CIR + snapshot + cover_page + benchmark + case_study + closing by default — no Railway env edit required.
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -214,12 +222,53 @@ def cover_config(brief, params):
     return mode, size, letter_block
 
 
+def _study_by_slug(slug):
+    for s in case_study_engine.STUDIES:
+        if s.get("slug") == slug:
+            return s
+    return None
+
+
 def build_pdf(cx, brief, workdir):
     """Render the brief; return (final_path, page_count, cover_path|None, cover_size|None, kind).
 
     kind is 'cir' or 'snapshot' and selects the storage prefix. cover_path is
     non-None only for CIR mode='separate' (a second, standalone file)."""
     params = brief.get("params") or {}
+
+    # ---- case study: standalone one-page customer story. Pick the study by
+    # explicit slug, else the best match for the account's vertical. Reads org
+    # from params.content directly — no full CIR content required (so this runs
+    # BEFORE extract_cir_content, which would otherwise reject it).
+    if brief.get("doc_type") in CASE_STUDY_DOC_TYPES:
+        cs = params.get("case_study") or {}
+        org = (params.get("content") or {}).get("org") or {}
+        slug = cs.get("slug")
+        if not slug:
+            vertical = cs.get("vertical") or org.get("vertical")
+            if not vertical:
+                raise RenderError("case_study requires params.case_study.slug, or a "
+                                  "vertical via params.case_study.vertical or "
+                                  "params.content.org.vertical")
+            matches = case_study_engine.studies_for(vertical)
+            if not matches:
+                raise RenderError(f"no case study supports vertical '{vertical}'")
+            slug = matches[0]
+        study = _study_by_slug(slug)
+        if not study:
+            raise RenderError(f"unknown case study slug '{slug}'")
+        cs_pdf = os.path.join(workdir, "case_study.pdf")
+        case_study_engine.render_one(study, cs_pdf)
+        return cs_pdf, len(PdfReader(cs_pdf).pages), None, None, "case_study"
+
+    # ---- closing "Before We Meet" page: near-static. params.closing carries
+    # optional overrides (footer_left_b vertical label, person, headshot, etc.).
+    if brief.get("doc_type") in CLOSING_DOC_TYPES:
+        cl = params.get("closing") or {}
+        close_pdf = os.path.join(workdir, "closing.pdf")
+        closing_engine.render(cl, close_pdf)
+        return close_pdf, len(PdfReader(close_pdf).pages), None, None, "closing"
+
     content = extract_cir_content(params)
 
     # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
