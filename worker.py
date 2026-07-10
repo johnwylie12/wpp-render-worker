@@ -75,7 +75,7 @@ PACKAGE_DOC_TYPES = [s.strip() for s in os.environ.get("PACKAGE_DOC_TYPES",
                                                    "package").split(",") if s.strip()]
 NOTE_CARD_DOC_TYPES = [s.strip() for s in os.environ.get("NOTE_CARD_DOC_TYPES", "note_card").split(",") if s.strip()]
 WAVE_DOC_TYPES = [s.strip() for s in os.environ.get("WAVE_DOC_TYPES", "wave").split(",") if s.strip()]
-# Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default — no Railway env edit required.
+# Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default - no Railway env edit required.
 CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
@@ -270,7 +270,7 @@ def _study_by_slug(slug):
 
 
 # The six bound pieces of the Executive Opening Package, in print order. The two
-# loose pieces (5x7 note, cover letter) are NOT here — the note is produced
+# loose pieces (5x7 note, cover letter) are NOT here - the note is produced
 # outside the worker, the cover letter is a separate print handled below.
 BOUND_PIECES = ["cover", "snapshot", "cir", "benchmark", "case_study", "closing"]
 
@@ -355,7 +355,7 @@ def build_pdf(cx, brief, workdir):
 
     # ---- case study: standalone one-page customer story. Pick the study by
     # explicit slug, else the best match for the account's vertical. Reads org
-    # from params.content directly — no full CIR content required (so this runs
+    # from params.content directly - no full CIR content required (so this runs
     # BEFORE extract_cir_content, which would otherwise reject it).
     if brief.get("doc_type") in CASE_STUDY_DOC_TYPES:
         cs = params.get("case_study") or {}
@@ -385,31 +385,6 @@ def build_pdf(cx, brief, workdir):
         close_pdf = os.path.join(workdir, "closing.pdf")
         closing_engine.render(cl, close_pdf)
         return close_pdf, len(PdfReader(close_pdf).pages), None, None, "closing"
-
-    content = extract_cir_content(params)
-
-    # ---- package: assemble the Executive Opening Package (EOP). Render the six
-    # bound pieces in-process (single-threaded worker — no child briefs) and stitch
-    # them in print order into one PDF. The cover letter, if requested, renders as a
-    # separate LOOSE print (returned as cover_path, uploaded alongside). The 5x7
-    # note stays outside the worker.
-    if brief.get("doc_type") in PACKAGE_DOC_TYPES:
-        piece_paths = [_render_piece(pc, content, params, workdir) for pc in BOUND_PIECES]
-        bound = os.path.join(workdir, "eop_bound.pdf")
-        stitch_pdfs(piece_paths, bound)
-        letter_path = None
-        letter_block = params.get("cover_letter")
-        if letter_block:
-            recipient = fetch_contact(cx, brief.get("contact_id"))
-            company = (content.get("org") or {}).get("name") or \
-                      fetch_account_name(cx, brief.get("account_id"))
-            if not (recipient and recipient.get("name")) and not letter_block.get("recipient"):
-                raise RenderError("package cover_letter requested but no recipient resolved "
-                                  "(set contact_id or params.cover_letter.recipient)")
-            cover = cover_engine.build_cover(letter_block, recipient, company)
-            letter_path = os.path.join(workdir, "cover_letter.pdf")
-            cover_engine.render_cover(cover, letter_path, page_size="letter")
-        return bound, len(PdfReader(bound).pages), letter_path, ("letter" if letter_path else None), "package"
 
     # ---- note card: standalone 5x7 intro card (loose piece).
     if brief.get("doc_type") in NOTE_CARD_DOC_TYPES:
@@ -470,6 +445,31 @@ def build_pdf(cx, brief, workdir):
                     urls[label] = upload_pdf(cx, "{}/wave_{}.pdf".format(prefix, label), fh.read())
         update_brief(cx, bid, {"wave_urls": urls})
         return wave_index, len(PdfReader(wave_index).pages), None, None, "wave"
+
+    content = extract_cir_content(params)
+
+    # ---- package: assemble the Executive Opening Package (EOP). Render the six
+    # bound pieces in-process (single-threaded worker - no child briefs) and stitch
+    # them in print order into one PDF. The cover letter, if requested, renders as a
+    # separate LOOSE print (returned as cover_path, uploaded alongside). The 5x7
+    # note stays outside the worker.
+    if brief.get("doc_type") in PACKAGE_DOC_TYPES:
+        piece_paths = [_render_piece(pc, content, params, workdir) for pc in BOUND_PIECES]
+        bound = os.path.join(workdir, "eop_bound.pdf")
+        stitch_pdfs(piece_paths, bound)
+        letter_path = None
+        letter_block = params.get("cover_letter")
+        if letter_block:
+            recipient = fetch_contact(cx, brief.get("contact_id"))
+            company = (content.get("org") or {}).get("name") or \
+                      fetch_account_name(cx, brief.get("account_id"))
+            if not (recipient and recipient.get("name")) and not letter_block.get("recipient"):
+                raise RenderError("package cover_letter requested but no recipient resolved "
+                                  "(set contact_id or params.cover_letter.recipient)")
+            cover = cover_engine.build_cover(letter_block, recipient, company)
+            letter_path = os.path.join(workdir, "cover_letter.pdf")
+            cover_engine.render_cover(cover, letter_path, page_size="letter")
+        return bound, len(PdfReader(bound).pages), letter_path, ("letter" if letter_path else None), "package"
 
     # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
     # Reuses the carmel-shaped content (needs org + opportunity). No cover, no CIR.
