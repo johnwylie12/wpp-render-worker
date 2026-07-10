@@ -46,12 +46,14 @@ sys.path.insert(0, os.path.join(HERE, "snapshot"))
 sys.path.insert(0, os.path.join(HERE, "benchmark"))
 sys.path.insert(0, os.path.join(HERE, "case_study"))
 sys.path.insert(0, os.path.join(HERE, "closing"))
+sys.path.insert(0, os.path.join(HERE, "note_card"))
 import cover_engine       # noqa: E402
 import snapshot_engine    # noqa: E402
 import cover_page_engine  # noqa: E402
 import benchmark_engine   # noqa: E402
 import case_study_engine  # noqa: E402
 import closing_engine     # noqa: E402
+import note_card_engine   # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
@@ -71,8 +73,10 @@ CLOSING_DOC_TYPES = [s.strip() for s in os.environ.get("CLOSING_DOC_TYPES",
                                                    "closing_page").split(",") if s.strip()]
 PACKAGE_DOC_TYPES = [s.strip() for s in os.environ.get("PACKAGE_DOC_TYPES",
                                                    "package").split(",") if s.strip()]
+NOTE_CARD_DOC_TYPES = [s.strip() for s in os.environ.get("NOTE_CARD_DOC_TYPES", "note_card").split(",") if s.strip()]
+WAVE_DOC_TYPES = [s.strip() for s in os.environ.get("WAVE_DOC_TYPES", "wave").split(",") if s.strip()]
 # Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default — no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED]
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -204,6 +208,40 @@ def merge_front(cover_pdf, body_pdf, out_pdf):
         w.add_page(p)
     with open(out_pdf, "wb") as fh:
         w.write(fh)
+    return out_pdf
+
+
+def render_wave_index(rows, mail_date, out_pdf):
+    """Collation sheet for a wave: the print order. Piece #N is the same account
+    across the cards, cover letters, packages, and labels."""
+    from weasyprint import HTML as _HTML
+    trs = "".join(
+        '<tr><td class="n">{}</td><td>{}</td><td>{}</td></tr>'.format(
+            r.get("seq"), (r.get("name") or ""), (r.get("recipient") or ""))
+        for r in rows)
+    md = '<div class="md">Mail date: {}</div>'.format(mail_date) if mail_date else ""
+    html = (
+        '<!doctype html><html><head><meta charset="utf-8"><style>'
+        '@page{size:8.5in 11in;margin:0.8in 0.9in;}'
+        'body{font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;}'
+        'h1{color:#003A70;font-size:20pt;margin:0 0 2pt;}'
+        '.rule{height:3px;width:56px;background:#FF9C00;margin:8pt 0 14pt;}'
+        '.md,.count{color:#555;font-size:10.5pt;margin-bottom:2pt;}'
+        '.count{margin-bottom:14pt;}'
+        'table{width:100%;border-collapse:collapse;font-size:10.5pt;}'
+        'th{text-align:left;color:#003A70;border-bottom:2px solid #003A70;padding:6pt 8pt;}'
+        'td{padding:6pt 8pt;border-bottom:0.5px solid #ccc;}'
+        'td.n{width:36pt;font-weight:bold;color:#003A70;}'
+        '.note{margin-top:16pt;color:#555;font-size:9.5pt;line-height:1.4;}'
+        '</style></head><body>'
+        '<h1>Mail wave - collation sheet</h1><div class="rule"></div>'
+        + md + '<div class="count">{} accounts, in print order.</div>'.format(len(rows))
+        + '<table><tr><th>#</th><th>Account</th><th>Ship to</th></tr>' + trs + '</table>'
+        + '<div class="note">Print each stack in this order. Piece #N is the same '
+          'account across the cards, cover letters, packages, and labels - match by '
+          'number when you assemble each envelope.</div>'
+        '</body></html>')
+    _HTML(string=html).write_pdf(out_pdf)
     return out_pdf
 
 
@@ -372,6 +410,66 @@ def build_pdf(cx, brief, workdir):
             letter_path = os.path.join(workdir, "cover_letter.pdf")
             cover_engine.render_cover(cover, letter_path, page_size="letter")
         return bound, len(PdfReader(bound).pages), letter_path, ("letter" if letter_path else None), "package"
+
+    # ---- note card: standalone 5x7 intro card (loose piece).
+    if brief.get("doc_type") in NOTE_CARD_DOC_TYPES:
+        nc = params.get("note_card") or {}
+        card_pdf = os.path.join(workdir, "note_card.pdf")
+        note_card_engine.render(nc, card_pdf)
+        return card_pdf, len(PdfReader(card_pdf).pages), None, None, "note_card"
+
+    # ---- wave: batch of accounts -> combined, sequence-ordered PDFs (cards,
+    # letters, packages) + a collation index. Reuses the package assembler per
+    # account; uploads all four and records URLs in content_briefs.wave_urls.
+    if brief.get("doc_type") in WAVE_DOC_TYPES:
+        accts = params.get("accounts") or []
+        if not accts:
+            raise RenderError("wave requires a non-empty params.accounts list")
+        pkg_paths, letter_paths, card_paths, index_rows = [], [], [], []
+        for i, a in enumerate(accts, 1):
+            seq = a.get("seq") or i
+            pp = a.get("package") or {}
+            c = pp.get("content") or {}
+            awd = os.path.join(workdir, "a{}".format(seq))
+            os.makedirs(awd, exist_ok=True)
+            piece_paths = [_render_piece(pc, c, pp, awd) for pc in BOUND_PIECES]
+            bound = os.path.join(awd, "pkg.pdf")
+            stitch_pdfs(piece_paths, bound)
+            pkg_paths.append(bound)
+            name = a.get("name") or (c.get("org") or {}).get("name") or "Account {}".format(seq)
+            recip = ""
+            lb = pp.get("cover_letter")
+            if lb:
+                company = (c.get("org") or {}).get("name") or name
+                cover = cover_engine.build_cover(lb, lb.get("recipient"), company)
+                lp = os.path.join(awd, "letter.pdf")
+                cover_engine.render_cover(cover, lp, page_size="letter")
+                letter_paths.append(lp)
+                recip = (lb.get("recipient") or {}).get("name") or ""
+            nc = a.get("note_card") or {}
+            cardp = os.path.join(awd, "card.pdf")
+            note_card_engine.render(nc, cardp)
+            card_paths.append(cardp)
+            index_rows.append({"seq": seq, "name": name,
+                               "recipient": recip or nc.get("recipient_first") or ""})
+        wave_cards = os.path.join(workdir, "wave_cards.pdf"); stitch_pdfs(card_paths, wave_cards)
+        wave_pkgs = os.path.join(workdir, "wave_packages.pdf"); stitch_pdfs(pkg_paths, wave_pkgs)
+        wave_letters = None
+        if letter_paths:
+            wave_letters = os.path.join(workdir, "wave_letters.pdf")
+            stitch_pdfs(letter_paths, wave_letters)
+        wave_index = os.path.join(workdir, "wave_index.pdf")
+        render_wave_index(index_rows, params.get("mail_date"), wave_index)
+        bid = brief["id"]
+        prefix = "wave/{}".format(bid)
+        urls = {"count": len(accts)}
+        for label, path in [("index", wave_index), ("cards", wave_cards),
+                            ("letters", wave_letters), ("packages", wave_pkgs)]:
+            if path and os.path.exists(path):
+                with open(path, "rb") as fh:
+                    urls[label] = upload_pdf(cx, "{}/wave_{}.pdf".format(prefix, label), fh.read())
+        update_brief(cx, bid, {"wave_urls": urls})
+        return wave_index, len(PdfReader(wave_index).pages), None, None, "wave"
 
     # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
     # Reuses the carmel-shaped content (needs org + opportunity). No cover, no CIR.
