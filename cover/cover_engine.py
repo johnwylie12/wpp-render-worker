@@ -49,10 +49,10 @@ with open(os.path.join(HERE, "cover_letter.html")) as fh:
 
 
 def _honorific_salutation(name: str, title: str | None) -> str:
-    """Conservative default salutation. We do NOT guess gendered honorifics —
-    fall back to full name, which is always safe."""
+    """First-name salutation (house style, e.g. "Dear Miriam,"). Falls back safely."""
     n = (name or "").strip()
-    return f"Dear {n}," if n else "Dear Sir or Madam,"
+    first = n.split()[0] if n else ""
+    return f"Dear {first}," if first else "Dear Sir or Madam,"
 
 
 def build_cover(params_cover: dict | None,
@@ -78,28 +78,35 @@ def build_cover(params_cover: dict | None,
     body = pc.get("body_paras") or pc.get("body")
     if not body:
         co = org or "your organization"
-        # Paragraph 1 is the enqueued `opening` hook when the frontend supplies
-        # one (built with the account's provenance), else a safe generic opener.
-        # Paragraphs 2-3 are LOCKED CANON and live ONLY here, so ERA's promises
-        # can't drift or be model-fabricated.
-        opening = pc.get("opening")
-        generic_opener = (
-            f"I have put together a short, no-obligation cost intelligence read on "
-            f"where indirect spend may be drifting across {co} \u2014 the categories "
-            f"most finance teams rarely re-test, and a sized, outside-in estimate of what "
-            f"a baseline could recover."
-        )
-        para1 = opening.strip() if isinstance(opening, str) and opening.strip() else generic_opener
         body = [
-            para1,
-            "ERA works strictly on contingency: a share of verified savings, with no "
-            "fee if there are none and no upfront cost. Nothing changes without your "
-            "approval \u2014 every recommendation is yours to accept or decline.",
-            "The attached report lays out the opportunity. If it is useful, I would "
-            "welcome a brief call to confirm which categories are worth a no-cost "
-            "baseline.",
+            "The enclosed Executive Opportunity Brief is unusual for one reason: it was "
+            "prepared before we ever asked for a meeting.",
+            "I’ve always believed that an executive’s time should be earned, not requested.",
+            f"Rather than beginning with a presentation about our capabilities, I thought it "
+            f"would be more valuable to first spend some time understanding {co}. The enclosed "
+            f"Brief reflects an independent review based on publicly available information, "
+            f"industry benchmarks, and more than three decades of helping organizations "
+            f"evaluate operating costs that often receive far less attention than they deserve.",
+            "It isn’t intended to prove that savings exist. It’s intended to determine "
+            "whether they might.",
+            "In many organizations, existing supplier relationships are already delivering "
+            "excellent value. In others, the market has simply moved. Our role is to determine "
+            "which is true.",
+            "Sometimes the best outcome is helping an organization secure better pricing while "
+            "continuing with its current supplier. Other times, the market reveals a stronger "
+            "alternative offering the same solution, or a comparable one, at a lower overall "
+            "cost. The objective is never to change suppliers. The objective is to ensure "
+            "you’re receiving the best value available.",
+            "If the observations in the Brief warrant a closer look, we validate them using "
+            "your actual contracts, invoices, and supplier data before any recommendations "
+            "are made. Nothing changes without your approval, and we’re compensated only "
+            "when measurable savings are achieved.",
+            f"Whether the result is confirmation that you’re already buying well or the "
+            f"identification of meaningful savings, I hope you’ll find the Brief worth the "
+            f"few minutes it takes to read. It was prepared specifically for {co} because I "
+            f"believe the best first meeting is one where we’ve already done some of the work.",
+            "I’ll follow up next week to answer any questions.",
         ]
-
     signoff = {**SIGNOFF_CANON, **(pc.get("signoff") or {})}
 
     return {
@@ -107,6 +114,7 @@ def build_cover(params_cover: dict | None,
         "recipient": {"name": name, "title": title, "company": org,
                       "address_lines": address},
         "salutation": salutation,
+        "valediction": pc.get("valediction") or "Warm regards,",
         "body_paras": body,
         "ps": pc.get("ps"),
         "signoff": signoff,
@@ -145,6 +153,7 @@ def render_cover(cover: dict, out_pdf: str, page_size: str | None = "Letter") ->
         "date_str": cover.get("date_str", ""),
         "recipient": cover.get("recipient", {}),
         "salutation": cover.get("salutation", "Dear Sir or Madam,"),
+        "valediction": cover.get("valediction", "Warm regards,"),
         "body_paras": cover.get("body_paras", []),
         "ps": cover.get("ps"),
         "signoff": {**SIGNOFF_CANON, **(cover.get("signoff") or {})},
