@@ -11,27 +11,27 @@
     font-family: 'Trebuchet MS', 'Liberation Sans', Arial, sans-serif;
     color: #1a1a1a; -webkit-print-color-adjust: exact; print-color-adjust: exact;
   }
-  .sheet { padding: 60pt 72pt 54pt 72pt; }      /* ~0.83in top, 1in sides */
+  .sheet { padding: 46pt 64pt 38pt 64pt; }      /* ~0.83in top, 1in sides */
   /* Printing on pre-printed ERA letterhead stock: drop the logo block and
      push the body down to clear a standard letterhead logo band (~1.8in). */
   .sheet.letterhead-paper { padding-top: 100pt; }
   .sheet.letterhead-paper .date { margin-top: 30pt; }
 
-  .head { border-bottom: 2pt solid #003A70; padding-bottom: 11pt; }
+  .head { border-bottom: 2pt solid #003A70; padding-bottom: 8pt; }
   .head .logo { height: 34px; width: auto; display: block; }
   .gold-rule { height: 3pt; width: 56pt; background: #FF9C00; margin-top: 11pt; }
 
-  .date  { margin-top: 30pt; font-size: 10.5pt; color: #555; }
-  .recip { margin-top: 16pt; font-size: 11pt; line-height: 1.38; }
+  .date  { margin-top: 18pt; font-size: 10.5pt; color: #555; }
+  .recip { margin-top: 12pt; font-size: 10.5pt; line-height: 1.32; }
   .recip .nm  { font-weight: bold; color: #003A70; }
   .recip .org { color: #333; }
 
-  .salut { margin-top: 20pt; font-size: 11pt; }
-  .body  { margin-top: 12pt; }
-  .body p { font-size: 11pt; line-height: 1.55; margin: 0 0 11pt 0; }
+  .salut { margin-top: 13pt; font-size: 10.5pt; }
+  .body  { margin-top: 8pt; }
+  .body p { font-size: 10pt; line-height: 1.34; margin: 0 0 6.5pt 0; }
 
-  .close { margin-top: 10pt; font-size: 11pt; }
-  .sign  { margin-top: 26pt; }
+  .close { margin-top: 8pt; font-size: 10.5pt; }
+  .sign  { margin-top: 15pt; }
   .sign .nm { font-weight: bold; color: #003A70; font-size: 11.5pt; }
   .sign .ti, .sign .org { font-size: 10.5pt; color: #333; line-height: 1.3; }
   .sign .contact { font-size: 10pt; color: #555; margin-top: 3pt; }
@@ -63,7 +63,7 @@
     {% for p in body_paras %}<p>{{ p }}</p>{% endfor %}
   </div>
 
-  <div class="close">Sincerely,</div>
+  <div class="close">{{ valediction }}</div>
   <div class="sign">
     <div class="nm">{{ signoff.name }}</div>
     <div class="ti">{{ signoff.title }}</div>
