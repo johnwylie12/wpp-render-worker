@@ -69,8 +69,10 @@ CASE_STUDY_DOC_TYPES = [s.strip() for s in os.environ.get("CASE_STUDY_DOC_TYPES"
                                                    "case_study").split(",") if s.strip()]
 CLOSING_DOC_TYPES = [s.strip() for s in os.environ.get("CLOSING_DOC_TYPES",
                                                    "closing_page").split(",") if s.strip()]
-# Claim CIR + snapshot + cover_page + benchmark + case_study + closing by default — no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES) if s not in SUPPORTED]
+PACKAGE_DOC_TYPES = [s.strip() for s in os.environ.get("PACKAGE_DOC_TYPES",
+                                                   "package").split(",") if s.strip()]
+# Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default — no Railway env edit required.
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -229,6 +231,83 @@ def _study_by_slug(slug):
     return None
 
 
+# The six bound pieces of the Executive Opening Package, in print order. The two
+# loose pieces (5x7 note, cover letter) are NOT here — the note is produced
+# outside the worker, the cover letter is a separate print handled below.
+BOUND_PIECES = ["cover", "snapshot", "cir", "benchmark", "case_study", "closing"]
+
+
+def _render_piece(piece, content, params, workdir):
+    """Render ONE bound piece to a PDF path (rendered in-process; the worker is
+    single-threaded, so the package build renders its pieces inline rather than
+    enqueuing child briefs and deadlocking on itself)."""
+    org = content.get("org") or {}
+    if piece == "cover":
+        if not org.get("name"):
+            raise RenderError("package: cover requires content.org.name")
+        cp = params.get("cover_page") or {}
+        out = os.path.join(workdir, "01_cover.pdf")
+        cover_page_engine.render(org, out, title=cp.get("title"), subtitle=cp.get("subtitle"),
+                                 statement=cp.get("statement"), date_str=cp.get("date"),
+                                 doc_type=cp.get("for_doc_type", "package"))
+        return out
+    if piece == "snapshot":
+        opp = content.get("opportunity") or {}
+        if opp.get("low_usd") is None or opp.get("high_usd") is None:
+            raise RenderError("package: snapshot requires content.opportunity low_usd/high_usd")
+        out = os.path.join(workdir, "02_snapshot.pdf")
+        snapshot_engine.render(content, out)
+        return out
+    if piece == "cir":
+        out = os.path.join(workdir, "03_cir.pdf")
+        render_cir(content, out, hero=False)  # packaged copy: no photo band
+        return out
+    if piece == "benchmark":
+        sector = (params.get("benchmark") or {}).get("sector")
+        if not sector:
+            raise RenderError("package: benchmark requires params.benchmark.sector")
+        out = os.path.join(workdir, "04_benchmark.pdf")
+        try:
+            benchmark_engine.render(sector, out)
+        except ValueError as e:
+            raise RenderError(f"package benchmark: {e}")
+        return out
+    if piece == "case_study":
+        cs = params.get("case_study") or {}
+        slug = cs.get("slug")
+        if not slug:
+            vertical = cs.get("vertical") or org.get("vertical")
+            if not vertical:
+                raise RenderError("package: case_study requires a slug or vertical "
+                                  "(params.case_study.slug/vertical or content.org.vertical)")
+            matches = case_study_engine.studies_for(vertical)
+            if not matches:
+                raise RenderError(f"package: no case study supports vertical '{vertical}'")
+            slug = matches[0]
+        study = _study_by_slug(slug)
+        if not study:
+            raise RenderError(f"package: unknown case study slug '{slug}'")
+        out = os.path.join(workdir, "05_case_study.pdf")
+        case_study_engine.render_one(study, out)
+        return out
+    if piece == "closing":
+        out = os.path.join(workdir, "06_closing.pdf")
+        closing_engine.render(params.get("closing") or {}, out)
+        return out
+    raise RenderError(f"package: unknown piece '{piece}'")
+
+
+def stitch_pdfs(paths, out_pdf):
+    """Bind PDFs in order into one file."""
+    w = PdfWriter()
+    for p in paths:
+        for page in PdfReader(p).pages:
+            w.add_page(page)
+    with open(out_pdf, "wb") as fh:
+        w.write(fh)
+    return out_pdf
+
+
 def build_pdf(cx, brief, workdir):
     """Render the brief; return (final_path, page_count, cover_path|None, cover_size|None, kind).
 
@@ -270,6 +349,29 @@ def build_pdf(cx, brief, workdir):
         return close_pdf, len(PdfReader(close_pdf).pages), None, None, "closing"
 
     content = extract_cir_content(params)
+
+    # ---- package: assemble the Executive Opening Package (EOP). Render the six
+    # bound pieces in-process (single-threaded worker — no child briefs) and stitch
+    # them in print order into one PDF. The cover letter, if requested, renders as a
+    # separate LOOSE print (returned as cover_path, uploaded alongside). The 5x7
+    # note stays outside the worker.
+    if brief.get("doc_type") in PACKAGE_DOC_TYPES:
+        piece_paths = [_render_piece(pc, content, params, workdir) for pc in BOUND_PIECES]
+        bound = os.path.join(workdir, "eop_bound.pdf")
+        stitch_pdfs(piece_paths, bound)
+        letter_path = None
+        letter_block = params.get("cover_letter")
+        if letter_block:
+            recipient = fetch_contact(cx, brief.get("contact_id"))
+            company = (content.get("org") or {}).get("name") or \
+                      fetch_account_name(cx, brief.get("account_id"))
+            if not (recipient and recipient.get("name")) and not letter_block.get("recipient"):
+                raise RenderError("package cover_letter requested but no recipient resolved "
+                                  "(set contact_id or params.cover_letter.recipient)")
+            cover = cover_engine.build_cover(letter_block, recipient, company)
+            letter_path = os.path.join(workdir, "cover_letter.pdf")
+            cover_engine.render_cover(cover, letter_path, page_size="letter")
+        return bound, len(PdfReader(bound).pages), letter_path, ("letter" if letter_path else None), "package"
 
     # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
     # Reuses the carmel-shaped content (needs org + opportunity). No cover, no CIR.
