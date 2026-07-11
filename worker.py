@@ -346,6 +346,108 @@ def stitch_pdfs(paths, out_pdf):
     return out_pdf
 
 
+# --- package footer stamping -------------------------------------------------
+# One canonical footer is stamped onto the STITCHED package, not drawn by each
+# piece. Each piece's own footer (the CIR's hardcoded PAGE N OF 3, the snapshot's
+# CSS counter, the benchmark's none) is buried under a white band and replaced by
+# an identical footer, so the bound package reads as ONE document and numbering
+# can't drift piece by piece. Locked templates (CIR v1.1 et al.) are never touched.
+# Excluded from numbering: cover letter, cover page, closer -- keyed by PIECE
+# IDENTITY (not page position), so it is correct whether or not a letter is bound.
+PKG_FOOTER_EXCLUDE = set(s.strip() for s in os.environ.get(
+    "PKG_FOOTER_EXCLUDE", "letter,cover,closing").split(",") if s.strip())
+# "physical" -> PAGE 3 OF 9 (whole stack, matches a reader flipping through);
+# "numbered" -> PAGE 3 OF 6 (footered pages only).
+PKG_FOOTER_TOTAL_MODE = os.environ.get("PKG_FOOTER_TOTAL_MODE", "physical")
+PKG_FOOTER_BAND = float(os.environ.get("PKG_FOOTER_BAND", "42"))  # white cover height (pt)
+_PKG_FOOTER_BASE, _PKG_FOOTER_SZ, _PKG_FOOTER_MARGIN = 22.0, 7.5, 54.0
+_PKG_FOOTER_NAVY = (0x00 / 255.0, 0x3A / 255.0, 0x70 / 255.0)
+_PKG_FOOTER_GREY = (0x97 / 255.0, 0x99 / 255.0, 0x9B / 255.0)
+_footer_font_cache = {}
+
+
+def _footer_font():
+    """Register Trebuchet (repo fonts/) with reportlab once; fall back to
+    Helvetica if the TTF is missing. Returns the font name to use."""
+    if "name" in _footer_font_cache:
+        return _footer_font_cache["name"]
+    name = "Helvetica"
+    try:
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.pdfbase.ttfonts import TTFont
+        ttf = os.path.join(HERE, "fonts", "Trebuchet MS.ttf")
+        if os.path.exists(ttf):
+            pdfmetrics.registerFont(TTFont("WPPFooter", ttf))
+            name = "WPPFooter"
+    except Exception:
+        name = "Helvetica"
+    _footer_font_cache["name"] = name
+    return name
+
+
+def _footer_overlay(w, h, org, n, total, fontname):
+    """Single-page overlay: white band over the old footer + canonical footer."""
+    import io as _io
+    from reportlab.pdfgen import canvas
+    buf = _io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=(w, h))
+    c.setFillColorRGB(1, 1, 1)
+    c.rect(0, 0, w, PKG_FOOTER_BAND, fill=1, stroke=0)
+    c.setStrokeColorRGB(*_PKG_FOOTER_GREY)
+    c.setLineWidth(0.6)
+    c.line(_PKG_FOOTER_MARGIN, PKG_FOOTER_BAND - 2, w - _PKG_FOOTER_MARGIN, PKG_FOOTER_BAND - 2)
+    c.setFillColorRGB(*_PKG_FOOTER_NAVY)
+    c.setFont(fontname, _PKG_FOOTER_SZ)
+    c.drawString(_PKG_FOOTER_MARGIN, _PKG_FOOTER_BASE, "value through insight\u2122")
+    if org:
+        c.drawCentredString(w / 2.0, _PKG_FOOTER_BASE, "Prepared exclusively for %s" % org)
+    c.drawRightString(w - _PKG_FOOTER_MARGIN, _PKG_FOOTER_BASE, "PAGE %d OF %d" % (n, total))
+    c.showPage()
+    c.save()
+    buf.seek(0)
+    return PdfReader(buf).pages[0]
+
+
+def stamp_package_footer(bound_pdf, labeled_pieces, org_name, out_pdf=None, total_mode=None):
+    """Stamp one canonical footer across a stitched package. labeled_pieces is a
+    list of (label, page_count) in bound order. Pages whose label is in
+    PKG_FOOTER_EXCLUDE (letter/cover/closer) get NO footer."""
+    out_pdf = out_pdf or bound_pdf
+    total_mode = total_mode or PKG_FOOTER_TOTAL_MODE
+    labels = []
+    for label, count in labeled_pieces:
+        labels.extend([label] * int(count))
+    reader = PdfReader(bound_pdf)
+    if len(labels) != len(reader.pages):
+        # Label/page mismatch: bind unstamped rather than mis-number.
+        if out_pdf != bound_pdf:
+            import shutil
+            shutil.copyfile(bound_pdf, out_pdf)
+        return out_pdf
+    numbered = [i for i, lab in enumerate(labels) if lab not in PKG_FOOTER_EXCLUDE]
+    total = len(reader.pages) if total_mode == "physical" else len(numbered)
+    fontname = _footer_font()
+    writer = PdfWriter()
+    for i, page in enumerate(reader.pages):
+        if i in numbered:
+            seq = (i + 1) if total_mode == "physical" else (numbered.index(i) + 1)
+            ov = _footer_overlay(float(page.mediabox.width), float(page.mediabox.height),
+                                 org_name, seq, total, fontname)
+            page.merge_page(ov)
+        writer.add_page(page)
+    with open(out_pdf, "wb") as fh:
+        writer.write(fh)
+    return out_pdf
+
+
+def stitch_and_stamp(labeled_paths, out_pdf, org_name, total_mode=None):
+    """Stitch (label, path) pieces in order, then stamp the package-wide footer."""
+    counts = [(label, len(PdfReader(p).pages)) for label, p in labeled_paths]
+    stitch_pdfs([p for _, p in labeled_paths], out_pdf)
+    stamp_package_footer(out_pdf, counts, org_name, out_pdf=out_pdf, total_mode=total_mode)
+    return out_pdf
+
+
 def build_pdf(cx, brief, workdir):
     """Render the brief; return (final_path, page_count, cover_path|None, cover_size|None, kind).
 
@@ -408,6 +510,7 @@ def build_pdf(cx, brief, workdir):
             awd = os.path.join(workdir, "a{}".format(seq))
             os.makedirs(awd, exist_ok=True)
             piece_paths = [_render_piece(pc, c, pp, awd) for pc in BOUND_PIECES]
+            labeled = list(zip(BOUND_PIECES, piece_paths))   # (label, path) in print order
             name = a.get("name") or (c.get("org") or {}).get("name") or "Account {}".format(seq)
             recip = ""
             lb = pp.get("cover_letter")
@@ -416,10 +519,10 @@ def build_pdf(cx, brief, workdir):
                 cover = cover_engine.build_cover(lb, lb.get("recipient"), company)
                 lp = os.path.join(awd, "letter.pdf")
                 cover_engine.render_cover(cover, lp, page_size="letter")
-                piece_paths = [lp] + piece_paths   # bind letter as page 1
+                labeled = [("letter", lp)] + labeled   # bind letter as page 1
                 recip = (lb.get("recipient") or {}).get("name") or ""
             bound = os.path.join(awd, "pkg.pdf")
-            stitch_pdfs(piece_paths, bound)
+            stitch_and_stamp(labeled, bound, name)   # stitch + package-wide footer
             pkg_paths.append(bound)
             nc = a.get("note_card") or {}
             cardp = os.path.join(awd, "card.pdf")
@@ -451,6 +554,9 @@ def build_pdf(cx, brief, workdir):
     # note stays outside the worker.
     if brief.get("doc_type") in PACKAGE_DOC_TYPES:
         piece_paths = [_render_piece(pc, content, params, workdir) for pc in BOUND_PIECES]
+        labeled = list(zip(BOUND_PIECES, piece_paths))   # (label, path) in print order
+        org_name = (content.get("org") or {}).get("name") or \
+                   fetch_account_name(cx, brief.get("account_id")) or ""
         letter_block = params.get("cover_letter")
         if letter_block:
             recipient = fetch_contact(cx, brief.get("contact_id"))
@@ -462,9 +568,9 @@ def build_pdf(cx, brief, workdir):
             cover = cover_engine.build_cover(letter_block, recipient, company)
             letter_path = os.path.join(workdir, "cover_letter.pdf")
             cover_engine.render_cover(cover, letter_path, page_size="letter")
-            piece_paths = [letter_path] + piece_paths   # bind letter as page 1 (plain-paper package)
+            labeled = [("letter", letter_path)] + labeled   # bind letter as page 1 (plain-paper package)
         bound = os.path.join(workdir, "eop_bound.pdf")
-        stitch_pdfs(piece_paths, bound)
+        stitch_and_stamp(labeled, bound, org_name)   # stitch + package-wide footer
         return bound, len(PdfReader(bound).pages), None, None, "package"
 
     # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
