@@ -26,6 +26,7 @@ from weasyprint import HTML
 HERE = os.path.dirname(os.path.abspath(__file__))
 SHARED = os.path.join(os.path.dirname(HERE), "case_study", "assets")
 FONTS = os.path.join(SHARED, "fonts")
+BRAND_FONTS = os.path.join(os.path.dirname(HERE), "fonts")  # repo-root brand fonts (Trebuchet)
 
 
 def _b64(path):
@@ -69,9 +70,9 @@ def render(data, out_pdf):
     ctx = {
         "logo_uri": _img_uri(os.path.join(SHARED, "era_logo.png")),
         "vti_uri": f"data:image/png;base64,{VTI_B64}",
-        "pop_r_b64": _b64(os.path.join(FONTS, "Poppins-Regular.ttf")),
-        "pop_sb_b64": _b64(os.path.join(FONTS, "Poppins-SemiBold.ttf")),
-        "pop_b_b64": _b64(os.path.join(FONTS, "Poppins-Bold.ttf")),
+        # Brand fonts per ERA playbook: Trebuchet MS body (Arial Nova fallback).
+        "tre_r_b64": _b64(os.path.join(BRAND_FONTS, "Trebuchet MS.ttf")),
+        "tre_b_b64": _b64(os.path.join(BRAND_FONTS, "Trebuchet MS Bold.ttf")),
         "first": first,
         "body": body,
         "signoff": signoff,
