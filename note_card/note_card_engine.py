@@ -40,13 +40,18 @@ def _img_uri(path):
 
 
 DEFAULT_BODY = [
-    "I spent a little time looking at {org} and thought this was worth sharing.",
-    "I don’t know whether we’ve identified a meaningful opportunity or not. But if we "
-    "have, I think you’ll know within a few minutes of reading it.",
-    "Either way, I hope it’s useful.",
+    "Enclosed is a complimentary Executive Opportunity Brief we prepared for {org} — "
+    "an independent, outside-in look at where indirect spending may be running above "
+    "market, and what that could return to your mission.",
+    "Nothing here is a bill, and nothing changes without your approval. If the range is "
+    "worth confirming, a no-cost 30-day baseline tests it against your actual contracts. "
+    "No savings, no fee.",
+    "I’d welcome a brief conversation.",
 ]
 DEFAULT_SIGNOFF = {
     "name": "John Wylie",
+    "role": "Senior Advisor, ERA Group",
+    "contact": "703.244.9868 | jwylie@eragroup.com",
 }
 
 
