@@ -29,7 +29,7 @@ RUN mkdir -p /usr/share/fonts/brand \
 ENV FONTCONFIG_FILE=/app/cir/build/fonts.conf
 ENV POLL_SECONDS=60
 ENV STORAGE_BUCKET=collateral
-ENV SUPPORTED_DOC_TYPES=vertical_deepdive
+ENV SUPPORTED_DOC_TYPES=vertical_deepdive,note_card,package,cover_page,opportunity_snapshot,sector_benchmark,case_study,closing_page,mailer,exec_brief,wave
 # SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are injected by the host at runtime.
 
 CMD ["python", "worker.py"]
