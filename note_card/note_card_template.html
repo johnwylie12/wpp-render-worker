@@ -10,19 +10,25 @@
   .logo{display:block;margin:0 auto 0.3in;height:42px;width:auto;}
   .greeting{color:var(--blue);font-size:13pt;margin:0 0 11px;}
   .body p{color:var(--blue);font-size:11.5pt;line-height:1.36;margin:0 0 9px;font-weight:400;}
-  .regards{color:var(--blue);font-size:11.5pt;margin:11px 0 0;}
-  .sig{margin-top:0.42in;}
+  /* Clear paragraph break above the closing so "Warm regards," never collides
+     with the last body line. */
+  .regards{color:var(--blue);font-size:11.5pt;margin:0.2in 0 0;}
+  .sig{margin-top:0.22in;}
   .sig .nm{color:var(--navy);font-weight:700;font-size:12.5pt;}
+  .sig .role{color:var(--navy);font-size:10.5pt;margin-top:2px;}
+  .sig .contact{color:var(--grey);font-size:10pt;margin-top:3px;}
   .foot{position:absolute;left:0;right:0;bottom:0.34in;text-align:center;}
   .foot img{height:19px;width:auto;}
 </style></head><body>
   <div class="sheet">
     <img class="logo" src="{{ logo_uri }}"/>
-    <div class="greeting">{{ first }},</div>
+    <div class="greeting">Dear {{ first }},</div>
     <div class="body">{% for p in body %}<p>{{ p }}</p>{% endfor %}</div>
-    <div class="regards">Best,</div>
+    <div class="regards">Warm regards,</div>
     <div class="sig">
       <div class="nm">{{ signoff.name }}</div>
+      {% if signoff.role %}<div class="role">{{ signoff.role }}</div>{% endif %}
+      {% if signoff.contact %}<div class="contact">{{ signoff.contact }}</div>{% endif %}
     </div>
     <div class="foot"><img src="{{ vti_uri }}"/></div>
   </div>
