@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --navy:#003A70; --navy-2:#002851; --ink-head:#16243F; --gold:#FF9C00; --gold-dark:#C07400;
+    --body:#3C4658; --muted:#6C7686; --muted-2:#8A93A3;
+    --card:#F5F7FB; --row-alt:#EAF0F8; --line:#DCE3ED; --cream:#FEF4E2; --cream-line:#F0D8A6;
+    --font-head:"Trebuchet MS","Arial Nova",Arial,sans-serif;
+    --font-body:"Trebuchet MS","Arial Nova",Arial,sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; font-family:var(--font-body); color:var(--body); font-size:10.5pt; line-height:1.42; -weasy-hyphens:none; }
+  h1,h2,h3,h4,h5,.eyebrow{ font-family:var(--font-head); color:var(--ink-head); }
+  p{ margin:0 0 8px; }
+  .sheet{ position:relative; min-height:11in; display:flex; flex-direction:column; page-break-after:always; }
+  .sheet:last-child{ page-break-after:auto; }
+  .pad{ padding:26pt 42pt 8pt; flex:1 1 auto; }
+  .eyebrow{ font-size:9pt; font-weight:bold; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+  h2.sec{ font-size:20pt; font-weight:bold; line-height:1.08; margin:0 0 12px; text-wrap:balance; }
+  h3{ font-size:12.5pt; font-weight:bold; margin:14px 0 5px; }
+  .lead{ font-size:11.5pt; color:var(--ink-head); }
+  .muted{ color:var(--muted); }
+  .small{ font-size:8.5pt; }
+
+  /* ---- footer (reused from CIR chrome) ---- */
+  .footer{ flex:0 0 auto; margin:8px 0 22px; padding:0 42pt; }
+  .footer .hair{ border-top:1px solid var(--line); margin-bottom:7px; }
+  .footer .row{ display:flex; justify-content:space-between; align-items:center; }
+  .footer .vti{ font-family:var(--font-head); font-weight:bold; font-size:7.5pt; color:var(--navy); }
+  .footer .vti em{ color:var(--gold); font-style:normal; }
+  .footer .mid{ font-size:8pt; font-weight:bold; color:var(--ink-head); }
+  .footer .pg{ font-size:7pt; color:var(--muted); letter-spacing:.04em; }
+
+  /* ---- cover ---- */
+  .cover{ background-color:var(--navy); background-image:{{ hero_bg }}; background-size:cover; background-position:center 78%;
+    color:#fff; min-height:11in; display:flex; flex-direction:column; justify-content:space-between; padding:64pt 48pt; page-break-after:always; }
+  .cover .brand{ font-family:var(--font-head); font-weight:bold; font-size:12pt; letter-spacing:.02em; }
+  .cover .brand em{ color:var(--gold); font-style:normal; }
+  .cover h1{ color:#fff; font-size:34pt; font-weight:bold; line-height:1.04; margin:0 0 10px; text-wrap:balance; }
+  .cover .sub{ font-size:13pt; color:#DCE7F5; margin-bottom:22px; }
+  .cover .kpis{ display:flex; gap:34px; flex-wrap:wrap; }
+  .cover .kpi .v{ font-family:var(--font-head); font-weight:bold; font-size:23pt; color:#fff; }
+  .cover .kpi .l{ font-size:8.5pt; letter-spacing:.10em; text-transform:uppercase; color:#B9CBE4; }
+  .cover .foot{ font-size:9pt; color:#AFC2DC; }
+
+  /* ---- metric strip / EV bridge (reused .ibox pattern) ---- */
+  .ibox{ display:flex; align-items:stretch; gap:0; margin:14px 0 4px; }
+  .ibox .k{ flex:1 1 0; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  .ibox .k .lab{ font-family:var(--font-head); font-size:8pt; font-weight:bold; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .ibox .k .v{ font-family:var(--font-head); font-size:18pt; font-weight:bold; color:var(--navy); margin-top:4px; line-height:1.02; }
+  .ibox .k.hot .v{ color:var(--gold-dark); }
+  .ibox .sep{ flex:0 0 26px; display:flex; align-items:center; justify-content:center; font-size:20pt; color:var(--gold); font-weight:bold; }
+
+  /* ---- generic tables (reused .cat chrome) ---- */
+  table.dt{ width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  table.dt thead th{ background:var(--navy); color:#fff; font-family:var(--font-head); font-size:8pt; font-weight:bold;
+    letter-spacing:.04em; text-transform:uppercase; text-align:left; padding:7px 8px; }
+  table.dt tbody td{ padding:6px 8px; border-bottom:1px solid var(--line); font-size:9.5pt; vertical-align:top; }
+  table.dt tbody tr:nth-child(even){ background:var(--row-alt); }
+  table.dt td.num, table.dt th.num{ text-align:right; font-family:var(--font-head); font-weight:bold; color:var(--navy); white-space:nowrap; }
+  table.dt td.hot{ color:var(--gold-dark); }
+  table.dt tfoot td{ padding:7px 8px; border-top:2px solid var(--navy); font-family:var(--font-head); font-weight:bold; color:var(--ink-head); }
+  .flag{ display:inline-block; font-size:7.5pt; font-weight:bold; padding:1px 6px; border-radius:9px; }
+  .flag.v{ background:#E6F4EA; color:#1B7A3D; }
+  .flag.e{ background:#EEF2F8; color:#5A6678; }
+
+  .callout{ background:var(--cream); border:1px solid var(--cream-line); border-radius:8px; padding:12px 14px; margin:12px 0; }
+  .callout .lab{ font-family:var(--font-head); font-weight:bold; color:var(--gold-dark); font-size:9pt; letter-spacing:.06em; text-transform:uppercase; }
+  ul.clean{ margin:6px 0 8px; padding-left:16px; }
+  ul.clean li{ margin-bottom:5px; }
+  .grid2{ display:flex; gap:18px; }
+  .grid2 > div{ flex:1 1 0; }
+  .test{ border-left:3px solid var(--gold); padding:2px 0 2px 12px; margin:10px 0; }
+  .test h4{ margin:0 0 3px; font-size:11pt; }
+</style></head><body>
+
+{% macro footer(label) %}
+<div class="footer"><div class="hair"></div><div class="row">
+  <div class="vti">value through <em>insight</em>™</div>
+  <div class="mid">Prepared exclusively for {{ portfolio.name }}</div>
+  <div class="pg">{{ label }}</div>
+</div></div>
+{% endmacro %}
+
+<!-- ================= COVER ================= -->
+<section class="cover">
+  <div class="brand">Wylie Performance Partners <em>·</em> ERA Group</div>
+  <div>
+    <div class="eyebrow" style="color:var(--gold)">Portfolio Value Creation Assessment</div>
+    <h1>{{ portfolio.name }}</h1>
+    <div class="sub">{{ portfolio.site_count }} {{ portfolio.site_noun }} across {{ portfolio.state_count }} states &middot; {{ portfolio.vertical_label }}</div>
+    <div class="kpis">
+      <div class="kpi"><div class="v">{{ m(financials.enterprise_revenue_usd) }}</div><div class="l">Enterprise revenue</div></div>
+      <div class="kpi"><div class="v">{{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }}</div><div class="l">Recoverable / yr</div></div>
+      <div class="kpi"><div class="v">{{ m(ev_low) }}–{{ m(ev_high) }}</div><div class="l">EV created @ {{ mult|int }}×</div></div>
+    </div>
+  </div>
+  <div class="foot">Outside-in, filing-based estimate &middot; performance-based engagement &middot; no savings, no fee.</div>
+</section>
+
+<!-- ================= §1 EXECUTIVE SUMMARY ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Executive Summary</div>
+    <h2 class="sec">{{ m(ev_low) }}–{{ m(ev_high) }} of enterprise value, hiding in indirect spend</h2>
+    <p class="lead">Across {{ portfolio.site_count }} {{ portfolio.site_noun }} in {{ portfolio.state_count }} states, {{ portfolio.name }} runs an estimated
+      <b>{{ m(financials.enterprise_revenue_usd) }}</b> of enterprise revenue. Roughly <b>{{ pct(addressable_pct) }}</b> of that —
+      <b>{{ m(financials.addressable_indirect_usd) }}</b> — is addressable indirect spend outside clinical and labor. Disciplined sourcing recovers
+      <b>{{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }} per year</b>, recurring.</p>
+    <div class="ibox">
+      <div class="k"><div class="lab">Enterprise revenue</div><div class="v">{{ m(financials.enterprise_revenue_usd) }}</div></div>
+      <div class="sep">→</div>
+      <div class="k"><div class="lab">Addressable indirect</div><div class="v">{{ m(financials.addressable_indirect_usd) }}</div></div>
+      <div class="sep">→</div>
+      <div class="k hot"><div class="lab">Recoverable / yr</div><div class="v">{{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }}</div></div>
+    </div>
+    <p>Because recovered indirect spend is recurring and lands ~1:1 in EBITDA, at a {{ mult|int }}× exit multiple it compounds into
+      <b>{{ m(ev_low) }}–{{ m(ev_high) }} of enterprise value created</b> — see the EV bridge in section 4.</p>
+    {% if centralized %}
+    <p class="muted">The roll-up <b>is</b> the pitch: one enterprise mandate at {{ portfolio.name }} captures the full range across every {{ portfolio.site_noun[:-1] }} at once.</p>
+    {% else %}
+    <p class="muted">The roll-up is the <b>hook</b>: a single parent introduction cascades to per-operating-company CFOs — no central procurement mandate is required to begin.</p>
+    {% endif %}
+  </div>
+  {{ footer("SECTION 1") }}
+</section>
+
+<!-- ================= §2 PORTFOLIO COMPOSITION & SCALE ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Portfolio Composition &amp; Scale</div>
+    <h2 class="sec">One portfolio, {{ portfolio.site_count }} {{ portfolio.site_noun }}, {{ portfolio.state_count }} states</h2>
+    {% if by_ownership %}
+    <h3>By ownership class</h3>
+    <table class="dt"><thead><tr><th>Ownership class</th><th class="num">{{ portfolio.site_noun|capitalize }}</th><th class="num">Revenue</th><th class="num">Recoverable / yr</th></tr></thead>
+      <tbody>{% for r in by_ownership %}<tr><td>{{ r.class }}</td><td class="num">{{ r.sites }}</td><td class="num">{{ m(r.revenue_usd) }}</td>
+        <td class="num hot">{{ m(r.recoverable_low_usd) }}–{{ m(r.recoverable_high_usd) }}</td></tr>{% endfor %}</tbody>
+      <tfoot><tr><td>Total</td><td class="num">{{ portfolio.site_count }}</td><td class="num">{{ m(financials.enterprise_revenue_usd) }}</td>
+        <td class="num">{{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }}</td></tr></tfoot></table>
+    {% endif %}
+    {% if by_geography %}
+    <h3>By geography (top states)</h3>
+    <table class="dt"><thead><tr><th>State</th><th class="num">{{ portfolio.site_noun|capitalize }}</th><th class="num">Revenue</th><th>Energy market</th></tr></thead>
+      <tbody>{% for r in by_geography[:14] %}<tr><td>{{ r.state }}</td><td class="num">{{ r.sites }}</td><td class="num">{{ m(r.revenue_usd) }}</td>
+        <td class="small">{{ r.energy_market or "—" }}</td></tr>{% endfor %}</tbody></table>
+    {% endif %}
+    <div class="callout"><span class="lab">Recommended first wave</span> —
+      <b>{{ portfolio.pilot.name }}</b>: {{ portfolio.pilot.site_count }} {{ portfolio.site_noun }}, {{ m(portfolio.pilot.revenue_usd) }} of revenue. A contained, high-density beachhead that proves the model before the full roll-out.</div>
+  </div>
+  {{ footer("SECTION 2") }}
+</section>
+
+<!-- ================= §3 VALUE-CREATION THESIS ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">The Value-Creation Thesis</div>
+    <h2 class="sec">Why indirect spend, and why now</h2>
+    <p>Indirect and tail spend is the least-managed line in a senior-living operator's cost base. It sits outside the GPO, outside clinical, and outside the sponsor's usual value-creation levers — which is exactly why the margin is still there. Each category below carries a benchmarked recovery range that flows straight to EBITDA.</p>
+    <table class="dt"><thead><tr><th>Category</th><th>Expense group</th><th class="num">Recovery range</th></tr></thead>
+      <tbody>{% for c in categories %}<tr><td><b>{{ c.category }}</b></td><td class="small">{{ c.group }}</td>
+        <td class="num">{{ pct(c.low_pct) }}–{{ pct(c.high_pct) }}</td></tr>{% endfor %}</tbody></table>
+    <p class="small muted">Ranges are category-level recovery against addressable spend — the same benchmark set behind the {{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }} portfolio figure. "Savings" here is EBITDA/margin, not a one-time rebate.</p>
+  </div>
+  {{ footer("SECTION 3") }}
+</section>
+
+<!-- ================= §4 THE EV BRIDGE (NET-NEW) ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">The EV Bridge</div>
+    <h2 class="sec">From recovered spend to enterprise value at exit</h2>
+    <p class="lead">Recovered indirect spend is recurring and lands ~1:1 in EBITDA; at your target multiple, each recovered dollar compounds into enterprise value at exit.</p>
+    <div class="ibox">
+      <div class="k"><div class="lab">Recoverable / yr (recurring)</div><div class="v">{{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }}</div></div>
+      <div class="sep">→</div>
+      <div class="k"><div class="lab">EBITDA uplift (×{{ "%.1f"|format(conv) }})</div><div class="v">{{ m(ebitda_low) }}–{{ m(ebitda_high) }}</div></div>
+      <div class="sep">×{{ mult|int }}</div>
+      <div class="k hot"><div class="lab">Enterprise value created</div><div class="v">{{ m(ev_low) }}–{{ m(ev_high) }}</div></div>
+    </div>
+    <table class="dt" style="margin-top:14px"><thead><tr><th>Step</th><th class="num">Low</th><th class="num">High</th><th>Basis</th></tr></thead>
+      <tbody>
+        <tr><td>Recovered indirect spend, recurring</td><td class="num">{{ m(financials.recoverable_low_usd) }}</td><td class="num">{{ m(financials.recoverable_high_usd) }}</td><td class="small">12–26% of {{ m(financials.addressable_indirect_usd) }} addressable</td></tr>
+        <tr><td>EBITDA uplift</td><td class="num">{{ m(ebitda_low) }}</td><td class="num">{{ m(ebitda_high) }}</td><td class="small">pure cost-out, {{ "%.1f"|format(conv) }}× conversion</td></tr>
+        <tr><td>Enterprise value created @ {{ mult|int }}×</td><td class="num hot">{{ m(ev_low) }}</td><td class="num hot">{{ m(ev_high) }}</td><td class="small">EBITDA uplift × entry/target EV/EBITDA</td></tr>
+      </tbody></table>
+    <div class="callout"><span class="lab">The compounding point</span> — a one-time sourcing exercise reads as {{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }}. Underwritten as recurring EBITDA at a {{ mult|int }}× multiple, the same work is worth <b>{{ m(ev_low) }}–{{ m(ev_high) }}</b> at exit.</div>
+  </div>
+  {{ footer("SECTION 4") }}
+</section>
+
+<!-- ================= §5 HOW ERA CREATES VALUE ALONGSIDE PROCUREMENT ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">How ERA Creates Value</div>
+    <h2 class="sec">Additive to {{ portfolio.incumbent_procurement }}, not a rebid</h2>
+    <p>{{ portfolio.name }} already buys through <b>{{ portfolio.incumbent_procurement }}</b>. ERA does not replace it or re-tender managed categories. We work the indirect and tail spend that sits <b>outside</b> GPO scope — where pooled volume doesn't price the risk and no one owns the category.</p>
+    <div class="grid2">
+      <div><h3>What the incumbent covers</h3><ul class="clean"><li>Clinical and food GPO categories</li><li>Volume-priced national contracts</li><li>Managed, already-benchmarked spend</li></ul></div>
+      <div><h3>What ERA adds</h3><ul class="clean"><li>Insurance priced on <i>your</i> loss history, not a pool</li><li>Waste, freight, parcel, telecom tail</li><li>Merchant card, packaging, energy in deregulated markets</li></ul></div>
+    </div>
+    {% if centralized %}
+    <p class="muted">Because the mandate is centralized, ERA runs one enterprise engagement alongside {{ portfolio.incumbent_procurement }} and cascades wins to every {{ portfolio.site_noun[:-1] }}.</p>
+    {% else %}
+    <p class="muted">Because procurement is decentralized, ERA needs no central mandate: the parent introduces us, and each operating company's CFO opts in to the categories that move their P&amp;L.</p>
+    {% endif %}
+  </div>
+  {{ footer("SECTION 5") }}
+</section>
+
+<!-- ================= §6 THE FOUR-PART TEST ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">The Four-Part Test</div>
+    <h2 class="sec">How an Operating Partner should stress this</h2>
+    <div class="test"><h4>1 · Is the value real?</h4><p>{{ m(financials.recoverable_low_usd) }}–{{ m(financials.recoverable_high_usd) }}/yr is benchmarked against {{ validation.verified_filings }} verified filings across the portfolio — not a pitch number. The low end assumes conservative category recovery.</p></div>
+    <div class="test"><h4>2 · Wouldn't sponsor procurement already capture it?</h4><p>No. It sits outside {{ portfolio.incumbent_procurement }} and the GPO — the categories a national contract can't price (P&amp;C on own loss history, tail logistics, deregulated energy).</p></div>
+    <div class="test"><h4>3 · Does it recur into EBITDA?</h4><p>Yes. Sourcing resets the run-rate — an initial step-down then recurring savings — so it underwrites as durable EBITDA, not a one-time rebate.</p></div>
+    <div class="test"><h4>4 · Is it additive and exit-ready?</h4><p>Performance-based and additive to existing procurement; no rip-and-replace. Clean, documented savings that survive diligence and show up in the exit multiple.
+      {% if not centralized %}Structured to cascade opco-by-opco, so no central mandate is required to start.{% endif %}</p></div>
+  </div>
+  {{ footer("SECTION 6") }}
+</section>
+
+<!-- ================= §7 EVIDENCE BASE ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Evidence Base</div>
+    <h2 class="sec">{{ validation.verified_filings }} verified filings anchor the estimate</h2>
+    <p>Of {{ portfolio.site_count }} {{ portfolio.site_noun }}, <b>{{ validation.verified_filings }}</b> are anchored to verified public filings and <b>{{ validation.benchmarked }}</b> are benchmarked from the verified set. The portfolio total sits within <b>{{ pct1(validation.delta_vs_estimate_pct) }}</b> of the bottom-up estimate.</p>
+    <h3>Verified {{ portfolio.site_noun }} (filing-anchored)</h3>
+    <table class="dt"><thead><tr><th>{{ portfolio.site_noun|capitalize }}</th><th>Location</th><th class="num">Revenue</th><th>Basis</th></tr></thead>
+      <tbody>{% for u in verified %}<tr><td>{{ u.name }}</td><td class="small">{{ u.city_state }}</td><td class="num">{{ m(u.revenue_usd) }}</td>
+        <td><span class="flag v">Verified</span></td></tr>{% endfor %}</tbody></table>
+  </div>
+  {{ footer("SECTION 7") }}
+</section>
+
+<!-- ================= §8 RECOMMENDED NEXT STEPS ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Recommended Next Steps</div>
+    <h2 class="sec">Start with {{ portfolio.pilot.name }}</h2>
+    <p>The fastest path to a proof point is a contained first wave, then a portfolio roll-out on the strength of the result.</p>
+    <div class="ibox">
+      <div class="k"><div class="lab">First wave — {{ portfolio.pilot.name }}</div><div class="v">{{ portfolio.pilot.site_count }} {{ portfolio.site_noun }}</div></div>
+      <div class="sep">·</div>
+      <div class="k"><div class="lab">Wave revenue</div><div class="v">{{ m(portfolio.pilot.revenue_usd) }}</div></div>
+      <div class="sep">→</div>
+      <div class="k hot"><div class="lab">Portfolio EV @ {{ mult|int }}×</div><div class="v">{{ m(ev_low) }}–{{ m(ev_high) }}</div></div>
+    </div>
+    <ul class="clean">
+      <li><b>Baseline (30 days, no cost).</b> ERA replaces these estimates with the {{ portfolio.pilot.name }} wave's actual contract data.</li>
+      <li><b>Options report.</b> Category-by-category findings; the sponsor decides what, if anything, to pursue.</li>
+      {% if centralized %}
+      <li><b>Enterprise roll-out.</b> One mandate extends the proven categories across all {{ portfolio.site_count }} {{ portfolio.site_noun }}.</li>
+      {% else %}
+      <li><b>Cascade.</b> The parent introduces ERA to each operating company's CFO; opcos opt in on the strength of the {{ portfolio.pilot.name }} result.</li>
+      {% endif %}
+    </ul>
+    <div class="callout"><span class="lab">Performance-based</span> — no savings, no fee. No upfront cost. Nothing changes without the sponsor's approval.</div>
+  </div>
+  {{ footer("SECTION 8") }}
+</section>
+
+<!-- ================= SOURCES & BENCHMARKS ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Sources &amp; Benchmarks</div>
+    <h2 class="sec">What the estimate rests on</h2>
+    <table class="dt"><thead><tr><th>Anchor</th><th>What it establishes</th></tr></thead>
+      <tbody>{% for s in sources %}<tr><td><b>{{ s.anchor }}</b></td><td>{{ s.establishes }}</td></tr>{% endfor %}</tbody></table>
+  </div>
+  {{ footer("SOURCES") }}
+</section>
+
+<!-- ================= APPENDIX A — METHODOLOGY ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Appendix A</div>
+    <h2 class="sec">Methodology</h2>
+    <p>The estimate is outside-in and deliberately conservative — three inputs, transparently applied:</p>
+    <ul class="clean">
+      <li><b>Enterprise revenue</b> rolls up per-{{ portfolio.site_noun[:-1] }} revenue (verified filings where available, tier benchmarks otherwise).</li>
+      <li><b>Addressable indirect ≈ {{ pct(addressable_pct) }} of revenue</b> — the non-clinical, non-labor spend a disciplined program can reach.</li>
+      <li><b>Recovery of 12–26%</b> of addressable, by category, per the benchmark set in Appendix D.</li>
+    </ul>
+    <p class="small muted">Enterprise value applies the sponsor's own entry/target EV/EBITDA multiple to the recurring EBITDA uplift (§4). No multiple is assumed beyond the one the sponsor supplies.</p>
+  </div>
+  {{ footer("APPENDIX A") }}
+</section>
+
+<!-- ================= APPENDIX B — ESTIMATION TIERS ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Appendix B</div>
+    <h2 class="sec">Estimation tiers</h2>
+    <table class="dt"><thead><tr><th>Tier</th><th class="num">Revenue basis</th></tr></thead><tbody>
+      <tr><td>Vi luxury entrance-fee (full continuum)</td><td class="num">$45M</td></tr>
+      <tr><td>Full-continuum CCRC (incl. skilled nursing)</td><td class="num">$28–32M</td></tr>
+      <tr><td>IL/AL/MC (no skilled nursing)</td><td class="num">$14M</td></tr>
+      <tr><td>AL/MC only (smaller footprint)</td><td class="num">$8M</td></tr>
+    </tbody></table>
+    <p class="small muted">Verified filings override the tier benchmark {{ portfolio.site_noun[:-1] }}-by-{{ portfolio.site_noun[:-1] }}; tiers apply only where no filing is available.</p>
+  </div>
+  {{ footer("APPENDIX B") }}
+</section>
+
+<!-- ================= APPENDIX C — UNIVERSE ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Appendix C</div>
+    <h2 class="sec">{{ portfolio.vertical_label }} universe — all {{ universe|length }} {{ portfolio.site_noun }}</h2>
+    <table class="dt"><thead><tr><th>{{ portfolio.site_noun|capitalize }}</th><th>Location</th><th>Tier</th><th class="num">Revenue</th><th>Basis</th></tr></thead>
+      <tbody>{% for u in universe %}<tr><td>{{ u.name }}</td><td class="small">{{ u.city_state }}</td><td class="small">{{ u.tier }}</td>
+        <td class="num">{{ m(u.revenue_usd) }}</td>
+        <td><span class="flag {{ 'v' if u.basis=='Verified' else 'e' }}">{{ u.basis }}</span></td></tr>{% endfor %}</tbody>
+      <tfoot><tr><td colspan="3">Total — {{ universe|length }} {{ portfolio.site_noun }}, {{ portfolio.state_count }} states</td>
+        <td class="num">{{ m(financials.enterprise_revenue_usd) }}</td><td></td></tr></tfoot></table>
+  </div>
+  {{ footer("APPENDIX C") }}
+</section>
+
+<!-- ================= APPENDIX D — SOURCES (FULL) ================= -->
+<section class="sheet">
+  <div class="pad">
+    <div class="eyebrow">Appendix D</div>
+    <h2 class="sec">Sources — full dossier</h2>
+    <table class="dt"><thead><tr><th>Anchor</th><th>Establishes</th></tr></thead>
+      <tbody>{% for s in sources %}<tr><td><b>{{ s.anchor }}</b></td><td>{{ s.establishes }}</td></tr>{% endfor %}</tbody></table>
+    <p class="small muted">Vendor-affiliated benchmarks are flagged directional. Verified figures derive from public filings; estimated figures from the tier model in Appendix B.</p>
+  </div>
+  {{ footer("APPENDIX D") }}
+</section>
+
+</body></html>
