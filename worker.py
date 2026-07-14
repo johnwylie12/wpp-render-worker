@@ -274,6 +274,41 @@ def _study_by_slug(slug):
 # outside the worker, the cover letter is a separate print handled below.
 BOUND_PIECES = ["cover", "snapshot", "cir", "benchmark", "case_study", "closing"]
 
+# case_study + benchmark are enrichment sections: if their inputs are missing the
+# package still ships without them. cover/snapshot/cir/closing are essential.
+_OPTIONAL_PIECES = {"case_study", "benchmark"}
+
+
+def _esc(s):
+    return str(s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _render_fallback_cover(org_name, params, workdir):
+    """Last-resort cover so a package NEVER ships without a page 1. Pure weasyprint,
+    no external assets/fonts, so it cannot fail the way the branded cover can."""
+    from weasyprint import HTML as _HTML
+    cp = params.get("cover_page") or {}
+    title = cp.get("title") or "Executive Opening Package"
+    out = os.path.join(workdir, "01_cover.pdf")
+    html = (
+        '<!doctype html><html><head><meta charset="utf-8"><style>'
+        '@page{size:8.5in 11in;margin:0;}'
+        'body{margin:0;font-family:Arial,Helvetica,sans-serif;}'
+        '.wrap{height:11in;box-sizing:border-box;padding:2.4in 1in 0;}'
+        '.k{color:#003A70;font-size:12pt;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;}'
+        'h1{color:#003A70;font-size:34pt;margin:0;line-height:1.08;}'
+        '.rule{height:4px;width:64px;background:#FF9C00;margin:18px 0;}'
+        '.o{color:#1a1a1a;font-size:19pt;margin:12px 0 0;}'
+        '.f{position:fixed;bottom:0.6in;left:1in;right:1in;color:#7C8A99;font-size:9.5pt;}'
+        '</style></head><body><div class="wrap">'
+        '<div class="k">ERA Group &middot; Value Through Insight</div>'
+        '<h1>' + _esc(title) + '</h1><div class="rule"></div>'
+        + ('<div class="o">Prepared exclusively for ' + _esc(org_name) + '</div>' if org_name else '')
+        + '</div><div class="f">ERA Group &middot; Wylie Performance Partners</div>'
+        '</body></html>')
+    _HTML(string=html).write_pdf(out)
+    return out
+
 
 def _render_piece(piece, content, params, workdir):
     """Render ONE bound piece to a PDF path (rendered in-process; the worker is
@@ -553,25 +588,50 @@ def build_pdf(cx, brief, workdir):
     # separate LOOSE print (returned as cover_path, uploaded alongside). The 5x7
     # note stays outside the worker.
     if brief.get("doc_type") in PACKAGE_DOC_TYPES:
-        piece_paths = [_render_piece(pc, content, params, workdir) for pc in BOUND_PIECES]
-        labeled = list(zip(BOUND_PIECES, piece_paths))   # (label, path) in print order
         org_name = (content.get("org") or {}).get("name") or \
                    fetch_account_name(cx, brief.get("account_id")) or ""
+        # Render each bound piece defensively: the cover ALWAYS produces a page 1
+        # (branded, or a minimal fallback if the branded cover errors) so a cover
+        # bug can never again ship a coverless package; the enrichment sections
+        # (case_study / benchmark) are skipped rather than failing the whole doc.
+        labeled = []
+        cover_std = None            # the standalone cover PDF -> cover_url
+        warnings = []
+        for pc in BOUND_PIECES:
+            try:
+                p = _render_piece(pc, content, params, workdir)
+            except Exception as e:
+                if pc == "cover":
+                    p = _render_fallback_cover(org_name, params, workdir)
+                    warnings.append("cover fallback (%s)" % e)
+                elif pc in _OPTIONAL_PIECES:
+                    warnings.append("skipped %s (%s)" % (pc, e))
+                    continue
+                else:
+                    raise
+            labeled.append((pc, p))
+            if pc == "cover":
+                cover_std = p
         letter_block = params.get("cover_letter")
         if letter_block:
             recipient = fetch_contact(cx, brief.get("contact_id"))
             company = (content.get("org") or {}).get("name") or \
                       fetch_account_name(cx, brief.get("account_id"))
-            if not (recipient and recipient.get("name")) and not letter_block.get("recipient"):
-                raise RenderError("package cover_letter requested but no recipient resolved "
-                                  "(set contact_id or params.cover_letter.recipient)")
-            cover = cover_engine.build_cover(letter_block, recipient, company)
-            letter_path = os.path.join(workdir, "cover_letter.pdf")
-            cover_engine.render_cover(cover, letter_path, page_size="letter")
-            labeled = [("letter", letter_path)] + labeled   # bind letter as page 1 (plain-paper package)
+            if (recipient and recipient.get("name")) or letter_block.get("recipient"):
+                cover = cover_engine.build_cover(letter_block, recipient, company)
+                letter_path = os.path.join(workdir, "cover_letter.pdf")
+                cover_engine.render_cover(cover, letter_path, page_size="letter")
+                labeled = [("letter", letter_path)] + labeled   # bind letter as page 1 (plain-paper package)
+            else:
+                # A missing letter recipient must not sink the whole package.
+                warnings.append("cover_letter requested but no recipient resolved")
         bound = os.path.join(workdir, "eop_bound.pdf")
         stitch_and_stamp(labeled, bound, org_name)   # stitch + package-wide footer
-        return bound, len(PdfReader(bound).pages), None, None, "package"
+        if warnings:
+            brief["_render_warning"] = "; ".join(warnings)[:1000]
+        # cover_std is returned as cover_path so process_one uploads it and sets
+        # cover_url (+ cover_size) — the same standalone cover is ALSO page 1 here.
+        return bound, len(PdfReader(bound).pages), cover_std, "letter", "package"
 
     # ---- snapshot path: standalone one-page Executive Opportunity Snapshot.
     # Reuses the carmel-shaped content (needs org + opportunity). No cover, no CIR.
@@ -679,7 +739,9 @@ def process_one(cx):
         patch = {
             "status": "rendered", "rendered_url": url,
             "rendered_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "error": None}
+            # A soft warning (e.g. cover fallback / skipped enrichment section) is
+            # recorded on the rendered row without failing it; else cleared.
+            "error": brief.get("_render_warning")}
         if cover_url:
             patch["cover_url"] = cover_url
             patch["cover_size"] = cover_size
