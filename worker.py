@@ -526,8 +526,21 @@ def build_pdf(cx, brief, workdir):
     # ---- note card: standalone 5x7 intro card (loose piece).
     if brief.get("doc_type") in NOTE_CARD_DOC_TYPES:
         nc = params.get("note_card") or {}
+        # A user-supplied body gets its {org}/{first} tokens substituted here, then
+        # passed through; absent body -> None -> the engine's approved default fires
+        # (which substitutes {org} itself).
+        body = nc.get("body")
+        if body:
+            org = nc.get("org", "your organization")
+            first = nc.get("recipient_first", "there")
+            body = [p.replace("{org}", org).replace("{first}", first) for p in body]
         card_pdf = os.path.join(workdir, "note_card.pdf")
-        note_card_engine.render(nc, card_pdf)
+        note_card_engine.render({
+            "recipient_first": nc.get("recipient_first"),
+            "org": nc.get("org"),
+            "body": body,
+            "signoff": nc.get("signoff"),
+        }, card_pdf)
         return card_pdf, len(PdfReader(card_pdf).pages), None, None, "note_card"
 
     # ---- wave: batch of accounts -> combined, sequence-ordered PDFs (cards,

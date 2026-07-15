@@ -41,11 +41,13 @@ def _img_uri(path):
 
 
 DEFAULT_BODY = [
-    "I wanted to share something we prepared specifically for {org}.",
-    "Enclosed is an Executive Opportunity Brief—an independent perspective on areas "
-    "where indirect spending may present opportunities to strengthen financial performance "
-    "while supporting your mission.",
-    "If you find the ideas worth exploring, I’d welcome a brief conversation.",
+    "Enclosed is a complimentary Executive Opportunity Brief we prepared for {org} — an "
+    "independent, outside-in look at where indirect spending may be running above market, "
+    "and what that could return to your mission.",
+    "Nothing here is a bill, and nothing changes without your approval. If the range is "
+    "worth confirming, a no-cost 30-day baseline tests it against your actual contracts. "
+    "No savings, no fee.",
+    "I’d welcome a brief conversation.",
 ]
 DEFAULT_SIGNOFF = {
     "name": "John Wylie",
