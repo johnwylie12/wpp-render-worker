@@ -41,18 +41,18 @@ def _img_uri(path):
 
 
 DEFAULT_BODY = [
-    "Enclosed is a complimentary Executive Opportunity Brief we prepared for {org} — an "
-    "independent, outside-in look at where indirect spending may be running above market, "
-    "and what that could return to your mission.",
-    "Nothing here is a bill, and nothing changes without your approval. If the range is "
-    "worth confirming, a no-cost 30-day baseline tests it against your actual contracts. "
-    "No savings, no fee.",
-    "I’d welcome a brief conversation.",
+    "Enclosed is a complimentary Executive Opportunity Brief prepared for {org}.",
+    "It is an independent, outside-in view of where indirect spending may be above "
+    "market—and what that may mean for the resources available to your mission.",
+    "I thought the perspective might be useful.",
 ]
+# John-approved 5x7 note copy (2026-07-21): signs off with the name only — the title
+# and contact lines are intentionally blank so the card ends at "Best regards, / John
+# Wylie". (An explicit signoff override in the enqueue params can still set them.)
 DEFAULT_SIGNOFF = {
     "name": "John Wylie",
-    "role": "Senior Advisor, ERA Group",
-    "contact": "703.244.9868 | jwylie@eragroup.com",
+    "role": "",
+    "contact": "",
 }
 
 
