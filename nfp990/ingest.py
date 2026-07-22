@@ -181,18 +181,24 @@ def _load_year_zips(year: int) -> list[zipfile.ZipFile]:
     return zips
 
 
-def fetch_xml(f: Filing) -> Optional[bytes]:
-    for tmpl in (S3_XML_BASE, IRS_XML_ALT):
+def fetch_xml(f: Filing) -> Optional[tuple[bytes, str]]:
+    """Return (xml_bytes, source_url) or None. source_url records the ACTUAL path
+    that served the file (S3 direct / IRS alt / zip:<year>) so the caller can store
+    it in nfp990_xml_index — making the fetch path observable per account."""
+    for label, tmpl in (("s3", S3_XML_BASE), ("irs_alt", IRS_XML_ALT)):
         url = tmpl.format(object_id=f.object_id, year=f.year)
         try:
             r = HTTP.get(url, timeout=60)
             if r.status_code == 200 and r.content:
-                return r.content
+                log.info("EIN %s: fetched via %s", f.ein, label)
+                return r.content, url
         except requests.RequestException as e:
             log.warning("xml fetch %s: %s", url, e)
-    for z in _load_year_zips(f.year):        # ZIP fallback
+    for z in _load_year_zips(f.year):        # ZIP fallback (both direct paths 404'd)
         try:
-            return z.read(f"{f.object_id}_public.xml")
+            data = z.read(f"{f.object_id}_public.xml")
+            log.info("EIN %s: fetched via zip bundle %s", f.ein, f.year)
+            return data, f"zip:{f.year}:{f.object_id}_public.xml"
         except KeyError:
             continue
     log.error("could not fetch xml for EIN %s object %s", f.ein, f.object_id)
@@ -364,10 +370,11 @@ def ingest(targets: list[dict], dry_run: bool = False, cx=None) -> dict:
                 stats["skipped_done"] += 1
                 continue
 
-            xml = fetch_xml(filing)
-            if xml is None:
+            fetched = fetch_xml(filing)
+            if fetched is None:
                 stats["failed"] += 1
                 continue
+            xml, src_url = fetched
             stats["fetched"] += 1
 
             parsed = parse_part_ix(xml)
@@ -401,8 +408,7 @@ def ingest(targets: list[dict], dry_run: bool = False, cx=None) -> dict:
             db.write_account_categories(cx, account_id=account_id, rollups=rollups,
                                         fiscal_year=fy, object_id=filing.object_id)
             db.upsert_xml_index(cx, ein=ein, object_id=filing.object_id, tax_period=filing.tax_period,
-                                return_type=filing.return_type,
-                                xml_url=S3_XML_BASE.format(object_id=filing.object_id, year=filing.year))
+                                return_type=filing.return_type, xml_url=src_url)
             stats["written"] += 1
             log.info("wrote %s (%s) FY%s: addressable=$%s, %d categories, signer=%s",
                      tgt["name"], ein, fy, f"{addressable:,}", len(rollups),
