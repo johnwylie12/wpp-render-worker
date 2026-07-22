@@ -47,6 +47,7 @@ sys.path.insert(0, os.path.join(HERE, "benchmark"))
 sys.path.insert(0, os.path.join(HERE, "case_study"))
 sys.path.insert(0, os.path.join(HERE, "closing"))
 sys.path.insert(0, os.path.join(HERE, "note_card"))
+sys.path.insert(0, os.path.join(HERE, "enrich_990_xml"))  # 990 Part IX batch (isolated, lazy-imported)
 import cover_engine       # noqa: E402
 import snapshot_engine    # noqa: E402
 import cover_page_engine  # noqa: E402
@@ -785,6 +786,13 @@ def main():
           file=sys.stderr, flush=True)
     with _client() as cx:
         while True:
+            # 990 Part IX batch: cheap no-op unless a job_990_runs row is queued. Fully
+            # isolated + lazy-imported so a fault here can never stall PDF rendering.
+            try:
+                import run990
+                run990.run_pending()
+            except Exception:
+                traceback.print_exc()
             try:
                 worked = process_one(cx)
             except Exception:
