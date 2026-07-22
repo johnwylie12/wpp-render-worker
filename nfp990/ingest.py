@@ -362,9 +362,12 @@ def ingest(targets: list[dict], dry_run: bool = False, cx=None) -> dict:
             signer = extract_signing_officer(xml.decode("utf-8", "replace"))
 
             if dry_run:
-                log.info("[dry] %s (%s) FY%s: addressable=$%s, %d categories, signer=%s",
-                         tgt["name"], ein, fy, f"{addressable:,}", len(rollups),
-                         signer["name"] if signer else "-")
+                log.info("[dry] %s (%s) FY%s  revenue=$%s  addressable=$%s  signer=%s",
+                         tgt["name"], ein, fy,
+                         f"{parsed['total_revenue']:,}" if parsed.get("total_revenue") else "-",
+                         f"{addressable:,}", signer["name"] if signer else "-")
+                for r in rollups:  # per-category breakdown for the tie-out eyeball
+                    log.info("        %-26s $%s", r["era_category_name"], f"{r['spend_amount']:,}")
                 stats["written"] += 1
                 continue
 
