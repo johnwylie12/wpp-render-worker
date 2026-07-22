@@ -772,11 +772,42 @@ def process_one(cx):
     return True
 
 
+def run_nfp990(mode: str):
+    """Boot-triggered IRS 990 Part IX extraction. Railway has the IRS egress + the
+    service-role creds this needs; John's environment is browser-only, so the run is
+    gated on an env flag flipped in the Railway dashboard rather than a shell command:
+        RUN_SMOKE=1     -> live smoke on NPT + BILH (writes account_financials +
+                           account_categories + raw Part IX line amounts, skips the
+                           disqualified FFTP), then rendering continues.
+        RUN_990_POLL=1  -> drain the full buyer-gated book (top-revenue-first,
+                           resumable + idempotent) before rendering resumes.
+    Idempotent, so leaving a flag on across restarts is safe (re-runs skip done work).
+    """
+    sys.path.insert(0, os.path.join(HERE, "nfp990"))
+    try:
+        import ingest as nfp990_ingest  # noqa: E402  (nfp990/ on path)
+        if mode == "poll":
+            print("[nfp990] RUN_990_POLL=1 -> draining buyer-gated book…", flush=True)
+            stats = nfp990_ingest.poll()
+        else:
+            print("[nfp990] RUN_SMOKE=1 -> live smoke NPT + BILH…", flush=True)
+            stats = nfp990_ingest.ingest(nfp990_ingest.SMOKE_TARGETS, dry_run=False)
+        print(f"[nfp990] PING done ({mode}): {stats}", flush=True)
+    except Exception:
+        print(f"[nfp990] {mode} failed:", flush=True)
+        traceback.print_exc()
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
     if not SUPABASE_URL or not SERVICE_KEY:
         sys.exit("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
+    # Boot-triggered 990 extraction (browser-flippable env flags; see run_nfp990).
+    if os.environ.get("RUN_SMOKE") == "1":
+        run_nfp990("smoke")
+    if os.environ.get("RUN_990_POLL") == "1":
+        run_nfp990("poll")
     once = "--once" in sys.argv
     print(f"[worker] claim doc_types={CLAIM_DOC_TYPES} bucket={BUCKET} "
           f"poll={POLL_SECONDS}s once={once}")
