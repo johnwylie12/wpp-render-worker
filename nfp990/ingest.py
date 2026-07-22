@@ -311,20 +311,32 @@ def era_categorize(line_items: dict[str, int], other_expenses: list[tuple[str, i
 # ----------------------------------------------------------------------------
 # 4. Driver — ties it together (idempotent)
 # ----------------------------------------------------------------------------
-def ingest(targets: list[dict], dry_run: bool = False) -> dict:
-    """targets: [{account_id, ein, name, filed_revenue}] (buyer-gated, revenue desc)."""
+def ingest(targets: list[dict], dry_run: bool = False, cx=None) -> dict:
+    """targets: [{account_id, ein, name, filed_revenue}] (buyer-gated, revenue desc).
+
+    Idempotent + resumable: an EIN whose object_id is already in nfp990_xml_index is
+    skipped, so re-running (or --poll) picks up exactly where it left off. Pass an open
+    `cx` to reuse a connection across passes (poll mode); otherwise one is opened here.
+    A target flagged {'dry_only': True} (e.g. a disqualified spot-check) is fetched +
+    categorized in dry runs but never written live."""
     stats = {"located": 0, "fetched": 0, "part_ix_ok": 0, "no_part_ix": 0,
-             "skipped_done": 0, "written": 0, "failed": 0}
+             "skipped_done": 0, "skipped_dq": 0, "written": 0, "failed": 0}
     ein_to_acct = {t["ein"].strip().zfill(9): t for t in targets if t.get("ein")}
     obj_map = build_target_object_map(list(ein_to_acct.keys()))
     stats["located"] = len(obj_map)
 
-    cx = None if dry_run else db.client()
+    own_cx = cx is None and not dry_run
+    if own_cx:
+        cx = db.client()
     try:
         for ein, filing in obj_map.items():
             tgt = ein_to_acct[ein]
             account_id = tgt["account_id"]
 
+            if not dry_run and tgt.get("dry_only"):
+                stats["skipped_dq"] += 1
+                log.info("skip live write: %s (%s) is dry-run only (disqualified)", tgt["name"], ein)
+                continue
             if not dry_run and db.has_object(cx, ein, filing.object_id):
                 stats["skipped_done"] += 1
                 continue
@@ -371,17 +383,46 @@ def ingest(targets: list[dict], dry_run: bool = False) -> dict:
                      signer["name"] if signer else "-")
             time.sleep(0)
     finally:
-        if cx is not None:
+        if own_cx and cx is not None:
             cx.close()
 
     log.info("ingest complete: %s", stats)
     return stats
 
 
+def poll(max_passes: int = 50, pass_sleep: float = 5.0) -> dict:
+    """Drain the ENTIRE buyer-gated book (top-revenue-first), resumable + idempotent.
+
+    Each pass pulls the current target set from nfp990_extract_targets and runs one
+    ingest over it; accounts already in nfp990_xml_index are skipped, so a restart
+    resumes cleanly. Repeats to retry transient fetch failures and to pick up newly
+    buyer-qualified accounts, and stops once a pass writes nothing new and has no
+    failures (fully drained)."""
+    total = {"passes": 0, "written": 0, "failed": 0, "no_part_ix": 0,
+             "skipped_done": 0, "located": 0}
+    with db.client() as cx:
+        for p in range(1, max_passes + 1):
+            targets = db.get_targets(cx, limit=None)
+            stats = ingest(targets, dry_run=False, cx=cx)
+            total["passes"] = p
+            for k in ("written", "failed", "no_part_ix"):
+                total[k] += stats.get(k, 0)
+            total["skipped_done"] = stats.get("skipped_done", 0)  # latest = cumulative done
+            total["located"] = stats.get("located", 0)
+            log.info("poll pass %d: %s", p, stats)
+            if stats.get("written", 0) == 0 and stats.get("failed", 0) == 0:
+                break
+            time.sleep(pass_sleep)
+    log.info("poll drain complete: %s", total)
+    return total
+
+
 SMOKE_TARGETS = [
     {"account_id": 13515, "ein": "237825575", "name": "National Philanthropic Trust", "filed_revenue": 17794939562},
     {"account_id": 14129, "ein": "832671600", "name": "Beth Israel Lahey Health", "filed_revenue": 876101442},
-    {"account_id": 13628, "ein": "592174510", "name": "Food For The Poor", "filed_revenue": 412105034},  # EIN corrected
+    # Food For The Poor: EIN corrected to 592174510; account is DISQUALIFIED (2026-07-10),
+    # so it's a dry-run tie-out only — never write financials to it.
+    {"account_id": 13628, "ein": "592174510", "name": "Food For The Poor", "filed_revenue": 412105034, "dry_only": True},
 ]
 
 
@@ -389,10 +430,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="IRS 990 Part IX -> ERA ingestion")
     ap.add_argument("--limit", type=int, default=None, help="top-N buyer-gated accounts by revenue")
     ap.add_argument("--smoke", action="store_true", help="run the 3 spot-check EINs")
+    ap.add_argument("--poll", action="store_true", help="drain the ENTIRE buyer-gated book, resumable")
     ap.add_argument("--dry-run", action="store_true", help="fetch+parse+categorize, no DB writes")
     args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
+    if args.poll:
+        print(poll())
+        return
     if args.smoke:
         targets = SMOKE_TARGETS
     else:
