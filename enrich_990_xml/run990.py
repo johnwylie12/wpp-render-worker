@@ -69,9 +69,10 @@ def load_rates(cx):
 
 def upsert_990_status(cx, account_id, ein, status, filed_rev, filed_fy, note):
     exists = rget(cx, "account_990_status?account_id=eq.%d&select=account_id&limit=1" % account_id)
+    # confidence + reviewed are NOT NULL on account_990_status.
     fields = {"ein": ein, "status": status, "filed_revenue": filed_rev,
               "filed_fy": filed_fy, "note": note[:500] if note else None,
-              "resolved_at": _now()}
+              "confidence": "990-xml", "reviewed": False, "resolved_at": _now()}
     if exists:
         rpatch(cx, "account_990_status", "account_id=eq.%d" % account_id, fields)
     else:
