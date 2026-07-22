@@ -83,39 +83,59 @@ class Filing:
     year: int
 
 
-def download_year_index(year: int) -> list[Filing]:
+# Per-process cache of the (already filtered-to-wanted) index rows, keyed by year,
+# so poll passes don't re-download the big annual CSVs each pass.
+_index_cache: dict[int, list[Filing]] = {}
+
+
+def download_year_index(year: int, wanted: Optional[set[str]] = None) -> list[Filing]:
+    """Stream one year's IRS index CSV and keep only rows whose EIN is in `wanted`
+    (all rows if None). STREAMING (iter_lines) is deliberate: the annual index is
+    hundreds of MB — loading it whole would blow the worker's memory. Cached per year."""
+    if year in _index_cache:
+        return _index_cache[year]
     for tmpl in INDEX_URLS:
         url = tmpl.format(year=year)
         try:
-            r = HTTP.get(url, timeout=120)
-            if r.status_code != 200 or not r.content:
+            r = HTTP.get(url, timeout=300, stream=True)
+            if r.status_code != 200:
+                r.close()
                 continue
         except requests.RequestException as e:
             log.warning("index %s fetch error: %s", url, e)
             continue
         rows: list[Filing] = []
-        reader = csv.DictReader(io.StringIO(r.content.decode("utf-8", "replace")))
-        for row in reader:
-            ein = "".join(ch for ch in (row.get("EIN") or "") if ch.isdigit()).zfill(9)
-            oid = (row.get("OBJECT_ID") or "").strip()
-            if not ein or not oid:
-                continue
-            rows.append(Filing(ein=ein, object_id=oid,
-                               tax_period=(row.get("TAX_PERIOD") or "").strip(),
-                               return_type=(row.get("RETURN_TYPE") or "").strip(),
-                               name=(row.get("TAXPAYER_NAME") or "").strip(), year=year))
-        log.info("index %s: %d filings", year, len(rows))
+        try:
+            reader = csv.DictReader(r.iter_lines(decode_unicode=True))
+            for row in reader:
+                ein = "".join(ch for ch in (row.get("EIN") or "") if ch.isdigit()).zfill(9)
+                oid = (row.get("OBJECT_ID") or "").strip()
+                if not oid or ein == "000000000":
+                    continue
+                if wanted is not None and ein not in wanted:
+                    continue
+                rows.append(Filing(ein=ein, object_id=oid,
+                                   tax_period=(row.get("TAX_PERIOD") or "").strip(),
+                                   return_type=(row.get("RETURN_TYPE") or "").strip(),
+                                   name=(row.get("TAXPAYER_NAME") or "").strip(), year=year))
+        finally:
+            r.close()
+        log.info("index %s: %d matching filings (of wanted=%s)", year, len(rows),
+                 "all" if wanted is None else len(wanted))
+        _index_cache[year] = rows
         return rows
     log.error("no index available for %s", year)
     return []
 
 
 def build_target_object_map(target_eins: Iterable[str], years: list[int] = YEARS) -> dict[str, Filing]:
-    """For each target EIN, its most recent FULL-990 filing across `years`."""
+    """For each target EIN, its most recent FULL-990 filing across `years`. Streams
+    each year's index filtered to the target EINs, and STOPS at the first year that
+    resolves every target — a 2-account smoke pulls one index, not three."""
     targets = {e.strip().zfill(9) for e in target_eins}
     best: dict[str, Filing] = {}
     for year in years:                       # newest first
-        idx = download_year_index(year)
+        idx = download_year_index(year, wanted=targets)
         by_ein: dict[str, list[Filing]] = {}
         for f in idx:
             if f.ein in targets:
@@ -126,6 +146,9 @@ def build_target_object_map(target_eins: Iterable[str], years: list[int] = YEARS
             full = [f for f in filings if f.return_type in FULL_990_TYPES]
             pick = max(full or filings, key=lambda f: f.tax_period)
             best[ein] = pick
+        if targets <= set(best.keys()):       # all targets found -> skip older indexes
+            log.info("all %d targets located by index %s; skipping older years", len(targets), year)
+            break
     missing = targets - best.keys()
     log.info("target map: %d/%d EINs located, %d missing (no e-file on record)",
              len(best), len(targets), len(missing))
