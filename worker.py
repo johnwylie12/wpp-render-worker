@@ -322,7 +322,7 @@ def _render_piece(piece, content, params, workdir):
         cp = params.get("cover_page") or {}
         out = os.path.join(workdir, "01_cover.pdf")
         cover_page_engine.render(org, out, title=cp.get("title"), subtitle=cp.get("subtitle"),
-                                 statement=cp.get("statement"), date_str=cp.get("date"),
+                                 statement=cp.get("statement"), date_str=cp.get("date_str") or cp.get("date"),
                                  doc_type=cp.get("for_doc_type", "package"))
         return out
     if piece == "snapshot":
@@ -565,7 +565,7 @@ def build_pdf(cx, brief, workdir):
             lb = pp.get("cover_letter")
             if lb:
                 company = (c.get("org") or {}).get("name") or name
-                cover = cover_engine.build_cover(lb, lb.get("recipient"), company)
+                cover = cover_engine.build_cover(lb, lb.get("recipient"), company, date_str=lb.get("date_str"))
                 lp = os.path.join(awd, "letter.pdf")
                 cover_engine.render_cover(cover, lp, page_size="letter")
                 labeled = [("letter", lp)] + labeled   # bind letter as page 1
@@ -632,7 +632,7 @@ def build_pdf(cx, brief, workdir):
             company = (content.get("org") or {}).get("name") or \
                       fetch_account_name(cx, brief.get("account_id"))
             if (recipient and recipient.get("name")) or letter_block.get("recipient"):
-                cover = cover_engine.build_cover(letter_block, recipient, company)
+                cover = cover_engine.build_cover(letter_block, recipient, company, date_str=letter_block.get("date_str"))
                 letter_path = os.path.join(workdir, "cover_letter.pdf")
                 cover_engine.render_cover(cover, letter_path, page_size="letter")
                 labeled = [("letter", letter_path)] + labeled   # bind letter as page 1 (plain-paper package)
@@ -672,7 +672,7 @@ def build_pdf(cx, brief, workdir):
             title=cp.get("title"),
             subtitle=cp.get("subtitle"),
             statement=cp.get("statement"),
-            date_str=cp.get("date"),
+            date_str=cp.get("date_str") or cp.get("date"),
             doc_type=cp.get("for_doc_type", "package"),
         )
         return cover_pdf, len(PdfReader(cover_pdf).pages), None, None, "cover"
@@ -714,7 +714,7 @@ def build_pdf(cx, brief, workdir):
            not ((letter_block or {}).get("recipient")):
             raise RenderError("cover letter requested but no recipient resolved "
                               "(set contact_id or params.cover.letter.recipient)")
-        cover = cover_engine.build_cover(letter_block, recipient, company)
+        cover = cover_engine.build_cover(letter_block, recipient, company, date_str=(letter_block or {}).get("date_str"))
         if mode == "bundled":
             cover_pdf = os.path.join(workdir, "cover.pdf")
             cover_engine.render_cover(cover, cover_pdf, page_size="letter")
