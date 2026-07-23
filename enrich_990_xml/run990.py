@@ -80,7 +80,10 @@ def upsert_990_status(cx, account_id, ein, status, filed_rev, filed_fy, note):
         rpost(cx, "account_990_status", fields)
 
 def has_990(cx, account_id):
-    rows = rget(cx, "account_financials?account_id=eq.%d&source_doc_type=eq.990&select=id&limit=1" % account_id)
+    # Skip only when a REAL 990 extraction already exists (line_items present), not
+    # the header-only revenue shell (line_items null) left by the original import —
+    # otherwise ~752 buyer-gated bare shells get falsely skipped and never extract.
+    rows = rget(cx, "account_financials?account_id=eq.%d&source_doc_type=eq.990&line_items=not.is.null&select=id&limit=1" % account_id)
     return bool(rows)
 
 def gate(cx, rates):
