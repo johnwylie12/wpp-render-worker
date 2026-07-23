@@ -100,7 +100,7 @@ def render(content, out_pdf):
     cap1, cap2 = balance(c["opportunity"]["basis_note"])
 
     agg = {**DEFAULT_AGG, **c.get("aggregate", {})}
-    so = c.get("signoff", {"name":"John Wylie","title":"Senior Advisor","email":"jwylie@eragroup.com","phone":"703.244.9868"})
+    so = c.get("signoff", {"name":"John Wylie","title":"Senior Consultant","email":"jwylie@eragroup.com","phone":"703.244.9868"})
     src = c.get("source", {})
     src_line = (f"Source: {src['filing']} {src.get('basis','')}".strip()
                 if src.get("filing") and c.get("org",{}).get("has_990")

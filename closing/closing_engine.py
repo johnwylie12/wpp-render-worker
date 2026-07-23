@@ -85,7 +85,7 @@ DEFAULT = {
 
     "signature_uri":  "",              # drop in a scanned signature PNG/URL here
     "signature_name": "John Wylie",
-    "signature_role": "Senior Advisor",
+    "signature_role": "Senior Consultant",
 
     "right_title": "What You Can Expect From Me",
     "commitments": [
@@ -108,7 +108,7 @@ DEFAULT = {
 
     "person": {
         "name": "John Wylie",
-        "role": "Senior Advisor",
+        "role": "Senior Consultant",
         "org":  "ERA Group",
         "email": "jwylie@eragroup.com",
         "phone": "703.244.9868",

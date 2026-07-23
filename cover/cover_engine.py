@@ -35,7 +35,7 @@ if os.path.exists(_FONTS):
 # ERA canon signoff (mirrors content_contracts._shared.signoff_constant + tagline).
 SIGNOFF_CANON = {
     "name":  "John Wylie",
-    "title": "Senior Advisor",
+    "title": "Senior Consultant",
     "org":   "ERA Group",
     "email": "jwylie@eragroup.com",
     "phone": "703.244.9868",

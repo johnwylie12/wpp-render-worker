@@ -282,7 +282,7 @@ def render(content, out_pdf):
                    f"{org['name']} \u2014 before any meeting, using public filings and ERA's category benchmarks. "
                    "The remaining step is to validate those observations against information available only inside the organization.")
 
-    so = c.get("signoff", {"name": "John Wylie", "title": "Senior Advisor", "org": "ERA Group",
+    so = c.get("signoff", {"name": "John Wylie", "title": "Senior Consultant", "org": "ERA Group",
                            "email": "jwylie@eragroup.com", "phone": "703.244.9868"})
     prepared_date = snap.get("date") or c.get("date") or date.today().strftime("%B %-d, %Y")
 
