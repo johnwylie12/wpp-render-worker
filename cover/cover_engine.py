@@ -1,172 +1,158 @@
 #!/usr/bin/env python3
-"""ERA executive cover letter renderer.
+"""ERA executive cover letter renderer — LOCKED template (2026-07-25).
 
-Standalone — does NOT touch the frozen CIR engine/template. Produces a single
-US-Letter page that gets merged in FRONT of the Cost Intelligence Report.
+Renders the single US-Letter EOP cover letter from the locked copy-of-record
+(cover/cover_letter.html) using the shared signature + letterhead modules. The
+body copy, valediction ("Best regards,") and signoff are LOCKED IN THE TEMPLATE —
+this engine only supplies merge fields (recipient, org, address, date, the natural-
+reading sector phrase) and the embedded assets. Nothing is rebuilt per run.
 
-Public API:
-    render_cover(cover: dict, out_pdf: str) -> out_pdf
-    build_cover(params_cover, recipient, company, *, date_str=None) -> dict
+Letter = Signature 3 (wpp_signatures). Standalone — does NOT touch the frozen CIR
+engine or the bound CIR cover page (cover_page_engine.py / cover_page_template.html).
 
-`cover` dict shape (all optional except recipient is recommended):
-    {
-      "date_str":  "June 29, 2026",
-      "recipient": {"name","title","company","address_lines":[...]},
-      "salutation":"Dear Mr. Jacobi,",
-      "body_paras":["...", "..."],
-      "ps":        "optional postscript",
-      "signoff":   {"name","title","org","email","phone","tagline"}
-    }
-Anything missing is filled from the ERA canon below.
+Public API (unchanged for worker.py):
+    build_cover(params_cover, recipient, company, *, date_str=None, industry_group=None) -> dict
+    render_cover(cover: dict, out_pdf: str, page_size="Letter") -> out_pdf
 """
-import os, datetime
+import os, sys, datetime
 from jinja2 import Template
-from weasyprint import HTML
+
+# Repo root on path so the shared modules resolve (worker.py inserts the engine
+# dirs; be defensive for the self-test / direct import).
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+from wpp_signatures import signature_data_uri
+from wpp_letterhead_assets import era_logo_uri, vti_uri
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-# Bundled fonts.conf maps Trebuchet -> Liberation Sans (CIR parity). Set it
-# defensively so the letter renders in the same typeface even if the worker
-# forgot to export it.
+# fonts.conf maps Trebuchet -> Liberation Sans (CIR parity) so the letter paginates
+# the same way in the worker; set defensively.
 _FONTS = os.path.join(HERE, "..", "cir", "build", "fonts.conf")
 if os.path.exists(_FONTS):
     os.environ.setdefault("FONTCONFIG_FILE", os.path.abspath(_FONTS))
 
-# ERA canon signoff (mirrors content_contracts._shared.signoff_constant + tagline).
+# Kept for API compatibility; the locked template hardcodes the signoff.
 SIGNOFF_CANON = {
-    "name":  "John Wylie",
-    "title": "Senior Consultant",
-    "org":   "ERA Group",
-    "email": "jwylie@eragroup.com",
-    "phone": "703.244.9868",
-    "tagline": "Value Through Insight\u2122",
+    "name": "John Wylie", "title": "Senior Consultant", "org": "ERA Group",
+    "email": "jwylie@eragroup.com", "phone": "703.244.9868",
+    "tagline": "Value Through Insight™",
 }
 
-with open(os.path.join(HERE, "logo_b64.txt")) as fh:
-    LOGO_B64 = fh.read().strip()
+# Natural-reading sector phrase from accounts.industry_group. Unmapped / None -> the
+# template drops the sector clause (null-safe). null / 'Education' are the ICP-gate
+# excludes, enforced at WAVE ASSEMBLY (out of scope for this render).
+_SECTOR = {
+    "Healthcare": "healthcare",
+    "Nonprofit": "the nonprofit sector",
+    "Senior Care / Retirement": "senior care and retirement",
+    "Business / Professional Services": "business and professional services",
+    "Construction": "construction",
+}
+
 with open(os.path.join(HERE, "cover_letter.html")) as fh:
     _TPL = Template(fh.read())
 
+# Cover-letter paper sizes (name -> CSS @page size). The locked letter is Letter;
+# these preserve the legacy "separate" print path at other sizes.
+COVER_PAGE_SIZES = {
+    "letter": "Letter", "legal": "Legal", "a4": "A4", "a5": "A5",
+    "half-letter": "5.5in 8.5in", "monarch": "7.25in 10.5in",
+    "executive": "7.25in 10.5in", "6x9": "6in 9in", "note-a2": "4.25in 5.5in",
+}
 
-def _honorific_salutation(name: str, title: str | None) -> str:
-    """First-name salutation (house style, e.g. "Dear Miriam,"). Falls back safely."""
-    n = (name or "").strip()
-    first = n.split()[0] if n else ""
-    return f"Dear {first}," if first else "Dear Sir or Madam,"
+
+def resolve_page_size(page_size):
+    if not page_size:
+        return "Letter"
+    key = str(page_size).strip().lower()
+    return COVER_PAGE_SIZES.get(key, str(page_size).strip())
 
 
-def build_cover(params_cover: dict | None,
-                recipient: dict | None,
-                company: str | None,
-                *, date_str: str | None = None) -> dict:
-    """Merge an enqueued cover_letter block (if any) with the resolved recipient
-    (from contact_id) and the ERA canon. Enqueued values win; canon fills gaps."""
+def build_cover(params_cover, recipient, company, *, date_str=None, industry_group=None):
+    """Resolve merge fields for the locked letter. Enqueued values win; body /
+    valediction / signoff are fixed in the template, so they are ignored here."""
     pc = dict(params_cover or {})
     rc = dict(recipient or {})
-
-    # recipient: prefer explicit enqueued recipient, else the resolved contact
     r = dict(pc.get("recipient") or {})
-    name    = r.get("name")    or rc.get("name")    or pc.get("addressee_name")
-    title   = r.get("title")   or rc.get("title")   or pc.get("addressee_title")
-    org     = r.get("company") or rc.get("company") or company
+    name = r.get("name") or rc.get("name") or pc.get("addressee_name")
+    title = r.get("title") or rc.get("title") or pc.get("addressee_title")
+    org = r.get("company") or rc.get("company") or company
     address = r.get("address_lines") or rc.get("address_lines") or []
-
-    salutation = pc.get("salutation")
-    if not salutation or salutation.strip() in ("Dear ___,", "Dear ___"):
-        salutation = _honorific_salutation(name, title)
-
-    body = pc.get("body_paras") or pc.get("body")
-    if not body:
-        co = org or "your organization"
-        body = [
-            "The enclosed Executive Opportunity Brief is unusual for one reason: it was "
-            "prepared before we ever asked for a meeting.",
-            "I’ve always believed that an executive’s time should be earned, not requested.",
-            f"Rather than beginning with a presentation about our capabilities, I thought it "
-            f"would be more valuable to first spend some time understanding {co}. The enclosed "
-            f"Brief reflects an independent review based on publicly available information, "
-            f"industry benchmarks, and more than three decades of helping organizations "
-            f"evaluate operating costs that often receive far less attention than they deserve.",
-            "It isn’t intended to prove that savings exist. It’s intended to determine "
-            "whether they might.",
-            "In many organizations, existing supplier relationships are already delivering "
-            "excellent value. In others, the market has simply moved. Our role is to determine "
-            "which is true.",
-            "Sometimes the best outcome is helping an organization secure better pricing while "
-            "continuing with its current supplier. Other times, the market reveals a stronger "
-            "alternative offering the same solution, or a comparable one, at a lower overall "
-            "cost. The objective is never to change suppliers. The objective is to ensure "
-            "you’re receiving the best value available.",
-            "If the observations in the Brief warrant a closer look, we validate them using "
-            "your actual contracts, invoices, and supplier data before any recommendations "
-            "are made. Nothing changes without your approval, and we’re compensated only "
-            "when measurable savings are achieved.",
-            f"Whether the result is confirmation that you’re already buying well or the "
-            f"identification of meaningful savings, I hope you’ll find the Brief worth the "
-            f"few minutes it takes to read. It was prepared specifically for {co} because I "
-            f"believe the best first meeting is one where we’ve already done some of the work.",
-            "I’ll follow up next week to answer any questions.",
-        ]
-    signoff = {**SIGNOFF_CANON, **(pc.get("signoff") or {})}
-
+    # sector: explicit block override wins; else map from industry_group.
+    ig = pc.get("industry_group") or industry_group
+    sector_phrase = pc.get("sector_phrase") or _SECTOR.get((ig or "").strip())
     return {
         "date_str": date_str or datetime.date.today().strftime("%B %-d, %Y"),
         "recipient": {"name": name, "title": title, "company": org,
-                      "address_lines": address},
-        "salutation": salutation,
-        "valediction": pc.get("valediction") or "Warm regards,",
-        "body_paras": body,
-        "ps": pc.get("ps"),
-        "signoff": signoff,
-        # True -> render logo-free with a cleared top for printing on physical
-        # ERA letterhead stock. Set via params.cover.letter.letterhead_paper.
+                      "address_lines": list(address)},
+        "sector_phrase": sector_phrase,
         "letterhead_paper": bool(pc.get("letterhead_paper")),
     }
 
 
-# Selectable cover-letter paper sizes (name -> CSS @page size token).
-# Accepts a preset key (case-insensitive) OR a raw CSS size string like "8.5in 11in".
-COVER_PAGE_SIZES = {
-    "letter":      "Letter",            # 8.5 x 11 in  (matches the CIR; required for bundled)
-    "legal":       "Legal",             # 8.5 x 14 in
-    "a4":          "A4",
-    "a5":          "A5",
-    "half-letter": "5.5in 8.5in",       # statement / half sheet
-    "monarch":     "7.25in 10.5in",     # executive letterhead
-    "executive":   "7.25in 10.5in",
-    "6x9":         "6in 9in",
-    "note-a2":     "4.25in 5.5in",      # folded note card
-}
-
-def resolve_page_size(page_size: str | None) -> str:
-    if not page_size:
-        return "Letter"
-    key = str(page_size).strip().lower()
-    if key in COVER_PAGE_SIZES:
-        return COVER_PAGE_SIZES[key]
-    return str(page_size).strip()  # treat as a raw CSS size token
+def _split_address(lines):
+    """recipient.address_lines (list) -> (line1, line2|None, city_state_zip)."""
+    ls = [str(x).strip() for x in (lines or []) if str(x).strip()]
+    if not ls:
+        return "", None, ""
+    if len(ls) == 1:
+        return ls[0], None, ""
+    if len(ls) == 2:
+        return ls[0], None, ls[1]
+    return ls[0], ", ".join(ls[1:-1]), ls[-1]  # street / (middle) / city-state-zip
 
 
-def render_cover(cover: dict, out_pdf: str, page_size: str | None = "Letter") -> str:
-    ctx = {
-        "logo_b64": LOGO_B64,
-        "date_str": cover.get("date_str", ""),
-        "recipient": cover.get("recipient", {}),
-        "salutation": cover.get("salutation", "Dear Sir or Madam,"),
-        "valediction": cover.get("valediction", "Warm regards,"),
-        "body_paras": cover.get("body_paras", []),
-        "ps": cover.get("ps"),
-        "signoff": {**SIGNOFF_CANON, **(cover.get("signoff") or {})},
-        "page_css": resolve_page_size(page_size),
+def build_ctx(cover: dict) -> dict:
+    """Pure merge-field builder (no I/O) — the exact context the locked template
+    consumes. Split out so it can be unit-tested without WeasyPrint."""
+    r = cover.get("recipient", {}) or {}
+    name = (r.get("name") or "").strip()
+    first = name.split()[0] if name else ""
+    l1, l2, csz = _split_address(r.get("address_lines"))
+    return {
+        "era_logo_uri": era_logo_uri(),
+        "vti_uri": vti_uri(),
+        "signature_uri": signature_data_uri("3"),   # LETTER = Sig 3
+        "date": cover.get("date_str", ""),
+        "first_name": first or "there",
+        "recipient_name": name,
+        "recipient_title": r.get("title") or "",
+        "org_name": (r.get("company") or "").rstrip("."),
+        "addr_line1": l1,
+        "addr_line2": l2,
+        "addr_city_state_zip": csz,
+        "sector_phrase": cover.get("sector_phrase"),
         "letterhead_paper": bool(cover.get("letterhead_paper")),
     }
-    HTML(string=_TPL.render(**ctx)).write_pdf(out_pdf)
+
+
+def render_html(cover: dict, page_size="Letter") -> str:
+    """Render the locked template to an HTML string (no PDF — testable)."""
+    ctx = build_ctx(cover)
+    html = _TPL.render(**ctx)
+    if ctx["letterhead_paper"]:
+        # pre-printed ERA letterhead: template omits .hd; clear the top band (~1.8in)
+        # so the body starts below it. A later @page rule cascades over the base one.
+        html = html.replace("</style>", "  @page { margin-top: 1.8in; }\n</style>", 1)
+    size_css = resolve_page_size(page_size)
+    if size_css and size_css != "Letter":
+        html = html.replace("</style>", f"  @page {{ size: {size_css}; }}\n</style>", 1)
+    return html
+
+
+def render_cover(cover: dict, out_pdf: str, page_size="Letter") -> str:
+    from weasyprint import HTML  # lazy: keeps build_cover / render_html import-safe without WeasyPrint
+    HTML(string=render_html(cover, page_size)).write_pdf(out_pdf)
     return out_pdf
 
 
 if __name__ == "__main__":
-    # self-test
-    c = build_cover(None, {"name": "Nick Jacobi", "title": "General Manager"},
-                    "Stonebridge Golf Club")
+    c = build_cover(
+        {"letterhead_paper": False},
+        {"name": "Nick Jacobi", "title": "General Manager",
+         "address_lines": ["1200 Club Dr", "Suite 100", "Raleigh, NC 27601"]},
+        "Stonebridge Golf Club.", date_str="July 25, 2026", industry_group="Nonprofit")
     render_cover(c, "/tmp/cover_test.pdf")
     print("rendered /tmp/cover_test.pdf")

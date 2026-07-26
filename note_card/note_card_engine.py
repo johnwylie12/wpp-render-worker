@@ -21,7 +21,13 @@ Data (personalize with recipient_first + org)
 """
 import base64, os, sys
 from jinja2 import Template
-from weasyprint import HTML
+
+# repo root on path so the shared signature module resolves (worker.py also inserts
+# the engine dirs; be defensive for a direct / self-test import).
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+from wpp_signatures import signature_data_uri
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SHARED = os.path.join(os.path.dirname(HERE), "case_study", "assets")
@@ -76,7 +82,9 @@ def render(data, out_pdf):
         "first": first,
         "body": body,
         "signoff": signoff,
+        "signature_uri": signature_data_uri("2"),   # NOTE CARD = Sig 2 (95px in the card template)
     }
+    from weasyprint import HTML  # lazy import — keeps the module import-safe without WeasyPrint
     tpl = Template(open(os.path.join(HERE, "note_card_template.html"), encoding="utf-8").read())
     HTML(string=tpl.render(**ctx), base_url=HERE).write_pdf(out_pdf)
     return out_pdf
