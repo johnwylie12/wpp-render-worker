@@ -47,6 +47,7 @@ sys.path.insert(0, os.path.join(HERE, "benchmark"))
 sys.path.insert(0, os.path.join(HERE, "case_study"))
 sys.path.insert(0, os.path.join(HERE, "closing"))
 sys.path.insert(0, os.path.join(HERE, "note_card"))
+sys.path.insert(0, os.path.join(HERE, "exec_brief"))
 sys.path.insert(0, os.path.join(HERE, "enrich_990_xml"))  # 990 Part IX batch (isolated, lazy-imported)
 import cover_engine       # noqa: E402
 import snapshot_engine    # noqa: E402
@@ -55,6 +56,7 @@ import benchmark_engine   # noqa: E402
 import case_study_engine  # noqa: E402
 import closing_engine     # noqa: E402
 import note_card_engine   # noqa: E402
+import exec_brief_engine  # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
@@ -76,8 +78,9 @@ PACKAGE_DOC_TYPES = [s.strip() for s in os.environ.get("PACKAGE_DOC_TYPES",
                                                    "package").split(",") if s.strip()]
 NOTE_CARD_DOC_TYPES = [s.strip() for s in os.environ.get("NOTE_CARD_DOC_TYPES", "note_card").split(",") if s.strip()]
 WAVE_DOC_TYPES = [s.strip() for s in os.environ.get("WAVE_DOC_TYPES", "wave").split(",") if s.strip()]
+EXEC_BRIEF_DOC_TYPES = [s.strip() for s in os.environ.get("EXEC_BRIEF_DOC_TYPES", "exec_brief").split(",") if s.strip()]
 # Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default - no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES) if s not in SUPPORTED]
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES + EXEC_BRIEF_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -593,6 +596,25 @@ def build_pdf(cx, brief, workdir):
                     urls[label] = upload_pdf(cx, "{}/wave_{}.pdf".format(prefix, label), fh.read())
         update_brief(cx, bid, {"wave_urls": urls})
         return wave_index, len(PdfReader(wave_index).pages), None, None, "wave"
+
+    # ---- exec_brief: standalone Tier-3 "Executive Opportunity Brief" (5-7pp,
+    # IFCJ-style). Reads the FLAT common_core param shape (company / categories /
+    # opportunity / cannot_know / hero) PLUS why_now / proof_stats /
+    # decision_makers / next_step / model — NOT the carmel `org` shape, so it runs
+    # BEFORE extract_cir_content (which would reject it). params may be the flat
+    # object or a { "content": {...} } wrapper (the engine unwraps either).
+    if brief.get("doc_type") in EXEC_BRIEF_DOC_TYPES:
+        eb_params = params.get("content") if isinstance(params.get("content"), dict) \
+                    and "company" in (params.get("content") or {}) else params
+        if not (isinstance(eb_params, dict) and (eb_params.get("company") or {}).get("name")):
+            raise RenderError("exec_brief requires company.name in params "
+                              "(common_core shape: company / categories / opportunity)")
+        eb_pdf = os.path.join(workdir, "exec_brief.pdf")
+        try:
+            exec_brief_engine.render(eb_params, eb_pdf)
+        except ValueError as e:
+            raise RenderError(str(e))
+        return eb_pdf, len(PdfReader(eb_pdf).pages), None, None, "exec_brief"
 
     content = extract_cir_content(params)
 

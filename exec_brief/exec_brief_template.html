@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --navy:{{ navy }}; --navy-deep:#002851; --ink-head:#16243F; --gold:{{ gold }}; --gold-dark:#C07400;
+    --body:#3C4658; --muted:#6C7686; --muted-2:#8A93A3; --line:#DCE3ED; --panel:#F4F7FB;
+    --font-head:"Trebuchet MS","Arial Nova",Arial,sans-serif;
+    --font-body:"Arial Nova","Trebuchet MS",Arial,sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ font-family:var(--font-body); color:var(--body); -weasy-hyphens:none; }
+  .sheet{ position:relative; width:8.5in; height:11in; overflow:hidden; page-break-after:always; }
+  .sheet:last-child{ page-break-after:auto; }
+
+  /* ---------- running header / footer on content sheets ---------- */
+  .head{ padding:34pt 66pt 0; display:flex; justify-content:space-between; align-items:flex-start; }
+  .head .logo{ height:17pt; }
+  .head .lg-fallback{ font-family:var(--font-head); font-weight:bold; font-size:17pt; color:var(--navy); }
+  .head .lg-fallback span{ color:var(--gold); }
+  .head .pf{ text-align:right; }
+  .head .pf .k{ font-family:var(--font-head); color:var(--gold); font-size:7.5pt; font-weight:bold; letter-spacing:.14em; text-transform:uppercase; }
+  .head .pf .org{ font-family:var(--font-head); color:var(--navy); font-size:11pt; font-weight:bold; margin-top:3pt; }
+  .head .pf .dt{ color:var(--muted); font-size:8.5pt; margin-top:2pt; }
+
+  .wrap{ padding:0 66pt; }
+  .rule-gold{ height:3pt; background:var(--gold); width:100%; }
+  .rule-thin{ height:1px; background:var(--line); width:100%; }
+
+  .eyebrow{ font-family:var(--font-head); color:var(--gold); font-size:9pt; font-weight:bold; letter-spacing:.14em; text-transform:uppercase; }
+  .seclabel{ font-family:var(--font-head); color:var(--muted); font-size:9pt; font-weight:bold; letter-spacing:.12em; text-transform:uppercase; }
+  h2.title{ font-family:var(--font-head); color:var(--navy); font-size:20pt; font-weight:bold; line-height:1.1; letter-spacing:-.01em; margin-top:7pt; }
+  p.lead{ font-size:11pt; line-height:1.5; color:var(--body); margin-top:10pt; }
+
+  ul.signals{ list-style:none; margin-top:11pt; }
+  ul.signals li{ position:relative; padding-left:20pt; font-size:10.5pt; line-height:1.44; color:var(--body); margin-bottom:7pt; }
+  ul.signals li::before{ content:"—"; position:absolute; left:0; top:0; color:var(--gold); font-weight:bold; }
+
+  /* opportunity figure block */
+  .opp{ margin-top:14pt; background:var(--panel); border-left:4pt solid var(--gold); padding:16pt 20pt; }
+  .opp .k{ font-family:var(--font-head); color:var(--muted); font-size:8.5pt; font-weight:bold; letter-spacing:.12em; text-transform:uppercase; }
+  .opp .fig{ font-family:var(--font-head); color:var(--navy); font-size:30pt; font-weight:bold; line-height:1.0; margin-top:5pt; }
+  .opp .sub{ color:var(--body); font-size:10pt; line-height:1.4; margin-top:6pt; }
+
+  /* proof stat chips */
+  .proof{ display:flex; gap:12pt; margin-top:14pt; }
+  .proof .chip{ flex:1; border:1px solid var(--line); border-top:3pt solid var(--navy); padding:11pt 12pt; }
+  .proof .chip .v{ font-family:var(--font-head); color:var(--navy); font-size:15pt; font-weight:bold; line-height:1.05; }
+  .proof .chip .l{ color:var(--muted); font-size:8.5pt; line-height:1.3; margin-top:5pt; }
+
+  /* category table */
+  table.cats{ width:100%; border-collapse:collapse; margin-top:12pt; }
+  table.cats th{ text-align:left; font-family:var(--font-head); color:var(--muted); font-size:8pt; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; padding:0 0 7pt; border-bottom:1px solid var(--line); }
+  table.cats th.r, table.cats td.r{ text-align:right; }
+  table.cats td{ padding:11pt 0; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.cats .cat{ font-family:var(--font-head); color:var(--navy); font-size:11.5pt; font-weight:bold; }
+  table.cats .sub{ color:var(--muted); font-size:9pt; margin-top:2pt; }
+  table.cats .rat{ color:var(--body); font-size:9pt; line-height:1.35; margin-top:4pt; }
+  table.cats .rng{ font-family:var(--font-head); color:var(--navy); font-size:11.5pt; font-weight:bold; white-space:nowrap; }
+  table.cats .rpct{ color:var(--muted); font-size:8.5pt; margin-top:2pt; white-space:nowrap; }
+  .tier{ display:inline-block; font-family:var(--font-head); font-size:7pt; font-weight:bold; letter-spacing:.08em; text-transform:uppercase; padding:2pt 6pt; border-radius:2pt; color:#fff; background:var(--gold); vertical-align:middle; margin-left:7pt; }
+  .tier.med{ background:var(--muted-2); }
+  .note-est{ color:var(--muted-2); font-size:8.5pt; margin-top:10pt; font-style:italic; }
+
+  /* cannot-know list + baseline callout */
+  ol.ck{ counter-reset:c; list-style:none; margin-top:11pt; }
+  ol.ck li{ position:relative; padding-left:24pt; font-size:10.5pt; line-height:1.42; color:var(--body); margin-bottom:8pt; counter-increment:c; }
+  ol.ck li::before{ content:counter(c); position:absolute; left:2pt; top:0; font-family:var(--font-head); color:var(--gold); font-weight:bold; font-size:11pt; }
+  .callout{ margin-top:15pt; background:var(--navy); color:#fff; padding:16pt 20pt; }
+  .callout .k{ font-family:var(--font-head); color:var(--gold); font-size:8.5pt; font-weight:bold; letter-spacing:.12em; text-transform:uppercase; }
+  .callout p{ font-size:10.5pt; line-height:1.5; margin-top:7pt; color:#E7EDF5; }
+
+  /* decision makers */
+  .dm{ margin-top:12pt; }
+  .dm .row{ display:flex; gap:14pt; padding:11pt 0; border-bottom:1px solid var(--line); }
+  .dm .role{ width:38%; }
+  .dm .role .n{ font-family:var(--font-head); color:var(--navy); font-size:11.5pt; font-weight:bold; }
+  .dm .role .r{ color:var(--muted); font-size:9pt; margin-top:2pt; }
+  .dm .focus{ flex:1; font-size:10pt; line-height:1.4; color:var(--body); align-self:center; }
+
+  .model{ margin-top:14pt; font-family:var(--font-head); color:var(--navy); font-size:12pt; font-weight:bold; line-height:1.42; }
+  .nextstep{ margin-top:13pt; background:var(--panel); border-left:4pt solid var(--gold); padding:14pt 18pt; font-size:11pt; line-height:1.46; color:var(--body); }
+  .nextstep b{ color:var(--navy); }
+
+  /* footer band */
+  .footer{ position:absolute; left:0; right:0; bottom:26px; padding:0 66pt; }
+  .footer .hair{ border-top:1px solid var(--line); margin-bottom:7px; }
+  .footer .row{ display:flex; justify-content:space-between; align-items:center; }
+  .footer .sign{ font-size:8.4pt; color:var(--muted); }
+  .footer .sign b{ color:var(--navy); }
+  .footer .vti{ font-family:var(--font-head); font-weight:bold; font-size:8.5pt; color:var(--navy); }
+  .footer .vti em{ color:var(--gold); font-style:normal; font-weight:normal; }
+
+  /* ---------- cover (page 1) ---------- */
+  .cover{ position:relative; width:8.5in; height:11in; overflow:hidden; page-break-after:always;
+          background-image:{{ hero_bg }}; background-size:cover; background-position:center; color:#fff; }
+  .cover .c-head{ padding:52pt 60pt 0; display:flex; justify-content:space-between; align-items:flex-start; }
+  .cover .c-logo{ height:22pt; filter:brightness(0) invert(1); }
+  .cover .c-logo-fb{ font-family:var(--font-head); font-weight:bold; font-size:22pt; color:#fff; }
+  .cover .c-logo-fb span{ color:var(--gold); }
+  .cover .c-eyebrow{ font-family:var(--font-head); color:var(--gold); font-size:10pt; font-weight:bold; letter-spacing:.18em; text-transform:uppercase; text-align:right; }
+  .cover .c-body{ position:absolute; left:60pt; right:60pt; bottom:150pt; }
+  .cover .c-prep{ font-family:var(--font-head); font-size:9pt; font-weight:bold; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.8); }
+  .cover h1{ font-family:var(--font-head); font-size:40pt; font-weight:bold; line-height:1.04; letter-spacing:-.015em; margin-top:12pt; max-width:6.2in; }
+  .cover .c-org{ font-family:var(--font-head); font-size:16pt; font-weight:bold; margin-top:20pt; }
+  .cover .c-meta{ font-size:10.5pt; line-height:1.5; color:rgba(255,255,255,.9); margin-top:6pt; }
+  .cover .c-rule{ height:3pt; width:64pt; background:var(--gold); margin-top:16pt; }
+  .cover .c-foot{ position:absolute; left:60pt; right:60pt; bottom:52pt; }
+  .cover .c-foot .cont{ font-size:9.5pt; color:rgba(255,255,255,.82); }
+  .cover .c-foot .dt{ font-size:9pt; color:rgba(255,255,255,.7); margin-top:4pt; }
+</style>
+</head>
+<body>
+
+<!-- ============================ PAGE 1 — COVER ============================ -->
+<section class="cover">
+  <div class="c-head">
+    {% if logo_uri %}<img class="c-logo" src="{{ logo_uri }}" alt="ERA Group">{% else %}<div class="c-logo-fb">(<span>era</span></div>{% endif %}
+    <div class="c-eyebrow">Executive Opportunity Brief</div>
+  </div>
+  <div class="c-body">
+    <div class="c-prep">Prepared Exclusively For</div>
+    <h1>{{ headline }}</h1>
+    <div class="c-org">{{ company.name }}</div>
+    <div class="c-meta">
+      {% if footprint_line %}{{ footprint_line }}<br>{% endif %}
+      {{ industry }}{% if revenue_line %} &middot; {{ revenue_line }}{% endif %}
+    </div>
+    <div class="c-rule"></div>
+  </div>
+  <div class="c-foot">
+    <div class="cont">{{ contingency_note }}</div>
+    <div class="dt">{{ prepared_date }} &middot; {{ signoff.org }}</div>
+  </div>
+</section>
+
+<!-- ==================== PAGE 2 — WHY NOW + OPPORTUNITY ==================== -->
+<section class="sheet">
+  <div class="head">
+    {% if logo_uri %}<img class="logo" src="{{ logo_uri }}" alt="ERA Group">{% else %}<div class="lg-fallback">(<span>era</span></div>{% endif %}
+    <div class="pf"><div class="k">Prepared For</div><div class="org">{{ company.name }}</div><div class="dt">{{ prepared_date }}</div></div>
+  </div>
+  <div class="wrap">
+    <div class="rule-gold" style="margin-top:14pt"></div>
+    <div class="eyebrow" style="margin-top:15pt">Why This, Why Now</div>
+    <h2 class="title">The conditions that let indirect costs drift.</h2>
+    {% if why_summary %}<p class="lead">{{ why_summary }}</p>{% endif %}
+    {% if why_signals %}
+    <ul class="signals">
+      {% for s in why_signals %}<li>{{ s }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="opp">
+      <div class="k">The Opportunity We See — Annual Indirect-Spend Recovery</div>
+      <div class="fig">{{ opp_range }}</div>
+      <div class="sub">{% if opp_pct %}Roughly {{ opp_pct }} — {% endif %}an outside-in estimate from public filings and ERA's category benchmarks, sized in the pages that follow and confirmed only by a no-cost baseline against your actual contracts.</div>
+    </div>
+
+    {% if proof_stats %}
+    <div class="proof">
+      {% for p in proof_stats %}
+      <div class="chip"><div class="v">{{ p.value }}</div><div class="l">{{ p.label }}</div></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="footer">
+    <div class="hair"></div>
+    <div class="row">
+      <div class="sign"><b>{{ signoff.name }}</b> &middot; {{ signoff.title }} &middot; {{ signoff.org }} &middot; {{ signoff.email }} &middot; {{ signoff.phone }}</div>
+      <div class="vti">value through <em>insight</em>&trade;</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PAGE 3 — WHERE THE OPPORTUNITY SITS ==================== -->
+<section class="sheet">
+  <div class="head">
+    {% if logo_uri %}<img class="logo" src="{{ logo_uri }}" alt="ERA Group">{% else %}<div class="lg-fallback">(<span>era</span></div>{% endif %}
+    <div class="pf"><div class="k">Prepared For</div><div class="org">{{ company.name }}</div><div class="dt">{{ prepared_date }}</div></div>
+  </div>
+  <div class="wrap">
+    <div class="rule-gold" style="margin-top:14pt"></div>
+    <div class="eyebrow" style="margin-top:15pt">Where The Opportunity Sits</div>
+    <h2 class="title">The largest indirect categories visible from the outside.</h2>
+    <p class="lead">These are the categories that stand out in {{ company.name }}'s public filings — not the full review. ERA benchmarks 50-plus indirect categories across seven expense groups; the baseline covers every one that applies. Ordered by size.</p>
+    <table class="cats">
+      <thead><tr><th>Category</th><th class="r">Est. annual opportunity</th></tr></thead>
+      <tbody>
+      {% for cat in categories %}
+        <tr>
+          <td>
+            <span class="cat">{{ cat.label }}</span>{% if cat.tier %}<span class="tier {{ 'med' if cat.tier|upper != 'HIGH' else '' }}">{{ cat.tier }}</span>{% endif %}
+            {% if cat.sublabel %}<div class="sub">{{ cat.sublabel }}</div>{% endif %}
+            {% if cat.rationale %}<div class="rat">{{ cat.rationale }}</div>{% endif %}
+          </td>
+          <td class="r">
+            <div class="rng">{{ cat._range }}</div>
+            {% if cat._pct %}<div class="rpct">{{ cat._pct }} of category</div>{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <div class="note-est">Ranges are outside-in estimates for illustration, not quoted savings. Actual figures are established by the no-cost baseline against your contract data.</div>
+  </div>
+  <div class="footer">
+    <div class="hair"></div>
+    <div class="row">
+      <div class="sign"><b>{{ signoff.name }}</b> &middot; {{ signoff.title }} &middot; {{ signoff.org }} &middot; {{ signoff.email }} &middot; {{ signoff.phone }}</div>
+      <div class="vti">value through <em>insight</em>&trade;</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PAGE 4 — WHAT WE CAN'T KNOW + BASELINE ==================== -->
+<section class="sheet">
+  <div class="head">
+    {% if logo_uri %}<img class="logo" src="{{ logo_uri }}" alt="ERA Group">{% else %}<div class="lg-fallback">(<span>era</span></div>{% endif %}
+    <div class="pf"><div class="k">Prepared For</div><div class="org">{{ company.name }}</div><div class="dt">{{ prepared_date }}</div></div>
+  </div>
+  <div class="wrap">
+    <div class="rule-gold" style="margin-top:14pt"></div>
+    <div class="eyebrow" style="margin-top:15pt">What We Can't Know From The Outside</div>
+    <h2 class="title">An honest account of the estimate's limits.</h2>
+    <p class="lead">Public filings show the shape of the spend, not the contracts behind it. Three things an outside-in view cannot establish — and exactly what the baseline resolves:</p>
+    {% if cannot_know %}
+    <ol class="ck">
+      {% for item in cannot_know %}<li>{{ item }}</li>{% endfor %}
+    </ol>
+    {% endif %}
+    <div class="callout">
+      <div class="k">The No-Cost Baseline</div>
+      <p>A 30-day baseline replaces every estimate above with your actual contract data — at no cost and with no obligation. Most organizations are already competitive in some categories; the baseline names both the real opportunities and the areas already performing well. Nothing changes without your approval — every recommendation is yours to accept or decline.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="hair"></div>
+    <div class="row">
+      <div class="sign"><b>{{ signoff.name }}</b> &middot; {{ signoff.title }} &middot; {{ signoff.org }} &middot; {{ signoff.email }} &middot; {{ signoff.phone }}</div>
+      <div class="vti">value through <em>insight</em>&trade;</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PAGE 5 — WHO / MODEL / NEXT STEP ==================== -->
+<section class="sheet">
+  <div class="head">
+    {% if logo_uri %}<img class="logo" src="{{ logo_uri }}" alt="ERA Group">{% else %}<div class="lg-fallback">(<span>era</span></div>{% endif %}
+    <div class="pf"><div class="k">Prepared For</div><div class="org">{{ company.name }}</div><div class="dt">{{ prepared_date }}</div></div>
+  </div>
+  <div class="wrap">
+    <div class="rule-gold" style="margin-top:14pt"></div>
+    <div class="eyebrow" style="margin-top:15pt">Who This Is For</div>
+    <h2 class="title">The leaders who own indirect spend.</h2>
+    {% if decision_makers %}
+    <div class="dm">
+      {% for d in decision_makers %}
+      <div class="row">
+        <div class="role"><div class="n">{{ d.display }}</div>{% if d.name and d.role %}<div class="r">{{ d.role }}</div>{% endif %}</div>
+        <div class="focus">{{ d.focus }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="seclabel" style="margin-top:20pt">How ERA Works</div>
+    <div class="model">{{ contingency_note }}</div>
+    <p class="lead" style="margin-top:8pt">ERA finds savings across 50-plus indirect categories in seven expense groups; you implement; ERA takes a share of what is verified. There is no upfront cost and no fee without savings.</p>
+
+    <div class="seclabel" style="margin-top:20pt">The Next Step</div>
+    <div class="nextstep"><b>{{ next_step }}</b></div>
+  </div>
+  <div class="footer">
+    <div class="hair"></div>
+    <div class="row">
+      <div class="sign"><b>{{ signoff.name }}</b> &middot; {{ signoff.title }} &middot; {{ signoff.org }} &middot; {{ signoff.email }} &middot; {{ signoff.phone }}</div>
+      <div class="vti">value through <em>insight</em>&trade;</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
