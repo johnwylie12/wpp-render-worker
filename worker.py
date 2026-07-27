@@ -148,14 +148,19 @@ def fetch_account_name(cx, account_id):
 
 
 def upload_pdf(cx, path, pdf_bytes):
-    """Upload to Storage (upsert) and return the public URL."""
+    """Upload to Storage (upsert) and return the BARE object path.
+
+    The collateral bucket is PRIVATE (Gate 0 security remediation), so we never
+    persist absolute /object/public/ URLs — the row stores the bare object path
+    (e.g. 'package/account-6274/123-acme.pdf') and the app mints a short-lived
+    signed URL on demand (src/lib/storage.ts -> signedCollateralUrl)."""
     url = f"{SUPABASE_URL}/storage/v1/object/{BUCKET}/{path}"
     r = cx.post(url, headers=_headers({"Content-Type": "application/pdf",
                                        "x-upsert": "true"}),
                 content=pdf_bytes)
     if r.status_code not in (200, 201):
         raise RenderError(f"storage upload failed {r.status_code}: {r.text[:200]}")
-    return f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET}/{path}"
+    return path
 
 
 # ---------------------------------------------------------------- rendering
