@@ -394,7 +394,7 @@ def stitch_pdfs(paths, out_pdf):
 # Excluded from numbering: cover letter, cover page, closer -- keyed by PIECE
 # IDENTITY (not page position), so it is correct whether or not a letter is bound.
 PKG_FOOTER_EXCLUDE = set(s.strip() for s in os.environ.get(
-    "PKG_FOOTER_EXCLUDE", "letter,cover,closing").split(",") if s.strip())
+    "PKG_FOOTER_EXCLUDE", "letter,cover,closing,sticker").split(",") if s.strip())
 # "physical" -> PAGE 3 OF 9 (whole stack, matches a reader flipping through);
 # "numbered" -> PAGE 3 OF 6 (footered pages only).
 PKG_FOOTER_TOTAL_MODE = os.environ.get("PKG_FOOTER_TOTAL_MODE", "physical")
@@ -626,6 +626,14 @@ def build_pdf(cx, brief, workdir):
     if brief.get("doc_type") in PACKAGE_DOC_TYPES:
         org_name = (content.get("org") or {}).get("name") or \
                    fetch_account_name(cx, brief.get("account_id")) or ""
+        # HARD ORDERING: the package prints the portal QR + short code, so the
+        # portal must exist BEFORE this render. A missing portal FAILS the render
+        # rather than printing a dead code. (enqueueEop creates the portal and
+        # embeds params.portal = { code, url } — this is the backstop.)
+        portal = params.get("portal") or {}
+        if not portal.get("url") or not portal.get("code"):
+            raise RenderError("package: portal missing — refusing to render a "
+                              "package without its portal code (create the portal first)")
         # Render each bound piece defensively: the cover ALWAYS produces a page 1
         # (branded, or a minimal fallback if the branded cover errors) so a cover
         # bug can never again ship a coverless package; the enrichment sections
@@ -661,6 +669,13 @@ def build_pdf(cx, brief, workdir):
             else:
                 # A missing letter recipient must not sink the whole package.
                 warnings.append("cover_letter requested but no recipient resolved")
+        # Portal sticker — two 6x4 pages (side A book-a-meeting QR, side B portal
+        # QR + typeable short code), appended after the closing page and exempt
+        # from the package footer. The portal gate above guarantees the fields.
+        from portal_sticker.portal_sticker import render_sticker
+        sticker_path = os.path.join(workdir, "portal_sticker.pdf")
+        render_sticker(portal["url"], portal["code"], sticker_path)
+        labeled.append(("sticker", sticker_path))
         bound = os.path.join(workdir, "eop_bound.pdf")
         stitch_and_stamp(labeled, bound, org_name)   # stitch + package-wide footer
         if warnings:
