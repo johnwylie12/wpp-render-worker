@@ -1,0 +1,64 @@
+{
+  "hero": { "url": "https://ouzrrkskrfcvtnmhlycd.supabase.co/storage/v1/object/public/content-assets/heroes/healthcare.png" },
+  "model": { "contingency_note": "Contingency-based — a share of verified savings. No savings, no fee." },
+  "company": {
+    "name": "Planned Parenthood South Atlantic",
+    "industry": "Healthcare / Nonprofit",
+    "revenue_usd": 59000000,
+    "footprint_line": "14 health centers — NC, SC, VA, WV — 50,000+ patients/yr"
+  },
+  "why_now": {
+    "signals": [
+      "Recent multi-site expansion",
+      "No centralized purchasing function",
+      "Costs renewed site-by-site"
+    ],
+    "summary": "Multi-state, donor-funded footprint with spend split across 14 sites and no central procurement."
+  },
+  "headline": "Care Comes First. So Costs Drift.",
+  "next_step": "A 30-minute scoping call to confirm the categories worth a no-cost baseline.",
+  "categories": [
+    {
+      "tier": "HIGH",
+      "label": "Medical Supply",
+      "low_usd": 180000,
+      "pct_low": 6,
+      "high_usd": 420000,
+      "pct_high": 18,
+      "sublabel": "Disposables, devices, lab",
+      "estimated": true,
+      "rationale": "High-volume clinical supply bought site-by-site, rarely consolidated."
+    },
+    {
+      "tier": "HIGH",
+      "label": "IT & Telecom",
+      "low_usd": 95000,
+      "pct_low": 10,
+      "high_usd": 240000,
+      "pct_high": 25,
+      "sublabel": "Connectivity, SaaS, support",
+      "estimated": true,
+      "rationale": "Per-site contracts and overlapping software licenses."
+    }
+  ],
+  "cannot_know": [
+    "Actual indirect spend mix by category",
+    "Which categories are already under long-term contract",
+    "Vendor relationships already optimized"
+  ],
+  "opportunity": {
+    "low_usd": 600000,
+    "pct_low": 1.0,
+    "high_usd": 1400000,
+    "pct_high": 2.4
+  },
+  "proof_stats": [
+    { "label": "in Medical Supply", "value": "$180K–$420K" },
+    { "label": "in IT & Telecom", "value": "$95K–$240K" },
+    { "label": "ERA projects with quantified savings", "value": "1,000+" }
+  ],
+  "decision_makers": [
+    { "name": "Jennifer Black", "role": "President & CEO", "focus": "Mission delivery and financial stewardship" },
+    { "name": "Nancy Long", "role": "Chief Financial Officer", "focus": "Budget, margin, multi-site cost control" }
+  ]
+}

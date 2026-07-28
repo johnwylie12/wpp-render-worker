@@ -1,0 +1,97 @@
+{
+  "hero": { "url": "https://ouzrrkskrfcvtnmhlycd.supabase.co/storage/v1/object/public/content-assets/heroes/health_system.png" },
+  "model": { "contingency_note": "Contingency-based — a share of verified savings. No savings, no fee." },
+  "date": "July 28, 2026",
+  "company": {
+    "name": "McLeod Health",
+    "industry": "Healthcare — Hospitals & Physician Clinics",
+    "revenue_usd": 340817246,
+    "footprint_line": "Hospitals & physician clinics — South Carolina · FY2024 Form 990"
+  },
+  "why_now": {
+    "summary": "McLeod Health's FY2024 Form 990 reports $340.8M in revenue with more than $43M of indirect, third-party spend across insurance, technology, supplies, and outside services — the recurring categories where health-system costs tend to drift while attention stays on clinical priorities.",
+    "signals": [
+      "$43.5M of addressable indirect spend is visible in the FY2024 filing — roughly 13% of revenue",
+      "The spend concentrates in categories where ERA's healthcare engagements most consistently find recovery: insurance, supplies, and outside services",
+      "Sector-wide, hospital cost inflation continues to outpace reimbursement growth, putting every non-clinical dollar under closer scrutiny"
+    ]
+  },
+  "headline": "The Opportunity Inside the Operating Budget.",
+  "next_step": "A 20-minute call to identify which categories merit a no-cost, 30-day baseline against actual contract data.",
+  "categories": [
+    {
+      "tier": "HIGH",
+      "label": "Insurance",
+      "low_usd": 510000,
+      "high_usd": 1300000,
+      "pct_low": 8,
+      "pct_high": 20,
+      "sublabel": "Form 990 line 23 — $6.37M",
+      "estimated": true,
+      "rationale": "Premiums reported at $6.4M in the FY2024 filing. Carrier and broker terms are among the categories ERA re-prices most consistently across healthcare engagements."
+    },
+    {
+      "tier": "HIGH",
+      "label": "IT Hardware/Services",
+      "low_usd": 2000000,
+      "high_usd": 5600000,
+      "pct_low": 8,
+      "pct_high": 22,
+      "sublabel": "Form 990 line 14 — $25.4M",
+      "estimated": true,
+      "rationale": "The filing reports $25.4M in information technology — a scale of licenses, support, and connectivity contracts that a baseline reviews line by line."
+    },
+    {
+      "tier": "HIGH",
+      "label": "Office Supplies",
+      "low_usd": 500000,
+      "high_usd": 1200000,
+      "pct_low": 10,
+      "pct_high": 25,
+      "sublabel": "Form 990 line 13 — $4.97M",
+      "estimated": true,
+      "rationale": "Office expenses of $5.0M in the filing — high-volume, frequently re-bid spend where consolidated pricing routinely moves."
+    },
+    {
+      "tier": "MED",
+      "label": "Professional Services",
+      "low_usd": 390000,
+      "high_usd": 970000,
+      "pct_low": 8,
+      "pct_high": 20,
+      "sublabel": "Form 990 lines 11b–11d — $4.84M",
+      "estimated": true,
+      "rationale": "Legal, accounting, and consulting fees totaling $4.8M in the filing — rate cards and scopes that benchmark cleanly across the sector."
+    },
+    {
+      "tier": "MED",
+      "label": "Marketing Services",
+      "low_usd": 140000,
+      "high_usd": 350000,
+      "pct_low": 10,
+      "pct_high": 25,
+      "sublabel": "Form 990 line 12 — $1.39M",
+      "estimated": true,
+      "rationale": "Advertising and promotion of $1.4M in the filing — agency and media terms with wide market spreads."
+    }
+  ],
+  "cannot_know": [
+    "Which contracts are already competitively priced — many will be",
+    "Current vendor terms, renewal dates, and commitments",
+    "Where operational or clinical constraints take a category off the table"
+  ],
+  "opportunity": {
+    "low_usd": 4192726,
+    "high_usd": 10526236,
+    "pct_low": 1.2,
+    "pct_high": 3.1
+  },
+  "proof_stats": [
+    { "label": "in Insurance", "value": "$510K–$1.3M" },
+    { "label": "in IT Hardware/Services", "value": "$2.0M–$5.6M" },
+    { "label": "realized client savings across 6,389 ERA projects", "value": "$616M" }
+  ],
+  "decision_makers": [
+    { "name": "Fulton Ervin", "role": "Chief Financial Officer", "focus": "Margin, payer mix, and system-wide cost discipline across hospitals and clinics" }
+  ]
+}
