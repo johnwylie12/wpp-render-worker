@@ -19,11 +19,17 @@ Public API:
     }
 Anything missing is filled from the ERA canon below.
 """
-import os, datetime
+import os, sys, datetime
 from jinja2 import Template
 from weasyprint import HTML
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))  # repo root -> wpp_signatures
+from wpp_signatures import signature_data_uri  # noqa: E402
+
+# Brand canon (brand_canon.signature.letter): the cover letter signs with Sig 3
+# (contained mark), width 115px. params.cover_letter.signature overrides.
+SIGNATURE_DEFAULT = "3"
 
 # Bundled fonts.conf maps Trebuchet -> Liberation Sans (CIR parity). Set it
 # defensively so the letter renders in the same typeface even if the worker
@@ -128,6 +134,8 @@ def build_cover(params_cover: dict | None,
         "letterhead_paper": bool(pc.get("letterhead_paper")),
         # { url, code } -> the bottom-right portal invite + QR. Absent -> no block.
         "portal": pc.get("portal") or None,
+        # Signature variant ('3' contained default, '2' long-sweep) — see wpp_signatures.
+        "signature": pc.get("signature"),
     }
 
 
@@ -182,6 +190,7 @@ def render_cover(cover: dict, out_pdf: str, page_size: str | None = "Letter") ->
         "page_css": resolve_page_size(page_size),
         "letterhead_paper": bool(cover.get("letterhead_paper")),
         "portal": _portal_block(cover.get("portal")),
+        "signature_uri": signature_data_uri(str(cover.get("signature") or SIGNATURE_DEFAULT)),
     }
     HTML(string=_TPL.render(**ctx)).write_pdf(out_pdf)
     return out_pdf

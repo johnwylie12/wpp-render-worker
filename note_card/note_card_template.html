@@ -11,7 +11,8 @@
   .greeting{color:var(--blue);font-size:13.5pt;margin:0 0 14px;}
   .body p{color:var(--blue);font-size:12pt;line-height:1.4;margin:0 0 13px;font-weight:400;}
   .regards{color:var(--blue);font-size:12pt;margin:0.24in 0 0;}
-  .sig{margin-top:0.55in;}
+  .sig{margin-top:0.32in;}
+  .sig .mark{display:block;width:96px;height:auto;margin:0 0 6px;}
   .sig .nm{color:var(--navy);font-weight:700;font-size:13pt;}
   .sig .role{color:var(--navy);font-size:10.5pt;margin-top:3px;}
   .sig .contact{color:var(--grey);font-size:10pt;margin-top:3px;}
@@ -24,6 +25,7 @@
     <div class="body">{% for p in body %}<p>{{ p }}</p>{% endfor %}</div>
     <div class="regards">Best regards,</div>
     <div class="sig">
+      <img class="mark" src="{{ sig_uri }}" alt=""/>
       <div class="nm">{{ signoff.name }}</div>
       {% if signoff.role %}<div class="role">{{ signoff.role }}</div>{% endif %}
       {% if signoff.contact %}<div class="contact">{{ signoff.contact }}</div>{% endif %}
