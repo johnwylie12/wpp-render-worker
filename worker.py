@@ -137,7 +137,10 @@ def fetch_contact(cx, contact_id):
         return None
     c = rows[0]
     name = f"{c.get('first_name') or ''} {c.get('last_name') or ''}".strip()
-    return {"name": name or None, "title": c.get("title")}
+    # first_name rides along so the salutation is the clean first name alone —
+    # never a re-split of the display name.
+    return {"name": name or None, "title": c.get("title"),
+            "first_name": c.get("first_name")}
 
 
 def fetch_account_name(cx, account_id):
@@ -568,6 +571,10 @@ def build_pdf(cx, brief, workdir):
             lb = pp.get("cover_letter")
             if lb:
                 company = (c.get("org") or {}).get("name") or name
+                # Wave entries carry portal at the package level (when the enqueue
+                # created one); absent -> the letter simply renders without a QR.
+                if pp.get("portal") and not lb.get("portal"):
+                    lb = {**lb, "portal": pp["portal"]}
                 cover = cover_engine.build_cover(lb, lb.get("recipient"), company, date_str=lb.get("date_str"))
                 lp = os.path.join(awd, "letter.pdf")
                 cover_engine.render_cover(cover, lp, page_size="letter")
@@ -662,6 +669,8 @@ def build_pdf(cx, brief, workdir):
             company = (content.get("org") or {}).get("name") or \
                       fetch_account_name(cx, brief.get("account_id"))
             if (recipient and recipient.get("name")) or letter_block.get("recipient"):
+                # The gated portal doubles as the letter's bottom-right QR invite.
+                letter_block = {**letter_block, "portal": letter_block.get("portal") or portal}
                 cover = cover_engine.build_cover(letter_block, recipient, company, date_str=letter_block.get("date_str"))
                 letter_path = os.path.join(workdir, "cover_letter.pdf")
                 cover_engine.render_cover(cover, letter_path, page_size="letter")

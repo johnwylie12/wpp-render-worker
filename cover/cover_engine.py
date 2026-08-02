@@ -48,10 +48,14 @@ with open(os.path.join(HERE, "cover_letter.html")) as fh:
     _TPL = Template(fh.read())
 
 
-def _honorific_salutation(name: str, title: str | None) -> str:
-    """First-name salutation (house style, e.g. "Dear Miriam,"). Falls back safely."""
-    n = (name or "").strip()
-    first = n.split()[0] if n else ""
+def _honorific_salutation(name: str, first_name: str | None = None) -> str:
+    """First-name salutation (house style, e.g. "Dear Miriam,"). The clean
+    contacts.first_name wins when provided — never first+last, never a
+    credential; splitting the display name is only the fallback."""
+    first = (first_name or "").strip()
+    if not first:
+        n = (name or "").strip()
+        first = n.split()[0] if n else ""
     return f"Dear {first}," if first else "Dear Sir or Madam,"
 
 
@@ -68,12 +72,13 @@ def build_cover(params_cover: dict | None,
     r = dict(pc.get("recipient") or {})
     name    = r.get("name")    or rc.get("name")    or pc.get("addressee_name")
     title   = r.get("title")   or rc.get("title")   or pc.get("addressee_title")
+    first   = r.get("first_name") or rc.get("first_name")
     org     = r.get("company") or rc.get("company") or company
     address = r.get("address_lines") or rc.get("address_lines") or []
 
     salutation = pc.get("salutation")
     if not salutation or salutation.strip() in ("Dear ___,", "Dear ___"):
-        salutation = _honorific_salutation(name, title)
+        salutation = _honorific_salutation(name, first)
 
     body = pc.get("body_paras") or pc.get("body")
     if not body:
@@ -121,6 +126,8 @@ def build_cover(params_cover: dict | None,
         # True -> render logo-free with a cleared top for printing on physical
         # ERA letterhead stock. Set via params.cover.letter.letterhead_paper.
         "letterhead_paper": bool(pc.get("letterhead_paper")),
+        # { url, code } -> the bottom-right portal invite + QR. Absent -> no block.
+        "portal": pc.get("portal") or None,
     }
 
 
@@ -147,6 +154,21 @@ def resolve_page_size(page_size: str | None) -> str:
     return str(page_size).strip()  # treat as a raw CSS size token
 
 
+def _portal_block(portal: dict | None) -> dict | None:
+    """QR + human link for the bottom-right portal invite. Returns None (no
+    block) when there's no URL — a letter must never carry a dead QR."""
+    url = (portal or {}).get("url")
+    if not url:
+        return None
+    import segno
+    qr_uri = segno.make(url, error="m").svg_data_uri(dark="#003A70", border=0)
+    return {
+        "qr_uri": qr_uri,
+        "link": url.replace("https://", "").replace("http://", ""),
+        "code": (portal or {}).get("code"),
+    }
+
+
 def render_cover(cover: dict, out_pdf: str, page_size: str | None = "Letter") -> str:
     ctx = {
         "logo_b64": LOGO_B64,
@@ -159,6 +181,7 @@ def render_cover(cover: dict, out_pdf: str, page_size: str | None = "Letter") ->
         "signoff": {**SIGNOFF_CANON, **(cover.get("signoff") or {})},
         "page_css": resolve_page_size(page_size),
         "letterhead_paper": bool(cover.get("letterhead_paper")),
+        "portal": _portal_block(cover.get("portal")),
     }
     HTML(string=_TPL.render(**ctx)).write_pdf(out_pdf)
     return out_pdf
