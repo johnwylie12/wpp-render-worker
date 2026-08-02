@@ -24,9 +24,16 @@ from jinja2 import Template
 from weasyprint import HTML
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))  # repo root -> wpp_signatures
+from wpp_signatures import signature_data_uri  # noqa: E402
+
 SHARED = os.path.join(os.path.dirname(HERE), "case_study", "assets")
 FONTS = os.path.join(SHARED, "fonts")
 BRAND_FONTS = os.path.join(os.path.dirname(HERE), "fonts")  # repo-root brand fonts (Trebuchet)
+
+# Brand canon (brand_canon.signature.note_card): the 5x7 card signs with Sig 2,
+# the long-sweep variant. params.note_card.signature overrides per enqueue.
+SIGNATURE_DEFAULT = "2"
 
 
 def _b64(path):
@@ -69,6 +76,7 @@ def render(data, out_pdf):
     signoff = {**DEFAULT_SIGNOFF, **(data.get("signoff") or {})}
     ctx = {
         "logo_uri": _img_uri(os.path.join(SHARED, "era_logo.png")),
+        "sig_uri": signature_data_uri(str(data.get("signature") or SIGNATURE_DEFAULT)),
         "vti_uri": f"data:image/png;base64,{VTI_B64}",
         # Brand fonts per ERA playbook: Trebuchet MS body (Arial Nova fallback).
         "tre_r_b64": _b64(os.path.join(BRAND_FONTS, "Trebuchet MS.ttf")),

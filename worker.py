@@ -547,6 +547,7 @@ def build_pdf(cx, brief, workdir):
             "org": nc.get("org"),
             "body": body,
             "signoff": nc.get("signoff"),
+            "signature": nc.get("signature"),
         }, card_pdf)
         return card_pdf, len(PdfReader(card_pdf).pages), None, None, "note_card"
 
