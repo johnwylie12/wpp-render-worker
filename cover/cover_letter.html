@@ -93,7 +93,7 @@
   <div class="portal">
     <div class="h">See your full opportunity online</div>
     <img src="{{ portal.qr_uri }}" alt="">
-    <div class="lk">Scan or visit<br>{{ portal.link }}</div>
+    <div class="lk">Scan or visit<br>{{ portal.link }}{% if portal.access_code %}<br>access code {{ portal.access_code }}{% endif %}</div>
   </div>
   {% endif %}
   <div class="pagefoot">eragroup.com</div>

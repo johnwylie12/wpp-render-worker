@@ -164,15 +164,23 @@ def resolve_page_size(page_size: str | None) -> str:
 
 def _portal_block(portal: dict | None) -> dict | None:
     """QR + human link for the bottom-right portal invite. Returns None (no
-    block) when there's no URL — a letter must never carry a dead QR."""
+    block) when there's no URL — a letter must never carry a dead QR.
+
+    Rev 4 (branded URLs): the QR encodes the FULL coded URL
+    (https://{sub}.wpp-us.com?c={access}) so a scan opens straight in; the
+    printed line stays the CLEAN domain (brand signal) with the 7-char access
+    code small beneath as the manual-entry fallback."""
     url = (portal or {}).get("url")
     if not url:
         return None
     import segno
     qr_uri = segno.make(url, error="m").svg_data_uri(dark="#003A70", border=0)
+    display = url.replace("https://", "").replace("http://", "").split("?")[0]
+    access = (portal or {}).get("access_code")
     return {
         "qr_uri": qr_uri,
-        "link": url.replace("https://", "").replace("http://", ""),
+        "link": display,
+        "access_code": access,
         "code": (portal or {}).get("code"),
     }
 
