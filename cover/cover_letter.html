@@ -47,10 +47,15 @@
   /* Portal invite — an accent in the open bottom-right corner, subordinate to
      the signature (small, grey link, no second CTA). Fixed to the page box so
      it can never push the letter to a second page. */
-  .portal { position: fixed; right: 56pt; bottom: 44pt; width: 118pt; text-align: center; }
+  .portal { position: fixed; right: 56pt; bottom: 44pt; width: 156pt; text-align: center; }
   .portal .h  { font-size: 7.5pt; font-weight: bold; color: #003A70; margin-bottom: 4pt; }
   .portal img { width: 62pt; height: 62pt; display: block; margin: 0 auto; }
   .portal .lk { font-size: 6.8pt; color: #777; margin-top: 4pt; letter-spacing: .01em; }
+  /* The branded host must read as ONE unbroken string — the default break at
+     the hyphens ("…-benchmark.wpp-" / "us.com") reads as a typo on a mailed
+     piece. The block is sized for the longest live subdomain
+     (calhounlibertyhospital-benchmark.wpp-us.com, 43ch @ 6.8pt). */
+  .portal .host { display: block; white-space: nowrap; hyphens: none; word-break: keep-all; }
 </style></head>
 <body><div class="sheet{% if letterhead_paper %} letterhead-paper{% endif %}">
 
@@ -93,7 +98,7 @@
   <div class="portal">
     <div class="h">See your full opportunity online</div>
     <img src="{{ portal.qr_uri }}" alt="">
-    <div class="lk">Scan or visit<br>{{ portal.link }}{% if portal.access_code %}<br>access code {{ portal.access_code }}{% endif %}</div>
+    <div class="lk">Scan or visit<span class="host">{{ portal.link }}</span>{% if portal.access_code %}access code {{ portal.access_code }}{% endif %}</div>
   </div>
   {% endif %}
   <div class="pagefoot">eragroup.com</div>

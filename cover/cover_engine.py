@@ -175,7 +175,10 @@ def _portal_block(portal: dict | None) -> dict | None:
         return None
     import segno
     qr_uri = segno.make(url, error="m").svg_data_uri(dark="#003A70", border=0)
-    display = url.replace("https://", "").replace("http://", "").split("?")[0]
+    # Printed line = the CLEAN host: no scheme, no ?c= query, and no trailing
+    # slash (the QR carries the code; this line is the brand signal a human
+    # reads and types). "https://x.wpp-us.com/?c=AB12CD3" -> "x.wpp-us.com".
+    display = url.replace("https://", "").replace("http://", "").split("?")[0].rstrip("/")
     access = (portal or {}).get("access_code")
     return {
         "qr_uri": qr_uri,
