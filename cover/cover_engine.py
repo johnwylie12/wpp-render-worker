@@ -65,6 +65,33 @@ def _honorific_salutation(name: str, first_name: str | None = None) -> str:
     return f"Dear {first}," if first else "Dear Sir or Madam,"
 
 
+def _resolve_letter_date(pc: dict, date_str: str | None) -> str:
+    """The date printed at the top of the letter.
+
+    ORDER MATTERS. params.cover_letter.date ('YYYY-MM-DD') is authoritative when
+    present: a letter for a future drop must carry the drop's date, never the day
+    the worker happened to render it. Only when no date was chosen do we fall
+    back to today — silently stamping "now" on a package mailed next week is the
+    bug this closes.
+
+      params.cover_letter.date   ISO, set by the Build flow / staged in the DB
+      date_str / params…date_str long form, the legacy field
+      today                      last resort
+    """
+    iso = pc.get("date")
+    if isinstance(iso, str) and iso.strip():
+        try:
+            return datetime.date.fromisoformat(iso.strip()).strftime("%B %-d, %Y")
+        except ValueError:
+            pass  # malformed -> fall through rather than fail the render
+    if date_str:
+        return date_str
+    legacy = pc.get("date_str")
+    if isinstance(legacy, str) and legacy.strip():
+        return legacy
+    return datetime.date.today().strftime("%B %-d, %Y")
+
+
 def build_cover(params_cover: dict | None,
                 recipient: dict | None,
                 company: str | None,
@@ -121,7 +148,7 @@ def build_cover(params_cover: dict | None,
     signoff = {**SIGNOFF_CANON, **(pc.get("signoff") or {})}
 
     return {
-        "date_str": date_str or datetime.date.today().strftime("%B %-d, %Y"),
+        "date_str": _resolve_letter_date(pc, date_str),
         "recipient": {"name": name, "title": title, "company": org,
                       "address_lines": address},
         "salutation": salutation,
