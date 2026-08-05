@@ -84,3 +84,27 @@ cir/                   the LOCKED CIR engine — frozen, do not edit
   src/cir_engine.py, src/cir_template.html, src/assets/heroes/*.png
   build/fonts.conf, content/carmel.json (reference payload)
 ```
+
+## US English is law
+
+No British spellings, anywhere, ever — enforced, not advised (2026-08-05).
+
+The renderer produces the Executive Opening Package: paper a prospect physically
+holds. Every other surface can be corrected after the fact; a mailed page cannot.
+So this repo carries its own always-on gate rather than trusting the app's.
+
+```
+python scripts/us_english_gate.py         # check   (exit 1 on any hit)
+python scripts/us_english_gate.py --fix   # rewrite in place, then read the diff
+```
+
+It runs on every push and PR (`.github/workflows/us-english.yml`), needs no
+secret and no dependencies, and scans `worker.py`, `wpp_signatures.py` and every
+template. Matching is whole-word, so ReportLab's `drawCentredString` and correct
+US English like `analyses` / `optimistic` are never flagged.
+
+`us_english_rules.json` is a **copy**. The source of record is the app repo's
+`src/lib/usEnglish.rules.json`, mirrored into the Postgres table
+`public.us_english_rules`. Add a word there first, then copy it here in the same
+change. To exempt a line that must MATCH a British spelling in order to strip it,
+mark it `us-english-ok — <reason>`; that is the only exemption.

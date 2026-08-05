@@ -1,0 +1,32 @@
+# US ENGLISH IS LAW — the renderer's gate.
+#
+# 2026-08-05. The rule is enforced across the system, not advised. The app repo
+# gates its code, its stored content and its database generators; this gates the
+# renderer, which the app cannot see.
+#
+# The renderer matters most of the three. It produces the Executive Opening
+# Package — paper a prospect physically holds. Every other surface can be
+# corrected after the fact; a mailed page cannot. So this job is unconditional:
+# no secret, no service, no skip path. Railway redeploys on push to this repo, so
+# this is the last check between a template edit and a printed PDF.
+#
+# The word list (us_english_rules.json) is a copy of the app's
+# src/lib/usEnglish.rules.json, which is the source of record. Change it there
+# first, then copy it here in the same change.
+name: us-english
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  renderer-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      # No dependencies — the gate is stdlib Python reading a JSON word list, so
+      # it runs in seconds and cannot be broken by a dependency resolution.
+      - name: No British spelling in the renderer or its templates
+        run: python scripts/us_english_gate.py
