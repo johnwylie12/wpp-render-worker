@@ -1,35 +1,63 @@
 #!/usr/bin/env python3
 """ERA executive cover letter renderer.
 
-Standalone — does NOT touch the frozen CIR engine/template. Produces a single
-US-Letter page that gets merged in FRONT of the Cost Intelligence Report.
+LOCKED 2026-08-11. John: "That is the new cover letter that should be locked in
+and used 100% of the time."
 
-Public API:
-    render_cover(cover: dict, out_pdf: str) -> out_pdf
+Renders cover/WPP_EOP_CoverLetter_TEMPLATE_LOCKED_2026-08-11.html. The five body
+paragraphs live IN that template and are NOT built here — this module only
+resolves the per-account merge fields, the assets, and the portal QR, then hands
+the HTML to WeasyPrint.
+
+RETIRES the nine-paragraph copy previously hardcoded in this file ("prepared
+before we ever asked for a meeting" / "Warm regards," / "more than three
+decades" / "savings"). Do not reintroduce it.
+
+Public API is UNCHANGED — worker.py needs no edits:
     build_cover(params_cover, recipient, company, *, date_str=None) -> dict
+    render_cover(cover, out_pdf, page_size="Letter") -> out_pdf
 
-`cover` dict shape (all optional except recipient is recommended):
-    {
-      "date_str":  "June 29, 2026",
-      "recipient": {"name","title","company","address_lines":[...]},
-      "salutation":"Dear Mr. Jacobi,",
-      "body_paras":["...", "..."],
-      "ps":        "optional postscript",
-      "signoff":   {"name","title","org","email","phone","tagline"}
-    }
-Anything missing is filled from the ERA canon below.
+Access-code contract
+--------------------
+`prospect_portals.code` is the INTERNAL record id (e.g. NQKF82W) and must never
+be printed. `prospect_portals.access_code` is what the prospect types (e.g.
+HAC3E9T). This module reads access_code ONLY; if a portal block carries `code`
+but no `access_code`, it prints NOTHING (no QR, no code) and logs a warning,
+rather than printing the internal id. That mismatch shipped two different codes
+in one envelope on brief 745.
 """
-import os, sys, datetime
+import base64
+import datetime
+import logging
+import os
+import sys
+
+import segno
 from jinja2 import Template
 from weasyprint import HTML
+
+log = logging.getLogger(__name__)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))  # repo root -> wpp_signatures
 from wpp_signatures import signature_data_uri  # noqa: E402
 
-# Brand canon (brand_canon.signature.letter): the cover letter signs with Sig 3
-# (contained mark), width 115px. params.cover_letter.signature overrides.
+# Brand canon: the cover letter signs with Sig 3 (contained mark), 115px in the
+# template. params.cover_letter.signature overrides. The 5x7 note card uses Sig 2
+# — they must never be swapped.
 SIGNATURE_DEFAULT = "3"
+
+PORTAL_HOST = "portal.wpp-us.com"
+BRAND_NAVY = "#003A70"
+
+# --- asset paths (verified against the repo, 2026-08-12) ---------------------
+TEMPLATE_PATH = os.path.join(HERE, "WPP_EOP_CoverLetter_TEMPLATE_LOCKED_2026-08-11.html")
+# The ERA header logo — a JPEG stored pre-encoded as base64 (the same asset the
+# prior letter shipped with; John approved the header).
+LOGO_B64_PATH = os.path.join(HERE, "logo_b64.txt")
+# The footer "Value Through Insight(TM)" mark — the NAVY wordmark on transparent
+# (vti_white_lockup.png is the WHITE version, for dark backgrounds — not this).
+VTI_MARK_PATH = os.path.join(HERE, "..", "meeting_label", "assets", "vti_logo.png")
 
 # Bundled fonts.conf maps Trebuchet -> Liberation Sans (CIR parity). Set it
 # defensively so the letter renders in the same typeface even if the worker
@@ -38,45 +66,80 @@ _FONTS = os.path.join(HERE, "..", "cir", "build", "fonts.conf")
 if os.path.exists(_FONTS):
     os.environ.setdefault("FONTCONFIG_FILE", os.path.abspath(_FONTS))
 
-# ERA canon signoff (mirrors content_contracts._shared.signoff_constant + tagline).
-SIGNOFF_CANON = {
-    "name":  "John Wylie",
-    "title": "Senior Consultant",
-    "org":   "ERA Group",
-    "email": "jwylie@eragroup.com",
-    "phone": "703.244.9868",
-    "tagline": "Value Through Insight\u2122",
-}
-
-with open(os.path.join(HERE, "logo_b64.txt")) as fh:
-    LOGO_B64 = fh.read().strip()
-with open(os.path.join(HERE, "cover_letter.html")) as fh:
-    _TPL = Template(fh.read())
+with open(TEMPLATE_PATH, encoding="utf-8") as _fh:
+    _TPL_STR = _fh.read()
 
 
-def _honorific_salutation(name: str, first_name: str | None = None) -> str:
-    """First-name salutation (house style, e.g. "Dear Miriam,"). The clean
-    contacts.first_name wins when provided — never first+last, never a
-    credential; splitting the display name is only the fallback."""
-    first = (first_name or "").strip()
-    if not first:
-        n = (name or "").strip()
-        first = n.split()[0] if n else ""
-    return f"Dear {first}," if first else "Dear Sir or Madam,"
+# ------------------------------------------------------------------ assets
+def _logo_uri():
+    """ERA header logo as a data: URI (JPEG). Missing -> None + warning."""
+    try:
+        with open(LOGO_B64_PATH, encoding="utf-8") as fh:
+            b64 = fh.read().strip()
+        return "data:image/jpeg;base64," + b64
+    except Exception as e:  # pragma: no cover
+        log.warning("cover: ERA logo missing (%s); rendering without it", e)
+        return None
 
 
-def _resolve_letter_date(pc: dict, date_str: str | None) -> str:
+def _vti_uri():
+    """Footer VTI mark as a data: URI (PNG). Missing -> None + warning."""
+    try:
+        with open(VTI_MARK_PATH, "rb") as fh:
+            return "data:image/png;base64," + base64.b64encode(fh.read()).decode()
+    except Exception as e:  # pragma: no cover
+        log.warning("cover: VTI mark missing (%s); rendering without it", e)
+        return None
+
+
+def _signature_uri(which):
+    """Sig 3 (default) as a data: URI, via wpp_signatures. Missing signature logs
+    a warning and renders UNSIGNED rather than crashing the whole package."""
+    try:
+        return signature_data_uri(str(which or SIGNATURE_DEFAULT))
+    except Exception as e:  # pragma: no cover
+        log.warning("cover: signature %s unavailable (%s); rendering unsigned", which, e)
+        return None
+
+
+# ------------------------------------------------------------------ helpers
+def _g(m, *keys):
+    """First non-empty value among keys of a mapping, or None."""
+    if not m:
+        return None
+    for k in keys:
+        v = m.get(k)
+        if v not in (None, ""):
+            return str(v)
+    return None
+
+
+def _first_name(full_name, explicit):
+    if explicit:
+        return str(explicit).strip()
+    if full_name:
+        return str(full_name).strip().split()[0]
+    return "there"
+
+
+def _address_lines(pc_recipient, recipient):
+    """The mailing address as [line1, city/state/zip, ...] — from the enqueued
+    recipient block (fetch_contact carries no address)."""
+    lines = None
+    if isinstance(pc_recipient, dict):
+        lines = pc_recipient.get("address_lines")
+    if not lines and isinstance(recipient, dict):
+        lines = recipient.get("address_lines")
+    return [str(x) for x in lines if x] if isinstance(lines, list) else []
+
+
+def _resolve_letter_date(pc, date_str):
     """The date printed at the top of the letter.
 
     ORDER MATTERS. params.cover_letter.date ('YYYY-MM-DD') is authoritative when
     present: a letter for a future drop must carry the drop's date, never the day
-    the worker happened to render it. Only when no date was chosen do we fall
-    back to today — silently stamping "now" on a package mailed next week is the
-    bug this closes.
-
-      params.cover_letter.date   ISO, set by the Build flow / staged in the DB
-      date_str / params…date_str long form, the legacy field
-      today                      last resort
+    the worker happened to render it. Only when no date was chosen do we fall back
+    to today.
     """
     iso = pc.get("date")
     if isinstance(iso, str) and iso.strip():
@@ -85,158 +148,150 @@ def _resolve_letter_date(pc: dict, date_str: str | None) -> str:
         except ValueError:
             pass  # malformed -> fall through rather than fail the render
     if date_str:
-        return date_str
+        return str(date_str)
     legacy = pc.get("date_str")
     if isinstance(legacy, str) and legacy.strip():
         return legacy
     return datetime.date.today().strftime("%B %-d, %Y")
 
 
-def build_cover(params_cover: dict | None,
-                recipient: dict | None,
-                company: str | None,
-                *, date_str: str | None = None) -> dict:
-    """Merge an enqueued cover_letter block (if any) with the resolved recipient
-    (from contact_id) and the ERA canon. Enqueued values win; canon fills gaps."""
+def _portal_fields(portal):
+    """Resolve { subdomain, access_code, qr_uri } for the bottom-right invite.
+
+    access_code ONLY. Returns None (whole block omitted) when there is no
+    access_code — a letter must never carry a dead QR or the internal `code`.
+    The QR encodes the FULL coded URL so a scan opens straight in; the printed
+    line is the clean host + slug with the access code beneath.
+    """
+    if not portal:
+        return None
+    access = (_g(portal, "access_code") or "").strip()
+    if not access:
+        log.warning("cover: portal present but access_code missing; omitting the "
+                    "portal block (refusing to print prospect_portals.code)")
+        return None
+
+    url = (_g(portal, "url") or "").strip()
+    sub = (_g(portal, "subdomain", "slug") or "").strip()
+    if not sub and url:
+        host_path = url.split("://", 1)[-1].split("?", 1)[0].rstrip("/")
+        if "/" in host_path:            # shared host: portal.wpp-us.com/{slug}
+            sub = host_path.split("/", 1)[1]
+        else:                            # legacy: {slug}.wpp-us.com
+            sub = host_path.split(".", 1)[0]
+
+    if not url:
+        url = f"https://{PORTAL_HOST}/{sub}?c={access}" if sub else None
+    if not url:
+        log.warning("cover: portal access_code present but no URL/subdomain; "
+                    "omitting the portal block")
+        return None
+
+    qr_uri = segno.make(url, error="m").svg_data_uri(dark=BRAND_NAVY, border=0)
+    return {"subdomain": sub, "access_code": access, "qr_uri": qr_uri}
+
+
+# ------------------------------------------------------------------ build
+def build_cover(params_cover, recipient, company, *, date_str=None):
+    """Resolve every per-account merge field the locked template needs.
+
+    params_cover (params.cover_letter) may carry:
+        recipient: {name, first_name, title, company, address_lines:[...]}
+        sector:    str          (accounts.industry_group, lowercased)
+        date:      'YYYY-MM-DD'  (the drop date; falls back to render date)
+        portal:    {subdomain|slug, access_code, url}   <-- access_code, never code
+        signature: '3' | '2'     (variant override; Sig 3 default)
+    `recipient` (worker.fetch_contact) supplies name/title/first_name when the
+    block does not. Body copy is NOT here — it lives in the locked template.
+    """
     pc = dict(params_cover or {})
     rc = dict(recipient or {})
+    r = pc.get("recipient") if isinstance(pc.get("recipient"), dict) else {}
 
-    # recipient: prefer explicit enqueued recipient, else the resolved contact
-    r = dict(pc.get("recipient") or {})
-    name    = r.get("name")    or rc.get("name")    or pc.get("addressee_name")
-    title   = r.get("title")   or rc.get("title")   or pc.get("addressee_title")
-    first   = r.get("first_name") or rc.get("first_name")
-    org     = r.get("company") or rc.get("company") or company
-    address = r.get("address_lines") or rc.get("address_lines") or []
+    name = _g(r, "name") or _g(rc, "name") or _g(pc, "addressee_name") or ""
+    title = _g(r, "title") or _g(rc, "title") or _g(pc, "addressee_title") or ""
+    first = _first_name(name, _g(r, "first_name") or _g(rc, "first_name"))
+    org = _g(r, "company") or _g(rc, "company") or company or ""
 
-    salutation = pc.get("salutation")
-    if not salutation or salutation.strip() in ("Dear ___,", "Dear ___"):
-        salutation = _honorific_salutation(name, first)
+    lines = _address_lines(r, rc)
+    addr_line1 = lines[0] if lines else ""
+    addr_csz = " ".join(lines[1:]) if len(lines) > 1 else ""
+    if not (addr_line1 and addr_csz):
+        log.warning("cover letter for %s has no full address block", org or company)
 
-    body = pc.get("body_paras") or pc.get("body")
-    if not body:
-        co = org or "your organization"
-        body = [
-            "The enclosed Executive Opportunity Brief is unusual for one reason: it was "
-            "prepared before we ever asked for a meeting.",
-            "I’ve always believed that an executive’s time should be earned, not requested.",
-            f"Rather than beginning with a presentation about our capabilities, I thought it "
-            f"would be more valuable to first spend some time understanding {co}. The enclosed "
-            f"Brief reflects an independent review based on publicly available information, "
-            f"industry benchmarks, and more than three decades of helping organizations "
-            f"evaluate operating costs that often receive far less attention than they deserve.",
-            "It isn’t intended to prove that savings exist. It’s intended to determine "
-            "whether they might.",
-            "In many organizations, existing supplier relationships are already delivering "
-            "excellent value. In others, the market has simply moved. Our role is to determine "
-            "which is true.",
-            "Sometimes the best outcome is helping an organization secure better pricing while "
-            "continuing with its current supplier. Other times, the market reveals a stronger "
-            "alternative offering the same solution, or a comparable one, at a lower overall "
-            "cost. The objective is never to change suppliers. The objective is to ensure "
-            "you’re receiving the best value available.",
-            "If the observations in the Brief warrant a closer look, we validate them using "
-            "your actual contracts, invoices, and supplier data before any recommendations "
-            "are made. Nothing changes without your approval, and we’re compensated only "
-            "when measurable savings are achieved.",
-            f"Whether the result is confirmation that you’re already buying well or the "
-            f"identification of meaningful savings, I hope you’ll find the Brief worth the "
-            f"few minutes it takes to read. It was prepared specifically for {co} because I "
-            f"believe the best first meeting is one where we’ve already done some of the work.",
-            "I’ll follow up next week to answer any questions.",
-        ]
-    signoff = {**SIGNOFF_CANON, **(pc.get("signoff") or {})}
+    sector = (_g(pc, "sector") or "your sector").lower()
 
     return {
-        "date_str": _resolve_letter_date(pc, date_str),
-        "recipient": {"name": name, "title": title, "company": org,
-                      "address_lines": address},
-        "salutation": salutation,
-        "valediction": pc.get("valediction") or "Warm regards,",
-        "body_paras": body,
-        "ps": pc.get("ps"),
-        "signoff": signoff,
-        # True -> render logo-free with a cleared top for printing on physical
-        # ERA letterhead stock. Set via params.cover.letter.letterhead_paper.
-        "letterhead_paper": bool(pc.get("letterhead_paper")),
-        # { url, code } -> the bottom-right portal invite + QR. Absent -> no block.
+        "date": _resolve_letter_date(pc, date_str),
+        "first_name": first,
+        "recipient_name": name,
+        "recipient_title": title,
+        "org_name": org,
+        "addr_line1": addr_line1,
+        "addr_city_state_zip": addr_csz,
+        "sector": sector,
+        # Resolved at render time (access_code only). Absent -> no portal block.
         "portal": pc.get("portal") or None,
-        # Signature variant ('3' contained default, '2' long-sweep) — see wpp_signatures.
+        # Signature variant ('3' contained default, '2' long-sweep note-card mark).
         "signature": pc.get("signature"),
     }
 
 
-# Selectable cover-letter paper sizes (name -> CSS @page size token).
-# Accepts a preset key (case-insensitive) OR a raw CSS size string like "8.5in 11in".
+# ------------------------------------------------------------------ render
+# Selectable paper sizes (name -> CSS @page size token). The package cover is
+# always Letter; `separate` covers may request another size.
 COVER_PAGE_SIZES = {
-    "letter":      "Letter",            # 8.5 x 11 in  (matches the CIR; required for bundled)
-    "legal":       "Legal",             # 8.5 x 14 in
-    "a4":          "A4",
-    "a5":          "A5",
-    "half-letter": "5.5in 8.5in",       # statement / half sheet
-    "monarch":     "7.25in 10.5in",     # executive letterhead
-    "executive":   "7.25in 10.5in",
-    "6x9":         "6in 9in",
-    "note-a2":     "4.25in 5.5in",      # folded note card
+    "letter": "Letter", "legal": "Legal", "a4": "A4", "a5": "A5",
+    "half-letter": "5.5in 8.5in", "monarch": "7.25in 10.5in",
+    "executive": "7.25in 10.5in", "6x9": "6in 9in", "note-a2": "4.25in 5.5in",
 }
 
-def resolve_page_size(page_size: str | None) -> str:
+
+def resolve_page_size(page_size):
     if not page_size:
         return "Letter"
     key = str(page_size).strip().lower()
-    if key in COVER_PAGE_SIZES:
-        return COVER_PAGE_SIZES[key]
-    return str(page_size).strip()  # treat as a raw CSS size token
+    return COVER_PAGE_SIZES.get(key, str(page_size).strip())
 
 
-def _portal_block(portal: dict | None) -> dict | None:
-    """QR + human link for the bottom-right portal invite. Returns None (no
-    block) when there's no URL — a letter must never carry a dead QR.
+def render_cover(cover, out_pdf, page_size="Letter"):
+    """Render the locked template to a single-page PDF."""
+    pf = _portal_fields(cover.get("portal"))
 
-    Rev 4 (branded URLs): the QR encodes the FULL coded URL
-    (https://{sub}.wpp-us.com?c={access}) so a scan opens straight in; the
-    printed line stays the CLEAN domain (brand signal) with the 7-char access
-    code small beneath as the manual-entry fallback."""
-    url = (portal or {}).get("url")
-    if not url:
-        return None
-    import segno
-    qr_uri = segno.make(url, error="m").svg_data_uri(dark="#003A70", border=0)
-    # Printed line = the CLEAN host: no scheme, no ?c= query, and no trailing
-    # slash (the QR carries the code; this line is the brand signal a human
-    # reads and types). "https://x.wpp-us.com/?c=AB12CD3" -> "x.wpp-us.com".
-    display = url.replace("https://", "").replace("http://", "").split("?")[0].rstrip("/")
-    access = (portal or {}).get("access_code")
-    return {
-        "qr_uri": qr_uri,
-        "link": display,
-        "access_code": access,
-        "code": (portal or {}).get("code"),
-    }
-
-
-def render_cover(cover: dict, out_pdf: str, page_size: str | None = "Letter") -> str:
     ctx = {
-        "logo_b64": LOGO_B64,
-        "date_str": cover.get("date_str", ""),
-        "recipient": cover.get("recipient", {}),
-        "salutation": cover.get("salutation", "Dear Sir or Madam,"),
-        "valediction": cover.get("valediction", "Warm regards,"),
-        "body_paras": cover.get("body_paras", []),
-        "ps": cover.get("ps"),
-        "signoff": {**SIGNOFF_CANON, **(cover.get("signoff") or {})},
-        "page_css": resolve_page_size(page_size),
-        "letterhead_paper": bool(cover.get("letterhead_paper")),
-        "portal": _portal_block(cover.get("portal")),
-        "signature_uri": signature_data_uri(str(cover.get("signature") or SIGNATURE_DEFAULT)),
+        "era_logo_uri": _logo_uri() or "",
+        "vti_uri": _vti_uri() or "",
+        "signature_uri": _signature_uri(cover.get("signature")) or "",
+        "date": cover.get("date", ""),
+        "first_name": cover.get("first_name", ""),
+        "recipient_name": cover.get("recipient_name", ""),
+        "recipient_title": cover.get("recipient_title", ""),
+        "org_name": cover.get("org_name", ""),
+        "addr_line1": cover.get("addr_line1", ""),
+        "addr_city_state_zip": cover.get("addr_city_state_zip", ""),
+        "sector": cover.get("sector", "your sector"),
+        "portal_subdomain": pf["subdomain"] if pf else "",
+        "portal_access_code": pf["access_code"] if pf else "",
+        "qr_uri": pf["qr_uri"] if pf else None,   # None -> template omits the block
     }
-    HTML(string=_TPL.render(**ctx)).write_pdf(out_pdf)
+
+    html = _TPL_STR
+    size_css = resolve_page_size(page_size)
+    if size_css.lower() != "letter":
+        html = html.replace("size: Letter;", f"size: {size_css};")
+
+    HTML(string=Template(html).render(**ctx), base_url=HERE).write_pdf(out_pdf)
     return out_pdf
 
 
 if __name__ == "__main__":
-    # self-test
-    c = build_cover(None, {"name": "Nick Jacobi", "title": "General Manager"},
-                    "Stonebridge Golf Club")
+    # self-test (no DB): resolves canon + renders to /tmp
+    c = build_cover(
+        {"sector": "senior living",
+         "portal": {"subdomain": "demo-benchmark", "access_code": "HAC3E9T"}},
+        {"name": "Nick Jacobi", "title": "General Manager", "first_name": "Nick",
+         "address_lines": ["123 Fairway Dr", "Charlotte, NC 28202"]},
+        "Stonebridge Golf Club",
+    )
     render_cover(c, "/tmp/cover_test.pdf")
     print("rendered /tmp/cover_test.pdf")
