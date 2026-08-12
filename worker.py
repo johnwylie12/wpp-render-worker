@@ -153,6 +153,21 @@ def fetch_account_name(cx, account_id):
     return rows[0]["name"] if rows else None
 
 
+def fetch_account_sector(cx, account_id):
+    """The account's industry_group -> the letter's {{sector}} ("...organizations
+    in <sector>..."). The sector lives on accounts, NOT in the brief params:
+    content.org.industry_group is not populated at enqueue and cover_letter.sector
+    is absent, so the engine only ever saw a generic "your sector". Read it here,
+    the same way the account name is read."""
+    if not account_id:
+        return None
+    r = cx.get(f"{SUPABASE_URL}/rest/v1/accounts?id=eq.{account_id}"
+               f"&select=industry_group", headers=_headers())
+    r.raise_for_status()
+    rows = r.json()
+    return (rows[0].get("industry_group") if rows else None) or None
+
+
 def upload_pdf(cx, path, pdf_bytes):
     """Upload to Storage (upsert) and return the public URL."""
     url = f"{SUPABASE_URL}/storage/v1/object/{BUCKET}/{path}"
@@ -576,6 +591,12 @@ def build_pdf(cx, brief, workdir):
                 # created one); absent -> the letter simply renders without a QR.
                 if pp.get("portal") and not lb.get("portal"):
                     lb = {**lb, "portal": pp["portal"]}
+                # Sector (accounts.industry_group) fills paragraph 2; not in the
+                # letter block, so fold it in — account fetch is a no-op when the
+                # wave entry carries no account_id.
+                lb = {**lb, "sector": lb.get("sector")
+                            or (c.get("org") or {}).get("industry_group")
+                            or fetch_account_sector(cx, a.get("account_id"))}
                 cover = cover_engine.build_cover(lb, lb.get("recipient"), company, date_str=lb.get("date_str"))
                 lp = os.path.join(awd, "letter.pdf")
                 cover_engine.render_cover(cover, lp, page_size="letter")
@@ -670,8 +691,14 @@ def build_pdf(cx, brief, workdir):
             company = (content.get("org") or {}).get("name") or \
                       fetch_account_name(cx, brief.get("account_id"))
             if (recipient and recipient.get("name")) or letter_block.get("recipient"):
-                # The gated portal doubles as the letter's bottom-right QR invite.
-                letter_block = {**letter_block, "portal": letter_block.get("portal") or portal}
+                # The gated portal doubles as the letter's bottom-right QR invite;
+                # the sector (accounts.industry_group) fills paragraph 2. Neither
+                # rides in the letter block, so fold both in here before rendering.
+                letter_block = {**letter_block,
+                                "portal": letter_block.get("portal") or portal,
+                                "sector": letter_block.get("sector")
+                                          or (content.get("org") or {}).get("industry_group")
+                                          or fetch_account_sector(cx, brief.get("account_id"))}
                 cover = cover_engine.build_cover(letter_block, recipient, company, date_str=letter_block.get("date_str"))
                 letter_path = os.path.join(workdir, "cover_letter.pdf")
                 cover_engine.render_cover(cover, letter_path, page_size="letter")
