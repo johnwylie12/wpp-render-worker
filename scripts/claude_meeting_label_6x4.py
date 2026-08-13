@@ -15,6 +15,8 @@ Usage:  python3 meeting_label_6x4.py out.pdf
 import sys
 import fitz
 import qrcode
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
 from wpp_assets import logo   # canonical brand-mark resolver; see asset_sources
 
 BOOK_URL = ("https://outlook.office.com/bookwithme/user/"

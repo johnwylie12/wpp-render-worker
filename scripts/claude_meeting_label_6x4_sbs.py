@@ -10,6 +10,8 @@ Print at 100% / Actual Size.
 import sys
 import fitz
 import qrcode
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
 from wpp_assets import logo   # canonical brand-mark resolver; see asset_sources
 
 BOOK_URL = ("https://outlook.office.com/bookwithme/user/"
