@@ -25,6 +25,13 @@ HAC3E9T). This module reads access_code ONLY; if a portal block carries `code`
 but no `access_code`, it prints NOTHING (no QR, no code) and logs a warning,
 rather than printing the internal id. That mismatch shipped two different codes
 in one envelope on brief 745.
+
+Signoff contract
+----------------
+The name/title/company/email/phone in the signature block are merge fields fed
+from `brand_canon` (token_group='signoff'). The template carries no literal
+title — canon moved to "Consulting Partner" on 2026-08-14 while three surfaces
+were still printing the previous one.
 """
 import base64
 import datetime
@@ -39,8 +46,9 @@ from weasyprint import HTML
 log = logging.getLogger(__name__)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.dirname(HERE))  # repo root -> wpp_signatures
+sys.path.insert(0, os.path.dirname(HERE))  # repo root -> wpp_signatures / wpp_canon
 from wpp_signatures import signature_data_uri  # noqa: E402
+from wpp_canon import signoff  # noqa: E402
 
 # Brand canon: the cover letter signs with Sig 3 (contained mark), 115px in the
 # template. params.cover_letter.signature overrides. The 5x7 note card uses Sig 2
@@ -258,7 +266,17 @@ def render_cover(cover, out_pdf, page_size="Letter"):
     """Render the locked template to a single-page PDF."""
     pf = _portal_fields(cover.get("portal"))
 
+    # Signoff block: brand_canon, resolved at render time. The locked template
+    # carries merge fields, not a literal title — a canon change must never
+    # require editing the template again.
+    so = signoff()
+
     ctx = {
+        "signoff_name": so["name"],
+        "signoff_title": so["title"],
+        "signoff_company": so["company"],
+        "signoff_email": so["email"],
+        "signoff_phone": so["phone"],
         "era_logo_uri": _logo_uri() or "",
         "vti_uri": _vti_uri() or "",
         "signature_uri": _signature_uri(cover.get("signature")) or "",

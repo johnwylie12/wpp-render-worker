@@ -5,8 +5,8 @@ IFCJ-style personalized opportunity analysis for ONE account. Reads the
 `common_core` param family (company / categories / opportunity / cannot_know /
 hero) PLUS the exec_brief-specific fields (why_now, proof_stats,
 decision_makers, next_step, model). Renders a multi-page branded PDF with the
-same navy/gold system as the CIR + snapshot (palette #003A70 / #FF9C00, signoff
-"Senior Consultant", "value through insight" lockup).
+same navy/gold system as the CIR + snapshot (palette #003A70 / #FF9C00, the
+brand_canon signoff, "value through insight" lockup).
 
 Params are the FLAT object shown in content_contracts.example_params (the PPSAT
 reference artifact) — NOT wrapped in a `content` block. `render()` also accepts
@@ -18,6 +18,10 @@ Preview + production: WeasyPrint (same fonts.conf as the CIR).
 import json, sys, os, base64, datetime
 from jinja2 import Template
 from weasyprint import HTML
+
+# brand_canon signoff (the ONE source for John's printed title/contacts).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")))
+from wpp_canon import signoff, repair_signoff  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,9 +42,11 @@ NAVY_OVERLAY = ("linear-gradient(105deg, rgba(0,40,81,0.92) 0%, "
                 "rgba(0,52,100,0.62) 46%, rgba(10,74,134,0.28) 100%)")
 NAVY_GRADIENT = "linear-gradient(100deg,#002851 0%,#003A70 55%,#0a4a86 100%)"
 
-DEFAULT_SIGNOFF = {"name": "John Wylie", "title": "Senior Consultant",
-                   "org": "ERA Group", "email": "jwylie@eragroup.com",
-                   "phone": "703.244.9868"}
+# brand_canon signoff — resolved at import, never a literal title.
+_SO = signoff()
+DEFAULT_SIGNOFF = {"name": _SO["name"], "title": _SO["title"],
+                   "org": _SO["company"], "email": _SO["email"],
+                   "phone": _SO["phone"]}
 DEFAULT_CONTINGENCY = ("Contingency-based — a share of verified savings. "
                        "No savings, no fee.")
 
@@ -146,7 +152,7 @@ def render(params, out_pdf):
             "display": d.get("name") or d.get("role") or "",
         })
 
-    signoff = {**DEFAULT_SIGNOFF, **(content.get("signoff") or {})}
+    signoff = repair_signoff({**DEFAULT_SIGNOFF, **(content.get("signoff") or {})})
     prepared_date = content.get("date") or datetime.date.today().strftime("%B %-d, %Y")
 
     opp_range = opp.get("display") or money_range(opp["low_usd"], opp["high_usd"])

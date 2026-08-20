@@ -6,6 +6,10 @@ import json, sys, os, re, base64
 from jinja2 import Template
 from weasyprint import HTML
 
+# brand_canon signoff (the ONE source for John's printed title/contacts).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")))
+from wpp_canon import signoff, repair_signoff  # noqa: E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ---- icon library (stroke glyphs; recolored per surface) ----------------
@@ -100,7 +104,11 @@ def render(content, out_pdf):
     cap1, cap2 = balance(c["opportunity"]["basis_note"])
 
     agg = {**DEFAULT_AGG, **c.get("aggregate", {})}
-    so = c.get("signoff", {"name":"John Wylie","title":"Senior Consultant","email":"jwylie@eragroup.com","phone":"703.244.9868"})
+    _so = signoff()
+    # repair_signoff: a brief that carries a now-dead title in its params still
+    # prints canon. A live override (a partner's own signoff) passes through.
+    so = repair_signoff(c.get("signoff", {"name": _so["name"], "title": _so["title"],
+                                          "email": _so["email"], "phone": _so["phone"]}))
     src = c.get("source", {})
     src_line = (f"Source: {src['filing']} {src.get('basis','')}".strip()
                 if src.get("filing") and c.get("org",{}).get("has_990")

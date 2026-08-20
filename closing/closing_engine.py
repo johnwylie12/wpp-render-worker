@@ -31,6 +31,12 @@ import base64, os, sys, copy
 from jinja2 import Template
 from weasyprint import HTML
 
+# brand_canon signoff (the ONE source for John's printed title/contacts).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")))
+from wpp_canon import signoff  # noqa: E402
+
+_SO = signoff()
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "assets")
 _LOCAL_FONTS = os.path.join(ASSETS, "fonts")
@@ -84,8 +90,8 @@ DEFAULT = {
     ],
 
     "signature_uri":  "",              # drop in a scanned signature PNG/URL here
-    "signature_name": "John Wylie",
-    "signature_role": "Senior Consultant",
+    "signature_name": _SO["name"],
+    "signature_role": _SO["title"],
 
     "right_title": "What You Can Expect From Me",
     "commitments": [
@@ -107,11 +113,11 @@ DEFAULT = {
     ],
 
     "person": {
-        "name": "John Wylie",
-        "role": "Senior Consultant",
-        "org":  "ERA Group",
-        "email": "jwylie@eragroup.com",
-        "phone": "703.244.9868",
+        "name":  _SO["name"],
+        "role":  _SO["title"],
+        "org":   _SO["company"],
+        "email": _SO["email"],
+        "phone": _SO["phone"],
     },
 
     "footer_left_a": "Executive Opportunity Brief",

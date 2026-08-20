@@ -23,6 +23,10 @@ from datetime import date
 from jinja2 import Template
 from weasyprint import HTML
 
+# brand_canon signoff (the ONE source for John's printed title/contacts).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")))
+from wpp_canon import signoff, repair_signoff  # noqa: E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # Bundled fonts.conf maps Trebuchet/Arial/Paralucent -> Liberation Sans for
@@ -282,8 +286,10 @@ def render(content, out_pdf):
                    f"{org['name']} \u2014 before any meeting, using public filings and ERA's category benchmarks. "
                    "The remaining step is to validate those observations against information available only inside the organization.")
 
-    so = c.get("signoff", {"name": "John Wylie", "title": "Senior Consultant", "org": "ERA Group",
-                           "email": "jwylie@eragroup.com", "phone": "703.244.9868"})
+    _so = signoff()
+    # repair_signoff: a brief carrying a now-dead title in params still prints canon.
+    so = repair_signoff(c.get("signoff", {"name": _so["name"], "title": _so["title"], "org": _so["company"],
+                                          "email": _so["email"], "phone": _so["phone"]}))
     prepared_date = snap.get("date") or c.get("date") or date.today().strftime("%B %-d, %Y")
 
     logo_path = os.path.join(HERE, "logo_b64.txt")

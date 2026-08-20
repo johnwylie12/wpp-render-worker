@@ -11,6 +11,10 @@ import sys, os
 import fitz
 import qrcode
 
+# brand_canon signoff (the ONE source for John's printed title/contacts).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")))
+from wpp_canon import signoff, signoff_title_org  # noqa: E402
+
 BOOK_URL = ("https://outlook.office.com/bookwithme/user/"
             "7aa3d169518c4b1caeb9f72a2f23f9d8@eragroup.com/"
             "meetingtype/CMjo2-07uk2-Q0n_F1MSvQ2"
@@ -22,10 +26,13 @@ GOLD  = (0xFF/255, 0x9C/255, 0x00/255)
 
 HEADLINE = "Let's start a conversation"
 TAGLINE  = "VALUE THROUGH INSIGHT"
-C_NAME  = "John Wylie"
-C_TITLE = "Senior Consultant, ERA Group"
-C_PHONE = "703.244.9868"
-C_EMAIL = "jwylie@eragroup.com"
+# Signoff comes from brand_canon (wpp_canon), never a literal — the label, the
+# cover letter and the closing page must never print three different titles.
+_SO     = signoff()
+C_NAME  = _SO["name"]
+C_TITLE = signoff_title_org()
+C_PHONE = _SO["phone"]
+C_EMAIL = _SO["email"]
 
 HERE   = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "assets")

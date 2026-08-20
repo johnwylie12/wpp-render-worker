@@ -9,7 +9,13 @@ Add a sector: copy a SECTORS entry, fill every field, keep marquee sources + the
 "oh-shit" personal-dollar band. Brand colors live in the template — do not change here.
 """
 import os
+import sys
+
 from weasyprint import HTML
+
+# brand_canon signoff (the ONE source for John's printed title/contacts).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")))
+from wpp_canon import signoff  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(HERE, "benchmark_template.html")
@@ -110,6 +116,12 @@ def render(sector_key: str, outfile: str):
             f"unknown sector '{sector_key}'. Known: {', '.join(sorted(SECTORS))}"
         )
     html = open(TEMPLATE).read()
+    # The signoff strip is a merge field fed from brand_canon — the sector pages
+    # must never carry their own copy of John's title.
+    _so = signoff()
+    html = html.replace("{{SIGNOFF_LINE}}",
+                        "<b>%s</b> &middot; %s &middot; %s &middot; %s &middot; %s"
+                        % (_so["name"], _so["title"], _so["company"], _so["email"], _so["phone"]))
     for k, v in SECTORS[key].items():
         html = html.replace("{{" + k + "}}", v)
     HTML(string=html).write_pdf(outfile)

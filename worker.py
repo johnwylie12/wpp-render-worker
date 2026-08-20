@@ -651,18 +651,27 @@ def build_pdf(cx, brief, workdir):
     # bound pieces in-process (single-threaded worker - no child briefs) and stitch
     # them in print order into one PDF. The cover letter, if requested, renders as a
     # separate LOOSE print (returned as cover_path, uploaded alongside). The 5x7
-    # note stays outside the worker.
+    # note and the quarter-sheet portal label stay outside the worker.
+    #
+    # The bound stack is BOUND_PIECES (+ the letter in front). Nothing is added
+    # or removed by page index — page count varies by account, so an index-based
+    # edit is wrong the moment a CIR runs long.
     if brief.get("doc_type") in PACKAGE_DOC_TYPES:
         org_name = (content.get("org") or {}).get("name") or \
                    fetch_account_name(cx, brief.get("account_id")) or ""
-        # HARD ORDERING: the package prints the portal QR + short code, so the
-        # portal must exist BEFORE this render. A missing portal FAILS the render
-        # rather than printing a dead code. (enqueueEop creates the portal and
-        # embeds params.portal = { code, url } — this is the backstop.)
-        portal = params.get("portal") or {}
-        if not portal.get("url") or not portal.get("code"):
-            raise RenderError("package: portal missing — refusing to render a "
-                              "package without its portal code (create the portal first)")
+        # The BOUND package prints no portal code (2026-08-19: the two 6x4 card
+        # pages were dropped; the quarter-sheet portal label ships loose in the
+        # folder instead). The only portal surface left in this render is the
+        # cover letter's bottom-right QR invite, and cover_engine reads
+        # access_code ONLY — it never prints prospect_portals.code.
+        #
+        # Resolution order: params.cover_letter.portal (current shape, access_code
+        # only) then legacy params.portal (briefs queued before the change — 243
+        # of them at cutover — which still carry the old { code, url, access_code }
+        # block). Absent -> the letter renders without the QR block, exactly as
+        # cover_engine already handles.
+        portal = (params.get("cover_letter") or {}).get("portal") \
+            or params.get("portal") or {}
         # Render each bound piece defensively: the cover ALWAYS produces a page 1
         # (branded, or a minimal fallback if the branded cover errors) so a cover
         # bug can never again ship a coverless package; the enrichment sections
@@ -706,13 +715,14 @@ def build_pdf(cx, brief, workdir):
             else:
                 # A missing letter recipient must not sink the whole package.
                 warnings.append("cover_letter requested but no recipient resolved")
-        # Portal sticker — two 6x4 pages (side A book-a-meeting QR, side B portal
-        # QR + typeable short code), appended after the closing page and exempt
-        # from the package footer. The portal gate above guarantees the fields.
-        from portal_sticker.portal_sticker import render_sticker
-        sticker_path = os.path.join(workdir, "portal_sticker.pdf")
-        render_sticker(portal["url"], portal["code"], sticker_path)
-        labeled.append(("sticker", sticker_path))
+        # NOTE: the two 6x4 portal-card pages that used to be appended here are
+        # GONE (2026-08-19, authorized by John after visual confirmation of
+        # 1207-sourceamerica.pdf pages 10-11). The package now ends on the
+        # closing page. The portal reaches the prospect two other ways: the
+        # cover letter's QR invite (bound page 1) and the loose quarter-sheet
+        # portal label. Do not re-append a card component here — if a future
+        # insert is needed, add it to the labeled list, never by page index,
+        # and print access_code, never code.
         bound = os.path.join(workdir, "eop_bound.pdf")
         stitch_and_stamp(labeled, bound, org_name)   # stitch + package-wide footer
         if warnings:
