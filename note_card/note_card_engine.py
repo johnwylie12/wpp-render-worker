@@ -19,7 +19,7 @@ Data (personalize with recipient_first + org)
     body              list of paragraph strings          (default below; {org} substituted)
     signoff{name,role,contact}                            signoff overrides
 """
-import base64, os, sys
+import base64, logging, os, sys
 from jinja2 import Template
 from weasyprint import HTML
 
