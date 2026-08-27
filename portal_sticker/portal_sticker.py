@@ -1,3 +1,4 @@
+import wpp_partner as _partner
 #!/usr/bin/env python3
 """
 ERA / WPP — package insert sticker, 6" W x 4" H, TWO PAGES (duplex = two-sided):
@@ -43,34 +44,56 @@ def _qr(c, url, x, y, size):
     renderPDF.draw(d, c, x, y)
 
 
-def render_sticker(portal_url: str, code: str, out_pdf: str) -> str:
-    """Two 6x4 pages: side A = book-a-meeting, side B = portal QR + short code."""
-    if not portal_url or not code:
-        raise ValueError("portal sticker requires portal_url and code")
-    c = canvas.Canvas(out_pdf, pagesize=(PAGE_W, PAGE_H))
+def _draw_meeting_side(c, p):
+    """SIDE A — navy, book-a-meeting. Every identity field comes from the partner.
 
-    # ---- SIDE A — navy, book-a-meeting (existing QR pattern) ----
+    These were module constants (C_NAME/C_TITLE/C_PHONE/C_EMAIL and BOOK_URL) all
+    pointing at John. A partner mailing this unchanged sends every prospect who
+    scans it to John's calendar.
+    """
     c.setFillColorRGB(*NAVY)
     c.rect(0, 0, PAGE_W, PAGE_H, stroke=0, fill=1)
     qr_size = 2.1 * inch
     pad = (PAGE_H - qr_size) / 2.0
     c.setFillColorRGB(*WHITE)
     c.rect(0.45 * inch, pad, qr_size + 0.3 * inch, qr_size + 0.0 * inch, stroke=0, fill=1)
-    _qr(c, BOOK_URL, 0.6 * inch, pad + 0.0 * inch, qr_size)
+    _qr(c, p["booking_url"], 0.6 * inch, pad + 0.0 * inch, qr_size)
     tx = 3.15 * inch
     c.setFillColorRGB(*WHITE)
     c.setFont("Helvetica-Bold", 15)
     c.drawString(tx, PAGE_H - 1.1 * inch, "Let's start a")
     c.drawString(tx, PAGE_H - 1.35 * inch, "conversation")
     c.setFont("Helvetica", 10)
-    c.drawString(tx, PAGE_H - 1.85 * inch, C_NAME)
-    c.drawString(tx, PAGE_H - 2.05 * inch, C_TITLE)
-    c.drawString(tx, PAGE_H - 2.25 * inch, C_PHONE)
-    c.drawString(tx, PAGE_H - 2.45 * inch, C_EMAIL)
+    c.drawString(tx, PAGE_H - 1.85 * inch, p["name"])
+    c.drawString(tx, PAGE_H - 2.05 * inch, p["title_line"])
+    c.drawString(tx, PAGE_H - 2.25 * inch, p["phone"])
+    c.drawString(tx, PAGE_H - 2.45 * inch, p["email"])
     c.setFillColorRGB(*GOLD)
     c.setFont("Helvetica-BoldOblique", 9)
-    c.drawString(tx, 0.55 * inch, "VALUE THROUGH INSIGHT™")
+    c.drawString(tx, 0.55 * inch, "VALUE THROUGH INSIGHT\u2122")
     c.showPage()
+
+
+def render_sticker(portal_url: str, code: str, out_pdf: str, *, partner_signoff=None,
+                   include_meeting_side: bool = True) -> str:
+    """Side A = book-a-meeting (partner identity), side B = portal QR + short code.
+
+    SIDE B IS PARTNER-NEUTRAL. It carries the account's own portal QR and typeable
+    code and is identical whoever mails it. Side A is entirely partner identity.
+
+    include_meeting_side=False prints side B only -- the honest output for a
+    partner not yet set up to take bookings: a portal label with no meeting page,
+    rather than a meeting page belonging to someone else.
+    """
+    if not portal_url or not code:
+        raise ValueError("portal sticker requires portal_url and code")
+    c = canvas.Canvas(out_pdf, pagesize=(PAGE_W, PAGE_H))
+
+    if include_meeting_side:
+        # need_booking raises when the partner has no booking_url, so a stray
+        # include_meeting_side=True can never fall back to John's link.
+        _draw_meeting_side(c, _partner.normalize(partner_signoff, need_signature=False,
+                                                 need_booking=True))
 
     # ---- SIDE B — white, the portal QR + typeable short code ----
     c.setFillColorRGB(*WHITE)
