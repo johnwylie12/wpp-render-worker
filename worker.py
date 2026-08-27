@@ -143,6 +143,35 @@ def update_brief(cx, brief_id, fields):
     r.raise_for_status()
 
 
+# hero_vertical_map is the ONE vertical -> hero image map. It lives in the
+# database, not in the worker, so a remap is a row edit rather than a deploy.
+# Cached for the life of the process: the table changes about once a quarter and
+# a wave asks the same question 24 times in a row.
+_HERO_MAP_CACHE = {}
+
+
+def fetch_hero_file(cx, vertical):
+    """hero_vertical_map.hero_file for a vertical, or None. Never guesses."""
+    v = str(vertical or "").strip()
+    if not v:
+        return None
+    if v in _HERO_MAP_CACHE:
+        return _HERO_MAP_CACHE[v]
+    r = cx.get(f"{SUPABASE_URL}/rest/v1/hero_vertical_map",
+               headers=_headers(), params={"vertical": f"eq.{v}",
+                                           "select": "hero_file", "limit": "1"})
+    r.raise_for_status()
+    rows = r.json() or []
+    hero = (rows[0].get("hero_file") if rows else None) or None
+    _HERO_MAP_CACHE[v] = hero
+    return hero
+
+
+def hero_lookup_for(cx):
+    """A one-argument lookup for the cover engine, bound to this client."""
+    return lambda vertical: fetch_hero_file(cx, vertical)
+
+
 def fetch_contact(cx, contact_id):
     if not contact_id:
         return None
@@ -404,7 +433,7 @@ def _render_fallback_cover(org_name, params, workdir):
     return out
 
 
-def _render_piece(piece, content, params, workdir):
+def _render_piece(piece, content, params, workdir, hero_lookup=None):
     """Render ONE bound piece to a PDF path (rendered in-process; the worker is
     single-threaded, so the package build renders its pieces inline rather than
     enqueuing child briefs and deadlocking on itself)."""
@@ -414,9 +443,14 @@ def _render_piece(piece, content, params, workdir):
             raise RenderError("package: cover requires content.org.name")
         cp = params.get("cover_page") or {}
         out = os.path.join(workdir, "01_cover.pdf")
-        cover_page_engine.render(org, out, title=cp.get("title"), subtitle=cp.get("subtitle"),
-                                 statement=cp.get("statement"), date_str=cp.get("date_str") or cp.get("date"),
-                                 doc_type=cp.get("for_doc_type", "package"))
+        # Pass the whole content block, not just org: the hero override lives at
+        # content.assets.hero, beside org rather than inside it.
+        rel = cover_page_engine.render(
+            content, out, hero_lookup=hero_lookup, title=cp.get("title"),
+            subtitle=cp.get("subtitle"), statement=cp.get("statement"),
+            date_str=cp.get("date_str") or cp.get("date"),
+            doc_type=cp.get("for_doc_type", "package"))
+        print("[cover] %s -> hero %s" % (org.get("name"), rel), flush=True)
         return out
     if piece == "snapshot":
         opp = content.get("opportunity") or {}
@@ -655,7 +689,7 @@ def build_pdf(cx, brief, workdir):
             c = pp.get("content") or {}
             awd = os.path.join(workdir, "a{}".format(seq))
             os.makedirs(awd, exist_ok=True)
-            piece_paths = [_render_piece(pc, c, pp, awd) for pc in BOUND_PIECES]
+            piece_paths = [_render_piece(pc, c, pp, awd, hero_lookup_for(cx)) for pc in BOUND_PIECES]
             labeled = list(zip(BOUND_PIECES, piece_paths))   # (label, path) in print order
             name = a.get("name") or (c.get("org") or {}).get("name") or "Account {}".format(seq)
             recip = ""
@@ -764,7 +798,7 @@ def build_pdf(cx, brief, workdir):
         warnings = []
         for pc in BOUND_PIECES:
             try:
-                p = _render_piece(pc, content, params, workdir)
+                p = _render_piece(pc, content, params, workdir, hero_lookup_for(cx))
             except Exception as e:
                 if pc == "cover":
                     p = _render_fallback_cover(org_name, params, workdir)
@@ -832,18 +866,24 @@ def build_pdf(cx, brief, workdir):
     # for_doc_type); the hero is auto-picked per vertical from the CIR library.
     if brief.get("doc_type") in COVER_PAGE_DOC_TYPES:
         org = content.get("org") or {}
-        if not org.get("name"):
-            raise RenderError("cover_page requires params.content.org.name")
         cp = params.get("cover_page") or {}
         cover_pdf = os.path.join(workdir, "cover_page.pdf")
-        cover_page_engine.render(
-            org, cover_pdf,
-            title=cp.get("title"),
-            subtitle=cp.get("subtitle"),
-            statement=cp.get("statement"),
-            date_str=cp.get("date_str") or cp.get("date"),
-            doc_type=cp.get("for_doc_type", "package"),
-        )
+        # HeroError and CoverParamsError both become RenderError, so the brief is
+        # marked failed with the reason on it. Nothing here substitutes a default
+        # image or lets a blank page through as rendered.
+        try:
+            rel = cover_page_engine.render(
+                content, cover_pdf,
+                hero_lookup=hero_lookup_for(cx),
+                title=cp.get("title"),
+                subtitle=cp.get("subtitle"),
+                statement=cp.get("statement"),
+                date_str=cp.get("date_str") or cp.get("date"),
+                doc_type=cp.get("for_doc_type", "package"),
+            )
+        except (cover_page_engine.HeroError, cover_page_engine.CoverParamsError) as e:
+            raise RenderError(str(e))
+        print("[cover] %s -> hero %s" % (org.get("name"), rel), flush=True)
         return cover_pdf, len(PdfReader(cover_pdf).pages), None, None, "cover"
 
     # ---- sector benchmark: standalone one-page "Benchmark Behind This Analysis".

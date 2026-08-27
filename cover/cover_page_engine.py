@@ -2,9 +2,32 @@
 
 Same premium cover across all collateral; only the fields change, driven by the
 account's `org` block. `title` is a first-class variable so one cover fronts a
-Snapshot, a CIR, or a full package. Hero is resolved per-vertical from the SAME
-library the CIR uses (cir/src/assets/heroes/<vertical>.png). Fonts are embedded
-(base64) because the worker container only ships Liberation.
+Snapshot, a CIR, or a full package. Fonts are embedded (base64) because the
+worker container only ships Liberation.
+
+HERO RESOLUTION (2026-08-27). This engine used to derive the hero from a
+filename convention -- cir/src/assets/heroes/<org.vertical>.png -- and never
+looked at params.content.assets.hero at all. So an explicit hero written into
+the brief was silently ignored: 11 nonprofit covers were remapped to
+heroes/human_services.png in their params and every one still rendered the
+retired business_services glass tower. Worse, an unrecognised vertical produced
+a cover with NO hero and still reported status='rendered'.
+
+The order is now fixed and total:
+
+  1. params.content.assets.hero  -- an explicit override, used verbatim.
+  2. hero_vertical_map, keyed on params.content.org.vertical. The table is the
+     ONLY vertical -> image map; there is no longer one in this file.
+  3. Raise HeroError. Never substitute a default, and never fall back to
+     business_services.
+
+DECLARED PARAMS. A cover_page needs exactly:
+    content.org.name                      (required)
+    content.org.vertical                  (required unless assets.hero is given)
+    content.assets.hero                   (optional override)
+    content.org.vertical_label            (optional, becomes the subtitle)
+plus the optional params.cover_page overrides. Nothing else is read. It used to
+be handed the whole package blob, which hid how little it declared.
 """
 import os, base64, datetime
 from jinja2 import Template
@@ -109,14 +132,57 @@ def autofit_name_size(name, box_h=150.0, max_pt=54, min_pt=28, line_height=1.06)
 def _b64_img(path):
     return "data:image/png;base64," + base64.b64encode(open(path, "rb").read()).decode()
 
-def hero_uri(org):
-    """Per-vertical hero photo as a base64 data URI (no overlay). Empty if none."""
-    vert = (org or {}).get("vertical")
-    if vert:
-        p = os.path.join(CIR_ASSETS, "heroes", str(vert) + ".png")
-        if os.path.isfile(p):
-            return _b64_img(p)
-    return ""
+class HeroError(Exception):
+    """The hero could not be resolved. Never downgraded to a default image."""
+
+
+class CoverParamsError(Exception):
+    """A declared, required cover field is missing. Never rendered as a blank page."""
+
+
+def resolve_hero(content, hero_lookup=None):
+    """Resolve the hero to (relative_path, absolute_path, where_it_came_from).
+
+    hero_lookup(vertical) -> hero_file, i.e. a hero_vertical_map read. It is a
+    callable rather than a query so this module stays free of a DB client, and
+    so the caller decides how to cache it.
+
+    Raises HeroError rather than returning anything on failure. A cover with the
+    wrong photograph is worse than a cover that did not print: the wrong one
+    goes in the mail.
+    """
+    content = content or {}
+    org = content.get("org") or {}
+
+    rel = str((content.get("assets") or {}).get("hero") or "").strip()
+    source = "params.content.assets.hero"
+
+    if not rel:
+        vert = str(org.get("vertical") or "").strip()
+        if not vert:
+            raise HeroError(
+                "cannot resolve a hero: params.content.assets.hero is absent and "
+                "params.content.org.vertical is empty")
+        if hero_lookup is None:
+            raise HeroError(
+                "cannot resolve a hero for vertical %r: no hero_vertical_map lookup "
+                "was supplied to the renderer" % vert)
+        rel = str(hero_lookup(vert) or "").strip()
+        source = "hero_vertical_map[%s]" % vert
+        if not rel:
+            raise HeroError(
+                "hero_vertical_map has no row for vertical %r, and no explicit "
+                "params.content.assets.hero was given" % vert)
+
+    root = os.path.normpath(CIR_ASSETS)
+    path = os.path.normpath(os.path.join(root, rel))
+    if path != root and not path.startswith(root + os.sep):
+        raise HeroError("%s = %r escapes the hero library" % (source, rel))
+    if not os.path.isfile(path):
+        raise HeroError(
+            "%s = %r, which is not in the hero library at %s. The image has to be "
+            "bundled with the worker before a cover can use it." % (source, rel, root))
+    return rel, path, source
 
 # Default centered title per doc_type — app can override via params.
 TITLE_DEFAULTS = {
@@ -145,10 +211,23 @@ DEFAULT_STMT = ("Your next ", "opportunity", " may already be hiding in your ope
 def _esc(s):
     return (s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-def build(org, *, title=None, subtitle=None, statement=None, date_str=None, doc_type="cover_page"):
-    org = org or {}
+def build(content, *, hero_lookup=None, title=None, subtitle=None, statement=None,
+          date_str=None, doc_type="cover_page"):
+    """content is params.content: {org: {...}, assets: {hero: ...}}.
+
+    It takes the content block, not a bare org, because the hero override lives
+    beside org rather than inside it -- which is precisely why an engine given
+    only `org` could not see it.
+    """
+    content = content or {}
+    org = content.get("org") or {}
     vert = org.get("vertical")
-    name = org.get("name") or "Organization"
+    name = str(org.get("name") or "").strip()
+    if not name:
+        # Declared and required. Rendering "Organization" onto a cover is how a
+        # meaningless page reaches a print queue looking finished.
+        raise CoverParamsError("cover_page requires params.content.org.name")
+    rel, hero_path, hero_source = resolve_hero(content, hero_lookup)
     title = title or TITLE_DEFAULTS.get(doc_type, TITLE_DEFAULTS["cover_page"])
     subtitle = (subtitle or (org.get("vertical_label") or "")).upper()
     if statement:
@@ -163,7 +242,9 @@ def build(org, *, title=None, subtitle=None, statement=None, date_str=None, doc_
         date_str = date_str.upper()
     name_size = autofit_name_size(name)
     return {
-        "hero_uri":  hero_uri(org),
+        "hero_uri":  _b64_img(hero_path),
+        "hero_rel":  rel,            # for the caller's log / verification
+        "hero_source": hero_source,
         "hero_pos":  "70% 50%" if vert == "community_health" else "52% 50%",
         "org_name":  _esc(name),
         "title":     _esc(title),
@@ -173,16 +254,43 @@ def build(org, *, title=None, subtitle=None, statement=None, date_str=None, doc_
         "name_size": name_size,
     }
 
-def render(org, out_pdf, **kw):
+def render(content, out_pdf, **kw):
+    """Render one cover. Returns the resolved hero's relative path so the caller
+    can log and verify WHICH image went on the page, not merely that one did."""
     from weasyprint import HTML
-    ctx = build(org, **kw)
+    ctx = build(content, **kw)
     tpl = Template(open(os.path.join(HERE, "cover_page_template.html")).read())
     HTML(string=tpl.render(**ctx)).write_pdf(out_pdf)
-    return out_pdf
+    _assert_not_blank(out_pdf, ctx["org_name"])
+    return ctx["hero_rel"]
+
+
+def _assert_not_blank(pdf_path, org_name):
+    """A blank PDF that reports status='rendered' is the worst failure this
+    worker has: it ships as done. Read the page back and refuse an empty one."""
+    from pypdf import PdfReader
+    try:
+        r = PdfReader(pdf_path)
+        pages = len(r.pages)
+        text = (r.pages[0].extract_text() or "") if pages else ""
+    except Exception as e:
+        raise CoverParamsError("cover rendered but could not be read back: %s" % e)
+    if pages != 1:
+        raise CoverParamsError("cover rendered %d pages, expected exactly 1" % pages)
+    if len(text.strip()) < 40:
+        raise CoverParamsError(
+            "cover rendered a page with almost no text (%d chars) -- refusing to "
+            "report a blank cover as rendered" % len(text.strip()))
+    # The org name is the one field that makes the page this account's cover.
+    probe = "".join(ch for ch in org_name.lower() if ch.isalnum())[:12]
+    flat = "".join(ch for ch in text.lower() if ch.isalnum())
+    if probe and probe not in flat:
+        raise CoverParamsError(
+            "cover rendered without the organisation name (%r) on the page" % org_name)
 
 if __name__ == "__main__":
-    gardner = {"name": "Gardner Health Services", "vertical": "community_health",
-               "vertical_label": "Community Health"}
-    render(gardner, "/tmp/cover_package.pdf", doc_type="package")            # EXECUTIVE OPPORTUNITY BRIEF
-    render(gardner, "/tmp/cover_snapshot.pdf", doc_type="opportunity_snapshot")  # EXECUTIVE OPPORTUNITY SNAPSHOT
-    print("rendered /tmp/cover_package.pdf + /tmp/cover_snapshot.pdf")
+    gardner = {"org": {"name": "Gardner Health Services", "vertical": "community_health",
+                       "vertical_label": "Community Health"},
+               "assets": {"hero": "heroes/community_health.png"}}
+    print(render(gardner, "/tmp/cover_package.pdf", doc_type="package"))
+    print(render(gardner, "/tmp/cover_snapshot.pdf", doc_type="opportunity_snapshot"))
