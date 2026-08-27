@@ -22,12 +22,16 @@ WHAT CHANGED FROM THE ORIGINAL, AND ONLY THIS:
   * Input. It read a fixed /tmp/labels_data.json; this takes a records list.
   * Output. It wrote one fixed filename; this takes a path.
 
-The URL is rev 5 -- https://portal.wpp-us.com/{sub}?c={code} -- which is what
-the locked GENERATOR builds. Its spec .md still describes the older
-{sub}.wpp-us.com subdomain form; the code is the one that shipped and the one
-LAW 9 rev 5 confirms, so the code wins. Noted here because a portal address
-disagreeing with itself across two files is exactly how this codebase has been
-burned before.
+The URL is rev 6 (2026-08-27, John): https://portal.wpp-us.com/{sub}, with NO
+access code. This supersedes rev 5 (2026-08-08), which appended ?c={code}. The
+printed line under the QR was ALREADY the bare slug under rev 5, so the QR and
+the words beneath it pointed at two different addresses; rev 6 makes them one.
+
+The ACCESS CODE block stays on the label. It is how a prospect who types the
+address rather than scanning it gets in, and it is still what proves the portal
+is provisioned at all.
+
+Already-printed labels are unaffected -- the coded form keeps resolving.
 """
 import base64, io, os, re
 from PIL import Image, ImageChops
@@ -106,7 +110,7 @@ def render(records, out_pdf, workdir, era_png=None, vti_png=None):
   <div class="hdr"><img class="era" src="{era}"/><div class="eyebrow">PREPARED<br/>PRIVATELY FOR</div></div>
   <div class="org">{n}</div><div class="head">{HEAD}</div>
   <div class="mid"><div class="body"><p>{B1}</p><p>{B2}</p></div>
-    <div class="qrbox"><img class="qr" src="{_qr(f'https://portal.wpp-us.com/{sub}?c={code}')}"/>
+    <div class="qrbox"><img class="qr" src="{_qr(f'https://portal.wpp-us.com/{sub}')}"/>
       <div class="aclabel">ACCESS CODE</div><div class="accode">{code}</div></div></div>
   <div class="foot"><div class="scan">Scan, or visit <b>portal.wpp-us.com/{sub}</b></div><img class="vti" src="{vti}"/></div>
 </div>'''
