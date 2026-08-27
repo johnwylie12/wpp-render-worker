@@ -26,7 +26,7 @@ from weasyprint import HTML
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))  # repo root -> wpp_signatures
 import wpp_partner as _partner
-from wpp_signatures import signature_data_uri  # noqa: E402
+from wpp_signatures import signature_data_uri, note_card_width_px  # noqa: E402
 
 SHARED = os.path.join(os.path.dirname(HERE), "case_study", "assets")
 FONTS = os.path.join(SHARED, "fonts")
@@ -94,6 +94,9 @@ def render(data, out_pdf):
     ctx = {
         "logo_uri": _img_uri(os.path.join(SHARED, "era_logo.png")),
         "sig_uri": signature_data_uri(str(sig_key)),
+        # Per-mark width. A single fixed width flatters whichever signature
+        # happens to match its aspect ratio and shrinks every other one.
+        "sig_width_px": note_card_width_px(sig_key),
         "vti_uri": f"data:image/png;base64,{VTI_B64}",
         # Brand fonts per ERA playbook: Trebuchet MS body (Arial Nova fallback).
         "tre_r_b64": _b64(os.path.join(BRAND_FONTS, "Trebuchet MS.ttf")),

@@ -41,7 +41,15 @@ SIGNATURE_JW_DEFAULT = "3"
 
 # Printed width in the cover letter, per signature. Anything not listed prints at
 # the template default.
-SIGNATURE_WIDTH_PX = {"3": 115, "2": 115, "ak1": 165}
+# Arvo doubled 2026-08-27 at John's call: his mark is 640x210 where John's
+# is 640x472, so at equal WIDTH it renders under half the height and reads
+# as a much smaller signature. Width is the only lever the templates have.
+SIGNATURE_WIDTH_PX = {"3": 115, "2": 115, "ak1": 330}
+
+# The 5x7 note card is a smaller surface than the letter and has always used
+# its own fixed 96px. Same aspect-ratio problem, same fix, same doubling.
+NOTE_CARD_WIDTH_PX = {"ak1": 192}
+NOTE_CARD_WIDTH_DEFAULT = 96
 SIGNATURE_WIDTH_DEFAULT = 115
 
 # partner_signature.partner_id -> signature key. THE mapping; nothing else may
@@ -53,6 +61,11 @@ PARTNER_SIGNATURE = {1: "ak1", 3: "3"}
 def signature_b64(which: str = SIGNATURE_JW_DEFAULT) -> str:
     """Raw base64 for the requested signature variant ('3' default, or '2')."""
     return _SIGS.get(str(which), _SIGS[SIGNATURE_JW_DEFAULT])
+
+
+def note_card_width_px(which) -> int:
+    """Printed width of the mark on the 5x7 card."""
+    return NOTE_CARD_WIDTH_PX.get(str(which), NOTE_CARD_WIDTH_DEFAULT)
 
 
 def signature_width_px(which: str = SIGNATURE_JW_DEFAULT) -> int:
