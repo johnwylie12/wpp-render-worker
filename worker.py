@@ -666,11 +666,19 @@ def build_pdf(cx, brief, workdir):
                 # Sector (accounts.industry_group) fills paragraph 2; not in the
                 # letter block, so fold it in — account fetch is a no-op when the
                 # wave entry carries no account_id.
+                # The letter's date is the DROP date, not the render date.
+                # build-wave puts mail_date at the root of params -- where only
+                # the collation sheet was reading it -- and never into each
+                # cover_letter, so _resolve_letter_date fell through to today()
+                # and every letter for a Friday drop was dated whichever night
+                # the worker happened to run. An explicit per-letter date still
+                # wins; this only fills the gap.
                 lb = {**lb, "sector": lb.get("sector")
                             or (c.get("org") or {}).get("industry_group")
                             or fetch_account_sector(cx, a.get("account_id")),
                             "signoff": lb.get("signoff")
-                                       or fetch_signoff(cx, a.get("account_id"))}
+                                       or fetch_signoff(cx, a.get("account_id")),
+                            "date": lb.get("date") or params.get("mail_date")}
                 cover = cover_engine.build_cover(lb, lb.get("recipient"), company, date_str=lb.get("date_str"))
                 lp = os.path.join(awd, "letter.pdf")
                 cover_engine.render_cover(cover, lp, page_size="letter")
