@@ -40,7 +40,10 @@ log = logging.getLogger(__name__)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))  # repo root -> wpp_signatures
-from wpp_signatures import signature_data_uri  # noqa: E402
+from wpp_signatures import (  # noqa: E402
+    signature_data_uri, signature_for_partner, signature_width_px,
+    SIGNATURE_WIDTH_DEFAULT, UnknownSignature,
+)
 
 # Brand canon: the cover letter signs with Sig 3 (contained mark), 115px in the
 # template. params.cover_letter.signature overrides. The 5x7 note card uses Sig 2
@@ -51,7 +54,7 @@ PORTAL_HOST = "portal.wpp-us.com"
 BRAND_NAVY = "#003A70"
 
 # --- asset paths (verified against the repo, 2026-08-12) ---------------------
-TEMPLATE_PATH = os.path.join(HERE, "WPP_EOP_CoverLetter_TEMPLATE_LOCKED_2026-08-11.html")
+TEMPLATE_PATH = os.path.join(HERE, "WPP_EOP_CoverLetter_TEMPLATE_v2_PARTNER_SIGNOFF.html")
 # The ERA header logo — a JPEG stored pre-encoded as base64 (the same asset the
 # prior letter shipped with; John approved the header).
 LOGO_B64_PATH = os.path.join(HERE, "logo_b64.txt")
@@ -100,6 +103,56 @@ def _signature_uri(which):
     except Exception as e:  # pragma: no cover
         log.warning("cover: signature %s unavailable (%s); rendering unsigned", which, e)
         return None
+
+
+class SignoffError(Exception):
+    """The sender could not be resolved. Never downgraded to a default.
+
+    worker.py catches this alongside RenderError and fails the brief, so a
+    letter with an unresolved sender never reaches a PDF."""
+
+
+REQUIRED_SIGNOFF_FIELDS = ("signoff_name", "signoff_title", "signoff_firm",
+                           "signoff_email", "signoff_phone")
+
+
+def resolve_signoff(signoff):
+    """Validate a wpp_signoff() row and pick the signature. Raises, never guesses.
+
+    WHY IT RAISES. The v1 template hardcoded John's name, title, email and phone,
+    so a batch assigned to another partner printed under John's. The failure was
+    invisible on screen and only discoverable by reading 24 letters. A signoff
+    that cannot be resolved must stop the render, not fall back to the owner --
+    a wrong name on a mailed letter cannot be recalled.
+    """
+    if not signoff:
+        raise SignoffError("cover letter: no signoff resolved; refusing to render "
+                           "(v1 would have printed John Wylie here)")
+    sd = dict(signoff)
+
+    if sd.get("is_renderable") is False:
+        raise SignoffError(
+            "cover letter: wpp_signoff reports the partner is not renderable; missing "
+            f"{sd.get('missing') or 'unknown'}")
+
+    missing = [f for f in REQUIRED_SIGNOFF_FIELDS if not str(sd.get(f) or "").strip()]
+    if missing:
+        raise SignoffError(f"cover letter: signoff is missing {', '.join(missing)}")
+
+    # The mark. A partner with no registered signature raises rather than
+    # borrowing someone else's; the caller may allow an unsigned letter.
+    pid = sd.get("partner_id")
+    try:
+        key = signature_for_partner(pid)
+        sd["signature_key"] = key
+        sd["signature_width_px"] = signature_width_px(key)
+    except UnknownSignature:
+        if not sd.get("allow_unsigned"):
+            raise
+        log.warning("cover: partner %s has no registered signature; rendering UNSIGNED", pid)
+        sd["signature_key"] = None
+        sd["signature_width_px"] = SIGNATURE_WIDTH_DEFAULT
+    return sd
 
 
 # ------------------------------------------------------------------ helpers
@@ -234,6 +287,9 @@ def build_cover(params_cover, recipient, company, *, date_str=None):
         "portal": pc.get("portal") or None,
         # Signature variant ('3' contained default, '2' long-sweep note-card mark).
         "signature": pc.get("signature"),
+        # WHOSE NAME GOES ON THIS. A wpp_signoff() row, supplied by the caller
+        # (worker.fetch_signoff). Validated in render_cover; absent -> refuses.
+        "signoff": pc.get("signoff"),
     }
 
 
@@ -257,11 +313,19 @@ def resolve_page_size(page_size):
 def render_cover(cover, out_pdf, page_size="Letter"):
     """Render the locked template to a single-page PDF."""
     pf = _portal_fields(cover.get("portal"))
+    so = resolve_signoff(cover.get("signoff"))
 
+    sig_key = so.get("signature_key")
     ctx = {
         "era_logo_uri": _logo_uri() or "",
         "vti_uri": _vti_uri() or "",
-        "signature_uri": _signature_uri(cover.get("signature")) or "",
+        "signature_uri": (_signature_uri(sig_key) or "") if sig_key else "",
+        "signature_width_px": so.get("signature_width_px", SIGNATURE_WIDTH_DEFAULT),
+        "signoff_name": so["signoff_name"],
+        "signoff_title": so["signoff_title"],
+        "signoff_firm": so["signoff_firm"],
+        "signoff_email": so["signoff_email"],
+        "signoff_phone": so["signoff_phone"],
         "date": cover.get("date", ""),
         "first_name": cover.get("first_name", ""),
         "recipient_name": cover.get("recipient_name", ""),

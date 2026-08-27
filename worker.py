@@ -168,6 +168,41 @@ def fetch_account_sector(cx, account_id):
     return (rows[0].get("industry_group") if rows else None) or None
 
 
+def fetch_signoff(cx, account_id):
+    """WHOSE NAME GOES ON THIS LETTER. wpp_signoff(accounts.assigned_to).
+
+    Read here, not in the engine, for the same reason the sector is: the engine
+    renders and does not talk to the database. The account's assigned_to IS the
+    partner's auth user_id, which is exactly what wpp_signoff takes.
+
+    Returns None when the account is unassigned or the partner is not
+    renderable, and cover_engine.resolve_signoff then REFUSES to render. That is
+    deliberate. account_signoff() exists and answers the same question, but it
+    falls back to the owner when an account is unassigned -- which is how 24
+    letters assigned to Arvo would print under John's name. A cover letter with
+    the wrong sender cannot be recalled once it is mailed, so this path fails
+    closed instead.
+    """
+    if not account_id:
+        return None
+    r = cx.get(f"{SUPABASE_URL}/rest/v1/accounts?id=eq.{account_id}&select=assigned_to",
+               headers=_headers())
+    r.raise_for_status()
+    rows = r.json()
+    user_id = (rows[0].get("assigned_to") if rows else None)
+    if not user_id:
+        log.warning("cover: account %s has no assigned_to; no signoff can be resolved", account_id)
+        return None
+    r = cx.post(f"{SUPABASE_URL}/rest/v1/rpc/wpp_signoff",
+                json={"p_user_id": user_id}, headers=_headers())
+    r.raise_for_status()
+    rows = r.json()
+    if not rows:
+        log.warning("cover: wpp_signoff returned no row for user %s (account %s)", user_id, account_id)
+        return None
+    return rows[0]
+
+
 def upload_pdf(cx, path, pdf_bytes):
     """Upload to Storage (upsert) and return the public URL."""
     url = f"{SUPABASE_URL}/storage/v1/object/{BUCKET}/{path}"
@@ -596,7 +631,9 @@ def build_pdf(cx, brief, workdir):
                 # wave entry carries no account_id.
                 lb = {**lb, "sector": lb.get("sector")
                             or (c.get("org") or {}).get("industry_group")
-                            or fetch_account_sector(cx, a.get("account_id"))}
+                            or fetch_account_sector(cx, a.get("account_id")),
+                            "signoff": lb.get("signoff")
+                                       or fetch_signoff(cx, a.get("account_id"))}
                 cover = cover_engine.build_cover(lb, lb.get("recipient"), company, date_str=lb.get("date_str"))
                 lp = os.path.join(awd, "letter.pdf")
                 cover_engine.render_cover(cover, lp, page_size="letter")
@@ -698,7 +735,10 @@ def build_pdf(cx, brief, workdir):
                                 "portal": letter_block.get("portal") or portal,
                                 "sector": letter_block.get("sector")
                                           or (content.get("org") or {}).get("industry_group")
-                                          or fetch_account_sector(cx, brief.get("account_id"))}
+                                          or fetch_account_sector(cx, brief.get("account_id")),
+                                # Whose name signs it. Absent -> render_cover refuses.
+                                "signoff": letter_block.get("signoff")
+                                           or fetch_signoff(cx, brief.get("account_id"))}
                 cover = cover_engine.build_cover(letter_block, recipient, company, date_str=letter_block.get("date_str"))
                 letter_path = os.path.join(workdir, "cover_letter.pdf")
                 cover_engine.render_cover(cover, letter_path, page_size="letter")
@@ -788,6 +828,9 @@ def build_pdf(cx, brief, workdir):
            not ((letter_block or {}).get("recipient")):
             raise RenderError("cover letter requested but no recipient resolved "
                               "(set contact_id or params.cover.letter.recipient)")
+        letter_block = {**(letter_block or {}),
+                        "signoff": (letter_block or {}).get("signoff")
+                                   or fetch_signoff(cx, brief.get("account_id"))}
         cover = cover_engine.build_cover(letter_block, recipient, company, date_str=(letter_block or {}).get("date_str"))
         if mode == "bundled":
             cover_pdf = os.path.join(workdir, "cover.pdf")
@@ -884,7 +927,11 @@ def selftest():
     content = json.load(open(os.path.join(HERE, "cir", "content", "carmel.json")))
     cir_pdf = render_cir(content, os.path.join(wd, "cir.pdf"))
     cover = cover_engine.build_cover(
-        None, {"name": "Nick Jacobi", "title": "General Manager"},
+        {"signoff": {"partner_id": 3, "signoff_name": "John Wylie",
+                     "signoff_title": "Senior Consultant", "signoff_firm": "ERA Group",
+                     "signoff_email": "jwylie@eragroup.com", "signoff_phone": "703.244.9868",
+                     "is_renderable": True}},
+        {"name": "Nick Jacobi", "title": "General Manager"},
         content["org"]["name"])
     cover_pdf = cover_engine.render_cover(cover, os.path.join(wd, "cover.pdf"))
     final = merge_front(cover_pdf, cir_pdf, os.path.join(wd, "final.pdf"))

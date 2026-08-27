@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--
+================================================================================
+WPP EOP EXECUTIVE COVER LETTER — TEMPLATE LOCKED 2026-08-11
+(John: "That is the new cover letter that should be locked in and used 100% of the time.")
+Supersedes the 2026-07-25 lock. Body copy UNCHANGED from that lock; the 08-10
+logo/compression amendments and the rev-5 portal-QR block are now BAKED IN.
+THIS IS THE ONLY COVER LETTER. The nine-paragraph copy in cover_engine is RETIRED.
+SOURCE OF TRUTH. Do NOT re-derive, re-question, or "improve" any value below.
+Every element here was approved this session. Changing it requires an explicit
+new instruction from John, not a fresh-session guess.
+
+LOCKED VALUES (do not touch):
+- HEADER: full-color ERA logo (asset: ERA_Group__White_Background.png — orange arc
+  + NAVY wordmark on white), top-left, height 40px, placed UNMODIFIED on white.
+  Below it: SHORT orange bar  #FF9C00  172px wide x 4px.
+  Below that: FULL-WIDTH navy rule  #003A70  2px.
+  (NOT a single full-width orange rule. NOT a black wordmark. NOT navy bar.)
+- DATE: grey #5a5a5a.
+- RECIPIENT NAME: navy #003A70, bold, 12pt. Title/org/address: 10.5pt normal.
+- BODY: the 5 locked paragraphs (copy of record: WPP_EOP_CoverLetter_LOCKED_2026-07-25.md). Verbatim.
+- VALEDICTION: "Best regards," — between last paragraph and signature.
+- SIGNATURE: Sig 3 (asset: signature_jw_3.png / SIGNATURE_JW_3_B64), width 115px.
+  (5x7 note card uses Sig 2, NOT this.)
+- FOOTER: VTI mark (asset: Value_Through_Insight__Blue.png) height 22px (reduced 25%),
+  fixed at bottom 0.15in (LOWERED), centered, over "jwylie@eragroup.com · 703.244.9868".
+- FONT: Trebuchet body / worker substitute Liberation Sans. 11pt, line-height 1.45.
+- PAGE: US Letter, margins 0.85in top / 1in sides / 0.55in bottom. One page.
+
+MERGE FIELDS (per account): {{first_name}} {{recipient_name}} {{recipient_title}}
+{{org_name}} {{addr_line1}} {{addr_city_state_zip}} {{sector}} {{date}}
+ICP GATE: {{sector}} must be non-null before render (null-sector = do NOT mail; wave-assembly gate).
+
+STOCK ASSUMPTION (John approved the baked-in-logo version repeatedly): renders for
+BLANK stock with logo+rules IN the file. If printing on PRE-PRINTED ERA letterhead,
+remove .hd and raise @page top margin ~1.8in — that is the ONLY branch that strips these.
+
+Asset URIs are injected by the engine as data: URIs (base64), mirroring VTI_B64 /
+wpp_signatures.py — no container asset paths.
+
+ENGINE NOTE (2026-08-12): the portal block below is wrapped in an "if qr_uri"
+guard so a render with no resolved portal access code omits the whole block
+(QR + code) rather than printing an empty box or a dead code. No locked VALUE
+changed — when a portal exists (the normal case) the block renders exactly as
+specified above.
+================================================================================
+-->
+<html><head><meta charset="utf-8"><style>
+@page { size: Letter; margin: 0.5in 1in 0.55in 1in; }
+* { font-family:'Liberation Sans','Trebuchet MS',Arial,sans-serif; }
+body { color:#1a1a1a; font-size:11pt; line-height:1.45; }
+
+.hd { margin-bottom:12px; }
+.hd img { height:75px; display:block; margin-bottom:9px; }         /* ERA logo — full-color on white */
+.hd .orange { width:172px; height:4px; background:#FF9C00; }        /* short orange bar */
+.hd .navy   { height:2px; background:#003A70; margin-top:18px; }    /* full-width navy rule */
+
+.date { margin:0 0 15px; font-size:10.5pt; color:#5a5a5a; }
+.addr { margin:0 0 16px; font-size:10.5pt; line-height:1.34; }
+.addr .rn { color:#003A70; font-weight:bold; font-size:12pt; }
+.sal  { margin:0 0 12px; }
+p     { margin:0 0 9px; }
+.vale { margin:10px 0 0; }
+
+.sig img { width:115px; height:auto; display:block; margin:4px 0 2px; }   /* fallback; the inline style from signature_width_px wins */
+.sig .nm { font-weight:bold; }
+.sig .tl { font-size:10pt; }
+.sig .ct { font-size:10pt; color:#4a4a4a; }
+
+.foot { position:fixed; bottom:0.15in; left:0; right:0; text-align:center; } /* LOWERED */
+.foot img { height:22px; opacity:.95; }                                       /* VTI -25% */
+.foot .sub { color:#7a7a7a; font-size:8pt; margin-top:6px; }
+
+/* rev-5 portal block — LOCKED 2026-08-11 */
+.portal { position:fixed; right:1in; bottom:1.15in; width:2.35in;
+          border-left:3px solid #FF9C00; padding:6px 0 6px 10px; }
+.portal .hd2 { color:#003A70; font-weight:bold; font-size:9pt; margin-bottom:5px; }
+.portal img  { width:86px; height:86px; display:block; margin-bottom:5px; }
+.portal .url { color:#5a5a5a; font-size:7.5pt; line-height:1.3; word-break:break-all; }
+.portal .code{ color:#003A70; font-size:8pt; font-weight:bold; margin-top:3px; }
+</style></head><body>
+  <div class="hd">
+    <img src="{{era_logo_uri}}" alt="ERA Group">
+    <div class="orange"></div>
+    <div class="navy"></div>
+  </div>
+
+  <div class="date">{{date}}</div>
+
+  <div class="addr">
+    <span class="rn">{{recipient_name}}</span><br>
+    {{recipient_title}}<br>
+    {{org_name}}<br>
+    {{addr_line1}}<br>
+    {{addr_city_state_zip}}
+  </div>
+
+  <div class="sal">Dear {{first_name}},</div>
+
+  <p>Enclosed is a complimentary Executive Opportunity Brief prepared for {{org_name}}&mdash;an independent, outside-in assessment of your indirect operating expenses, developed entirely from public information.</p>
+  <p>For more than 25 years, ERA Group has helped organizations in {{sector}} uncover cash flow already sitting inside the expenses they pay every month&mdash;the categories where market conditions have shifted, but incumbent pricing and contract terms may not have kept pace.</p>
+  <p>Over the past five years, our work has identified an average opportunity of 27.5% across more than $2.25 billion in indirect spend reviewed. We manage the analytical work without placing additional demands on your team, and no supplier or operational change is made without your approval.</p>
+  <p>The opportunity identified in the enclosed Brief is directional. Its real value comes from testing the underlying assumptions against your actual contracts, invoices, and operating requirements.</p>
+  <p>I would welcome the chance to walk you through what we found and determine whether a closer look is warranted.</p>
+
+  <div class="vale">Best regards,</div>
+
+  <!-- PARTNER SIGN-OFF (v2, 2026-08-27). Every value comes from wpp_signoff();
+       nothing about the sender is hardcoded here. The v1 LOCKED template carried
+       John's name, title, email and phone as literals, so a batch assigned to
+       another partner printed under John's name. -->
+  <div class="sig">
+    {% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}" style="width:{{signature_width_px}}px">{% endif %}
+    <div class="nm">{{signoff_name}}</div>
+    <div class="tl">{{signoff_title}} &middot; {{signoff_firm}}</div>
+    <div class="ct">{{signoff_email}} &middot; {{signoff_phone}}</div>
+  </div>
+
+  <div class="foot">
+    <img src="{{vti_uri}}" alt="Value Through Insight">
+    <!-- SECOND hardcoded sender block, found 2026-08-27 by extracting the text of a
+         rendered proof rather than trusting the signoff block alone. The brief named
+         only the sign-off; this footer would still have printed John's email and
+         phone on all 24 of Arvo's letters. -->
+    <div class="sub">{{signoff_email}} &nbsp;&middot;&nbsp; {{signoff_phone}}</div>
+  </div>
+
+  {% if qr_uri %}
+  <div class="portal">
+    <div class="hd2">Your Brief is live online</div>
+    <img src="{{qr_uri}}" alt="Scan for your Brief">
+    <div class="url">portal.wpp-us.com/{{portal_subdomain}}</div>
+    <div class="code">Access code {{portal_access_code}}</div>
+  </div>
+  {% endif %}
+</body></html>
