@@ -635,6 +635,9 @@ def build_pdf(cx, brief, workdir):
             "body": body,
             "signoff": nc.get("signoff"),
             "signature": nc.get("signature"),
+            # Same rule as the wave: whose card this is decides whose hand signs it.
+            "partner_signoff": nc.get("partner_signoff")
+                               or fetch_signoff(cx, brief.get("account_id")),
         }, card_pdf)
         return card_pdf, len(PdfReader(card_pdf).pages), None, None, "note_card"
 
@@ -687,7 +690,14 @@ def build_pdf(cx, brief, workdir):
             bound = os.path.join(awd, "pkg.pdf")
             stitch_and_stamp(labeled, bound, name)   # stitch + package-wide footer
             pkg_paths.append(bound)
+            # The card is signed by hand -- it MUST come from the same partner as
+            # the letter it rides on top of. Without this the engine falls back to
+            # its default mark, which is John's, and Arvo's 22 cards printed with
+            # John's signature above Arvo's letter. The sign-off was wired into
+            # every build_cover call site and this one call was missed.
             nc = a.get("note_card") or {}
+            nc = {**nc, "partner_signoff": nc.get("partner_signoff")
+                                           or fetch_signoff(cx, a.get("account_id"))}
             cardp = os.path.join(awd, "card.pdf")
             note_card_engine.render(nc, cardp)
             card_paths.append(cardp)
