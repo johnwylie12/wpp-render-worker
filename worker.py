@@ -103,8 +103,25 @@ def _headers(extra=None):
     return h
 
 
+# WHY THE TIMEOUTS ARE SPLIT (2026-08-27)
+# ---------------------------------------
+# A flat httpx timeout=60 applies to EVERY phase of a request, including the
+# write of the body. Small REST calls never notice. A wave upload does: a
+# 24-account wave_packages.pdf is tens of megabytes, and pushing that to
+# Storage takes minutes, not seconds.
+#
+# That is what killed wave 7 -- 22 accounts rendered fine, then died on
+# `ReadTimeout: The read operation timed out` while uploading, throwing away
+# the entire render. The failure looked like "the worker can't handle 22
+# accounts" and the obvious-but-wrong fix was to split the wave into smaller
+# ones, which would have shrunk the upload below the limit and hidden the
+# actual bug until the next big batch.
+#
+# So: connect stays short (a dead host should fail fast), read/write are long
+# enough for a large body over a slow link.
 def _client():
-    return httpx.Client(timeout=60.0)
+    return httpx.Client(timeout=httpx.Timeout(connect=15.0, read=600.0,
+                                              write=600.0, pool=60.0))
 
 
 def claim_brief(cx):
@@ -203,15 +220,35 @@ def fetch_signoff(cx, account_id):
     return rows[0]
 
 
-def upload_pdf(cx, path, pdf_bytes):
-    """Upload to Storage (upsert) and return the public URL."""
+def upload_pdf(cx, path, pdf_bytes, *, attempts=3):
+    """Upload to Storage (upsert) and return the public URL.
+
+    Retries a transport failure. By the time this is called the PDF has already
+    cost minutes of render; losing all of it to one dropped connection is the
+    most expensive way this worker can fail. Upsert is on, so a retry after a
+    partial write is safe.
+    """
     url = f"{SUPABASE_URL}/storage/v1/object/{BUCKET}/{path}"
-    r = cx.post(url, headers=_headers({"Content-Type": "application/pdf",
-                                       "x-upsert": "true"}),
-                content=pdf_bytes)
-    if r.status_code not in (200, 201):
-        raise RenderError(f"storage upload failed {r.status_code}: {r.text[:200]}")
-    return f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET}/{path}"
+    last = None
+    for i in range(1, attempts + 1):
+        try:
+            r = cx.post(url, headers=_headers({"Content-Type": "application/pdf",
+                                               "x-upsert": "true"}),
+                        content=pdf_bytes)
+        except httpx.TransportError as e:          # timeout, reset, DNS
+            last = e
+            print(f"[upload] {path} attempt {i}/{attempts} failed: "
+                  f"{type(e).__name__}: {e}", file=sys.stderr, flush=True)
+            if i == attempts:
+                raise RenderError(
+                    f"storage upload failed after {attempts} attempts "
+                    f"({len(pdf_bytes)} bytes): {type(e).__name__}: {e}") from e
+            time.sleep(2 ** i)
+            continue
+        if r.status_code not in (200, 201):
+            raise RenderError(f"storage upload failed {r.status_code}: {r.text[:200]}")
+        return f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET}/{path}"
+    raise RenderError(f"storage upload failed: {last}")
 
 
 # ---------------------------------------------------------------- rendering
