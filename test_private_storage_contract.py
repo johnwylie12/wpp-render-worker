@@ -80,6 +80,11 @@ class PrivateStorageContractTests(unittest.TestCase):
             with self.assertRaisesRegex(worker.RenderError, "not private"):
                 worker.validate_isolated_target(client)
 
+    def test_one_shot_account_is_pinned_to_15589(self):
+        worker.validate_one_shot_account(15589)
+        with self.assertRaisesRegex(worker.RenderError, "must be 15589"):
+            worker.validate_one_shot_account(15588)
+
     def test_one_shot_claim_is_exact_account_and_brief(self):
         row = {"id": 1600, "account_id": 15589, "doc_type": "package", "status": "rendering"}
         client = _Client(patch_rows=[row])
