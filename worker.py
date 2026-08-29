@@ -159,6 +159,12 @@ def _required_positive_int(name):
     return value
 
 
+def validate_one_shot_account(account_id):
+    if account_id != EXPECTED_ONE_SHOT_ACCOUNT_ID:
+        raise RenderError(
+            f"ONE_SHOT_ACCOUNT_ID must be {EXPECTED_ONE_SHOT_ACCOUNT_ID}")
+
+
 def claim_one_shot_brief(cx, account_id, brief_id):
     """Atomically claim exactly one queued brief; never consume another queue row."""
     params = {
@@ -1074,8 +1080,8 @@ def main():
         sys.exit("ENABLE_990_JOBS must remain false for --once")
     one_shot_account_id = _required_positive_int("ONE_SHOT_ACCOUNT_ID") if once else None
     one_shot_brief_id = _required_positive_int("ONE_SHOT_BRIEF_ID") if once else None
-    if once and one_shot_account_id != EXPECTED_ONE_SHOT_ACCOUNT_ID:
-        sys.exit(f"ONE_SHOT_ACCOUNT_ID must be {EXPECTED_ONE_SHOT_ACCOUNT_ID}")
+    if once:
+        validate_one_shot_account(one_shot_account_id)
     print(f"[worker] claim doc_types={CLAIM_DOC_TYPES} bucket={BUCKET} "
           f"poll={POLL_SECONDS}s once={once}")
     print(f"[diag] startup url={SUPABASE_URL!r} key_fp={SERVICE_KEY[:6]!r} "
