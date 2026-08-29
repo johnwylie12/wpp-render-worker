@@ -67,6 +67,13 @@ class PrivateStorageContractTests(unittest.TestCase):
             with self.assertRaisesRegex(worker.RenderError, "non-isolated"):
                 worker.validate_isolated_target(_Client())
 
+    def test_target_preflight_rejects_deceptive_target_url(self):
+        deceptive = "https://ivbhlgsxmcokyjazxlkb.supabase.co?redirect=production"
+        with patch.object(worker, "SUPABASE_URL", deceptive), \
+             patch.object(worker, "BUCKET", "collateral"):
+            with self.assertRaisesRegex(worker.RenderError, "non-isolated"):
+                worker.validate_isolated_target(_Client())
+
     def test_target_preflight_rejects_bucket_override(self):
         with patch.object(worker, "SUPABASE_URL", "https://ivbhlgsxmcokyjazxlkb.supabase.co"), \
              patch.object(worker, "BUCKET", "public-collateral"):
