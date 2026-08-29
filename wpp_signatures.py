@@ -77,7 +77,7 @@ class UnknownSignature(KeyError):
     """No mark registered. Never resolved by falling back to someone else's."""
 
 
-def signature_for_partner(partner_id) -> str:
+def signature_for_partner(partner_id, requested_key=None) -> str:
     """The signature KEY for a partner. Raises rather than substituting.
 
     signature_b64() falls back to John's mark on an unknown key, which is right
@@ -86,7 +86,15 @@ def signature_for_partner(partner_id) -> str:
     here, and a partner with no registered mark stops the render.
     """
     try:
-        key = PARTNER_SIGNATURE[int(partner_id)]
+        pid = int(partner_id)
+        key = PARTNER_SIGNATURE[pid]
+        if requested_key is not None:
+            requested = str(requested_key)
+            allowed = {"2", "3"} if pid == 3 else {key}
+            if requested not in allowed:
+                raise UnknownSignature(
+                    f"signature key {requested!r} is not registered for partner_id={pid!r}")
+            key = requested
     except (KeyError, TypeError, ValueError):
         raise UnknownSignature(
             f"no signature registered for partner_id={partner_id!r}; "
