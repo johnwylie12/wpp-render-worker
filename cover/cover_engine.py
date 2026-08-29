@@ -143,7 +143,7 @@ def resolve_signoff(signoff):
     # borrowing someone else's; the caller may allow an unsigned letter.
     pid = sd.get("partner_id")
     try:
-        key = signature_for_partner(pid)
+        key = signature_for_partner(pid, sd.get("signature_key"))
         sd["signature_key"] = key
         sd["signature_width_px"] = signature_width_px(key)
     except UnknownSignature:
