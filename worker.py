@@ -87,6 +87,7 @@ POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 ENABLE_990_JOBS = os.environ.get("ENABLE_990_JOBS", "false").strip().lower() in {"1", "true", "yes", "on"}
 EXPECTED_SUPABASE_PROJECT_REF = "ivbhlgsxmcokyjazxlkb"
 EXPECTED_STORAGE_BUCKET = "collateral"
+EXPECTED_ONE_SHOT_ACCOUNT_ID = 15589
 
 
 class RenderError(Exception):
@@ -1073,6 +1074,8 @@ def main():
         sys.exit("ENABLE_990_JOBS must remain false for --once")
     one_shot_account_id = _required_positive_int("ONE_SHOT_ACCOUNT_ID") if once else None
     one_shot_brief_id = _required_positive_int("ONE_SHOT_BRIEF_ID") if once else None
+    if once and one_shot_account_id != EXPECTED_ONE_SHOT_ACCOUNT_ID:
+        sys.exit(f"ONE_SHOT_ACCOUNT_ID must be {EXPECTED_ONE_SHOT_ACCOUNT_ID}")
     print(f"[worker] claim doc_types={CLAIM_DOC_TYPES} bucket={BUCKET} "
           f"poll={POLL_SECONDS}s once={once}")
     print(f"[diag] startup url={SUPABASE_URL!r} key_fp={SERVICE_KEY[:6]!r} "
