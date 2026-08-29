@@ -5,7 +5,7 @@ The back half of the "Create collateral" pipeline. The app enqueues a
 `content_briefs` row (status='queued') via the enqueue_brief RPC; this worker
 claims it, renders the PDF with the LOCKED CIR engine (+ an optional ERA cover
 letter merged in front), uploads the result to Supabase Storage, and writes
-rendered_url + status back to the row.
+private bucket/object identity + status back to the row.
 
 Design notes
 ------------
@@ -33,6 +33,7 @@ Env
     SUPPORTED_DOC_TYPES          (default: vertical_deepdive)  comma-separated
     SNAPSHOT_DOC_TYPES           (default: opportunity_snapshot)  comma-separated
     POLL_SECONDS                 (default: 60)
+    ENABLE_990_JOBS              (default: false)
 """
 import os, sys, json, time, re, tempfile, subprocess, datetime, traceback
 import httpx
@@ -82,6 +83,7 @@ EXEC_BRIEF_DOC_TYPES = [s.strip() for s in os.environ.get("EXEC_BRIEF_DOC_TYPES"
 # Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default - no Railway env edit required.
 CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES + EXEC_BRIEF_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
+ENABLE_990_JOBS = os.environ.get("ENABLE_990_JOBS", "false").strip().lower() in {"1", "true", "yes", "on"}
 
 
 class RenderError(Exception):
@@ -250,7 +252,7 @@ def fetch_signoff(cx, account_id):
 
 
 def upload_pdf(cx, path, pdf_bytes, *, attempts=3):
-    """Upload to Storage (upsert) and return the public URL.
+    """Upload to private Storage (upsert) and return the stable object path.
 
     Retries a transport failure. By the time this is called the PDF has already
     cost minutes of render; losing all of it to one dropped connection is the
@@ -276,7 +278,7 @@ def upload_pdf(cx, path, pdf_bytes, *, attempts=3):
             continue
         if r.status_code not in (200, 201):
             raise RenderError(f"storage upload failed {r.status_code}: {r.text[:200]}")
-        return f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET}/{path}"
+        return path
     raise RenderError(f"storage upload failed: {last}")
 
 
@@ -973,25 +975,30 @@ def process_one(cx):
             name = _slug(company or brief.get("title") or f"brief-{bid}")
             base = f"{kind}/{brief.get('account_id') or 'misc'}/{bid}-{name}"
             with open(final, "rb") as fh:
-                url = upload_pdf(cx, f"{base}.pdf", fh.read())
-            cover_url = None
+                object_path = upload_pdf(cx, f"{base}.pdf", fh.read())
+            cover_object_path = None
             if cover_path:  # mode='separate' -> upload the standalone cover too
                 with open(cover_path, "rb") as fh:
-                    cover_url = upload_pdf(cx, f"{base}-cover.pdf", fh.read())
+                    cover_object_path = upload_pdf(cx, f"{base}-cover.pdf", fh.read())
         patch = {
-            "status": "rendered", "rendered_url": url,
+            "status": "rendered",
+            "rendered_url": None,
+            "rendered_bucket": BUCKET,
+            "rendered_object_path": object_path,
             "rendered_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             # A soft warning (e.g. cover fallback / skipped enrichment section) is
             # recorded on the rendered row without failing it; else cleared.
             "error": brief.get("_render_warning")}
-        if cover_url:
-            patch["cover_url"] = cover_url
+        if cover_object_path:
+            # Separate cover identity needs its own durable columns before it can be exposed.
+            # Keep the historical public URL field empty rather than leaking a private object.
+            patch["cover_url"] = None
             patch["cover_size"] = cover_size
         if kind == "snapshot":
-            patch["snapshot_url"] = url
+            patch["snapshot_url"] = None
         update_brief(cx, bid, patch)
-        print(f"[done]  brief {bid} -> {url} ({npages}pp)"
-              + (f" + cover[{cover_size}] -> {cover_url}" if cover_url else ""))
+        print(f"[done]  brief {bid} -> {BUCKET}/{object_path} ({npages}pp)"
+              + (f" + private cover[{cover_size}] -> {BUCKET}/{cover_object_path}" if cover_object_path else ""))
     except Exception as e:
         msg = str(e) if isinstance(e, RenderError) else f"{type(e).__name__}: {e}"
         print(f"[fail]  brief {bid}: {msg}")
@@ -1014,13 +1021,14 @@ def main():
           file=sys.stderr, flush=True)
     with _client() as cx:
         while True:
-            # 990 Part IX batch: cheap no-op unless a job_990_runs row is queued. Fully
-            # isolated + lazy-imported so a fault here can never stall PDF rendering.
-            try:
-                import run990
-                run990.run_pending()
-            except Exception:
-                traceback.print_exc()
+            # Target-only rendering must not touch the unrelated 990 queue unless
+            # a separately reviewed deployment explicitly enables that lane.
+            if ENABLE_990_JOBS:
+                try:
+                    import run990
+                    run990.run_pending()
+                except Exception:
+                    traceback.print_exc()
             try:
                 worked = process_one(cx)
             except Exception:
