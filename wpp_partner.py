@@ -56,7 +56,7 @@ def normalize(signoff, *, need_signature=True, need_booking=False):
     }
 
     if need_signature:
-        key = signature_for_partner(s.get("partner_id"))   # raises; never borrows
+        key = signature_for_partner(s.get("partner_id"), s.get("signature_key"))   # raises; never borrows
         out["signature_key"] = key
         out["signature_width_px"] = signature_width_px(key)
 
