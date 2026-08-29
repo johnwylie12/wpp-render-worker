@@ -36,6 +36,7 @@ Env
     ENABLE_990_JOBS              (default: false)
 """
 import os, sys, json, time, re, tempfile, subprocess, datetime, traceback
+from urllib.parse import urlparse
 import httpx
 from pypdf import PdfReader, PdfWriter
 
@@ -84,6 +85,8 @@ EXEC_BRIEF_DOC_TYPES = [s.strip() for s in os.environ.get("EXEC_BRIEF_DOC_TYPES"
 CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES + EXEC_BRIEF_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 ENABLE_990_JOBS = os.environ.get("ENABLE_990_JOBS", "false").strip().lower() in {"1", "true", "yes", "on"}
+EXPECTED_SUPABASE_PROJECT_REF = "ivbhlgsxmcokyjazxlkb"
+EXPECTED_STORAGE_BUCKET = "collateral"
 
 
 class RenderError(Exception):
@@ -124,6 +127,58 @@ def _headers(extra=None):
 def _client():
     return httpx.Client(timeout=httpx.Timeout(connect=15.0, read=600.0,
                                               write=600.0, pool=60.0))
+
+
+def validate_isolated_target(cx):
+    """Refuse every database/storage target except the isolated Fathom project."""
+    parsed = urlparse(SUPABASE_URL)
+    expected_host = f"{EXPECTED_SUPABASE_PROJECT_REF}.supabase.co"
+    if parsed.scheme != "https" or parsed.hostname != expected_host or parsed.path.rstrip("/"):
+        raise RenderError(
+            f"refusing non-isolated Supabase target; expected https://{expected_host}")
+    if BUCKET != EXPECTED_STORAGE_BUCKET:
+        raise RenderError(
+            f"refusing storage bucket {BUCKET!r}; expected private {EXPECTED_STORAGE_BUCKET!r}")
+    r = cx.get(f"{SUPABASE_URL}/storage/v1/bucket/{BUCKET}", headers=_headers())
+    if r.status_code >= 400:
+        raise RenderError(f"private bucket preflight failed {r.status_code}: {r.text[:200]}")
+    metadata = r.json() or {}
+    if metadata.get("name") != BUCKET or metadata.get("public") is not False:
+        raise RenderError(f"refusing bucket {BUCKET!r}: bucket is missing or not private")
+
+
+def _required_positive_int(name):
+    raw = os.environ.get(name, "").strip()
+    try:
+        value = int(raw)
+    except ValueError:
+        value = 0
+    if value <= 0:
+        raise RenderError(f"{name} must be a positive integer for --once")
+    return value
+
+
+def claim_one_shot_brief(cx, account_id, brief_id):
+    """Atomically claim exactly one queued brief; never consume another queue row."""
+    params = {
+        "id": f"eq.{brief_id}",
+        "account_id": f"eq.{account_id}",
+        "status": "eq.queued",
+        "doc_type": f"in.({','.join(CLAIM_DOC_TYPES)})",
+        "select": "*",
+    }
+    r = cx.patch(
+        f"{SUPABASE_URL}/rest/v1/content_briefs",
+        params=params,
+        headers=_headers({"Prefer": "return=representation"}),
+        json={"status": "rendering", "error": None},
+    )
+    r.raise_for_status()
+    rows = r.json() or []
+    if len(rows) != 1:
+        raise RenderError(
+            f"one-shot brief {brief_id} for account {account_id} was not uniquely claimable")
+    return rows[0]
 
 
 def claim_brief(cx):
@@ -960,8 +1015,8 @@ def build_pdf(cx, brief, workdir):
 
 
 # ---------------------------------------------------------------- loop
-def process_one(cx):
-    brief = claim_brief(cx)
+def process_one(cx, brief=None):
+    brief = brief or claim_brief(cx)
     if not brief:
         return False
     bid = brief["id"]
@@ -1014,12 +1069,17 @@ def main():
     if not SUPABASE_URL or not SERVICE_KEY:
         sys.exit("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
     once = "--once" in sys.argv
+    if once and ENABLE_990_JOBS:
+        sys.exit("ENABLE_990_JOBS must remain false for --once")
+    one_shot_account_id = _required_positive_int("ONE_SHOT_ACCOUNT_ID") if once else None
+    one_shot_brief_id = _required_positive_int("ONE_SHOT_BRIEF_ID") if once else None
     print(f"[worker] claim doc_types={CLAIM_DOC_TYPES} bucket={BUCKET} "
           f"poll={POLL_SECONDS}s once={once}")
     print(f"[diag] startup url={SUPABASE_URL!r} key_fp={SERVICE_KEY[:6]!r} "
           f"key_len={len(SERVICE_KEY)} sent_bearer={SERVICE_KEY.startswith('eyJ')}",
           file=sys.stderr, flush=True)
     with _client() as cx:
+        validate_isolated_target(cx)
         while True:
             # Target-only rendering must not touch the unrelated 990 queue unless
             # a separately reviewed deployment explicitly enables that lane.
@@ -1030,7 +1090,11 @@ def main():
                 except Exception:
                     traceback.print_exc()
             try:
-                worked = process_one(cx)
+                if once:
+                    brief = claim_one_shot_brief(cx, one_shot_account_id, one_shot_brief_id)
+                    worked = process_one(cx, brief)
+                else:
+                    worked = process_one(cx)
             except Exception:
                 traceback.print_exc()
                 worked = False
