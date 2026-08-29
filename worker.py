@@ -133,10 +133,11 @@ def _client():
 def validate_isolated_target(cx):
     """Refuse every database/storage target except the isolated Fathom project."""
     parsed = urlparse(SUPABASE_URL)
-    expected_host = f"{EXPECTED_SUPABASE_PROJECT_REF}.supabase.co"
-    if parsed.scheme != "https" or parsed.hostname != expected_host or parsed.path.rstrip("/"):
+    expected_url = f"https://{EXPECTED_SUPABASE_PROJECT_REF}.supabase.co"
+    if (SUPABASE_URL != expected_url or parsed.username or parsed.password
+            or parsed.port or parsed.query or parsed.fragment):
         raise RenderError(
-            f"refusing non-isolated Supabase target; expected https://{expected_host}")
+            f"refusing non-isolated Supabase target; expected {expected_url}")
     if BUCKET != EXPECTED_STORAGE_BUCKET:
         raise RenderError(
             f"refusing storage bucket {BUCKET!r}; expected private {EXPECTED_STORAGE_BUCKET!r}")
