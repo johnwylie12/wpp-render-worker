@@ -22,13 +22,11 @@ NAVY = (0x00 / 255, 0x3A / 255, 0x70 / 255)
 GOLD = (0xFF / 255, 0x9C / 255, 0x00 / 255)
 WHITE = (1, 1, 1)
 
-BOOK_URL = ("https://outlook.office.com/bookwithme/user/"
-            "7aa3d169518c4b1caeb9f72a2f23f9d8@eragroup.com/"
-            "meetingtype/CMjo2-07uk2-Q0n_F1MSvQ2"
-            "?anonymous&ismsaljsauthenabled&ep=mcard")
-
-C_NAME, C_TITLE = "John Wylie", "Senior Consultant, ERA Group"
-C_PHONE, C_EMAIL = "703.244.9868", "jwylie@eragroup.com"
+# BOOK_URL / C_NAME / C_TITLE / C_PHONE / C_EMAIL used to live here, all five
+# hardcoded to John. Decision #78 made them per-partner: every one now arrives
+# through partner_signoff (partner_signature.booking_url + wpp_signoff). Keeping
+# a copy here would be a second answer to a question the database now owns --
+# the exact shape of defect this module was rewritten to remove.
 
 PAGE_W, PAGE_H = 6.0 * inch, 4.0 * inch
 
@@ -134,7 +132,10 @@ def render_sticker(portal_url: str, code: str, out_pdf: str, *, partner_signoff=
 
 if __name__ == "__main__":
     import sys
+    # Side B only: this smoke test has no partner, and side A without one is
+    # exactly the unattributed print the module refuses to make.
     render_sticker(sys.argv[1] if len(sys.argv) > 1 else "https://example.com/p/K7M2Q9R",
                    sys.argv[2] if len(sys.argv) > 2 else "K7M2Q9R",
-                   sys.argv[3] if len(sys.argv) > 3 else "/tmp/portal_sticker.pdf")
+                   sys.argv[3] if len(sys.argv) > 3 else "/tmp/portal_sticker.pdf",
+                   include_meeting_side=False)
     print("ok")

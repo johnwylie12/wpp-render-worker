@@ -840,7 +840,23 @@ def build_pdf(cx, brief, workdir):
         # from the package footer. The portal gate above guarantees the fields.
         from portal_sticker.portal_sticker import render_sticker
         sticker_path = os.path.join(workdir, "portal_sticker.pdf")
-        render_sticker(portal["url"], portal["code"], sticker_path)
+        # WHOSE BOOKING QR SIDE A CARRIES. Side B (portal QR + short code) is
+        # partner-neutral, but side A is entirely partner identity, so it needs
+        # the same signoff the letter signs with. Passing nothing is what broke
+        # every package from decision #78 onward: the sticker asked
+        # wpp_partner.normalize(None) and raised PartnerError before drawing a
+        # single page, AFTER the letter and all six pieces had already rendered.
+        sticker_signoff = fetch_signoff(cx, brief.get("account_id"))
+        # A partner with no booking link gets side B only -- an honest portal
+        # label with no meeting page, rather than a QR pointing at another
+        # partner's calendar. Recorded as a render warning, never a silent drop.
+        can_book = bool((sticker_signoff or {}).get("booking_url"))
+        if not can_book:
+            warnings.append("portal sticker: meeting side omitted "
+                            "(assigned partner has no booking_url)")
+        render_sticker(portal["url"], portal["code"], sticker_path,
+                       partner_signoff=sticker_signoff,
+                       include_meeting_side=can_book)
         labeled.append(("sticker", sticker_path))
         bound = os.path.join(workdir, "eop_bound.pdf")
         stitch_and_stamp(labeled, bound, org_name)   # stitch + package-wide footer
