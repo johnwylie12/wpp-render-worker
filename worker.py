@@ -911,7 +911,12 @@ def build_pdf(cx, brief, workdir):
         # every package from decision #78 onward: the sticker asked
         # wpp_partner.normalize(None) and raised PartnerError before drawing a
         # single page, AFTER the letter and all six pieces had already rendered.
-        sticker_signoff = fetch_signoff(cx, brief.get("account_id"))
+        # Phase 3 packages carry the already-approved sender identity in the
+        # brief itself. Prefer that durable snapshot so an isolated render does
+        # not depend on legacy-only account ownership columns. Older briefs may
+        # still use the guarded lookup fallback.
+        sticker_signoff = (letter_block or {}).get("signoff") \
+                          or fetch_signoff(cx, brief.get("account_id"))
         # A partner with no booking link gets side B only -- an honest portal
         # label with no meeting page, rather than a QR pointing at another
         # partner's calendar. Recorded as a render warning, never a silent drop.

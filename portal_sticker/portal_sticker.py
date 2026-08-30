@@ -14,6 +14,7 @@ QrCodeWidget — no new dependency. Print at 100% / Actual Size on sticker stock
 import os
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.graphics import renderPDF
@@ -32,6 +33,15 @@ PAGE_W, PAGE_H = 6.0 * inch, 4.0 * inch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOGO = os.path.join(HERE, "..", "meeting_label", "assets", "era_logo.png")
+PORTAL_DISPLAY_HOST = "portal.wpp-us.com"
+
+
+def _fit_font_size(text, font_name, max_size, min_size, max_width):
+    """Return the largest size that keeps one-line fallback text on the label."""
+    size = max_size
+    while size > min_size and stringWidth(text, font_name, size) > max_width:
+        size -= 0.25
+    return max(size, min_size)
 
 
 def _qr(c, url, x, y, size):
@@ -116,9 +126,13 @@ def render_sticker(portal_url: str, code: str, out_pdf: str, *, partner_signoff=
     c.drawString(txb, 1.95 * inch, "Or type the code:")
     c.setFont("Courier-Bold", 26)
     c.drawString(txb, 1.5 * inch, code)
-    c.setFont("Helvetica", 9.5)
-    host = portal_url.split("/p/")[0].replace("https://", "").replace("http://", "")
-    c.drawString(txb, 1.12 * inch, "%s/p/%s" % (host, code))
+    # The QR may target an isolated preview during QA, but the human fallback
+    # must remain the stable branded portal address printed on the cover.
+    fallback_url = "%s/p/%s" % (PORTAL_DISPLAY_HOST, code)
+    fallback_width = PAGE_W - txb - 0.35 * inch
+    c.setFont("Helvetica", _fit_font_size(fallback_url, "Helvetica", 9.5, 5.5,
+                                           fallback_width))
+    c.drawString(txb, 1.12 * inch, fallback_url)
     if os.path.exists(LOGO):
         try:
             c.drawImage(LOGO, txb, 0.5 * inch, width=1.1 * inch,

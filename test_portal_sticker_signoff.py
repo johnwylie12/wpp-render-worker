@@ -26,6 +26,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 from portal_sticker.portal_sticker import render_sticker          # noqa: E402
+from portal_sticker.portal_sticker import _fit_font_size, PORTAL_DISPLAY_HOST  # noqa: E402
+from reportlab.pdfbase.pdfmetrics import stringWidth               # noqa: E402
 from wpp_partner import PartnerError                              # noqa: E402
 
 OUT = "/tmp/_sticker_guard"
@@ -65,6 +67,13 @@ for c in calls:
     check("include_meeting_side" in kw,
           "line %d decides include_meeting_side explicitly" % c.lineno)
 
+# Phase 3's isolated schema deliberately has no legacy accounts.assigned_to.
+# The sticker must consume the same embedded, approved signoff as the letter
+# before considering the compatibility lookup for historical briefs.
+worker_src = open(os.path.join(HERE, "worker.py"), encoding="utf-8").read()
+check(re.search(r"sticker_signoff\s*=\s*\(letter_block\s+or\s+\{\}\)\.get\(\"signoff\"\)\s*\\\s*\n\s*or\s+fetch_signoff", worker_src),
+      "sticker prefers embedded package signoff before legacy lookup")
+
 # --- behaviour ---
 print("1. a sticker with no signoff refuses to print")
 try:
@@ -102,7 +111,14 @@ ps._qr = _orig
 check(seen[0] == JOHN["booking_url"], "meeting QR = partner_signoff['booking_url']")
 check(seen[1] == URL, "portal QR = the account's portal url (partner-neutral)")
 
-print("6. no partner identity is hardcoded in the sticker module")
+print("6. long preview URLs fit inside the physical sticker")
+long_url = "%s/p/Q5AL2EA" % PORTAL_DISPLAY_HOST
+max_width = 6.0 * 72 - 2.95 * 72 - 0.35 * 72
+fit_size = _fit_font_size(long_url, "Helvetica", 9.5, 5.5, max_width)
+check(stringWidth(long_url, "Helvetica", fit_size) <= max_width,
+      "long fallback URL remains inside the right margin")
+
+print("7. no partner identity is hardcoded in the sticker module")
 src = open(os.path.join(HERE, "portal_sticker", "portal_sticker.py"), encoding="utf-8").read()
 check(not re.search(r"^\s*(BOOK_URL|C_NAME|C_TITLE|C_PHONE|C_EMAIL)\s*(,|=)", src, re.M),
       "no BOOK_URL / C_NAME / C_TITLE / C_PHONE / C_EMAIL assignment")
