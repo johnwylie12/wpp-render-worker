@@ -37,6 +37,7 @@ Env
 import os, sys, json, time, re, tempfile, subprocess, datetime, traceback
 import httpx
 from pypdf import PdfReader, PdfWriter
+import release_gate
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CIR_ENGINE   = os.path.join(HERE, "cir", "src", "cir_engine.py")
@@ -860,6 +861,16 @@ def build_pdf(cx, brief, workdir):
         labeled.append(("sticker", sticker_path))
         bound = os.path.join(workdir, "eop_bound.pdf")
         stitch_and_stamp(labeled, bound, org_name)   # stitch + package-wide footer
+        # THE RELEASE GATE. It runs on the composed PDF and RAISES — a Brief that
+        # trips it is not uploaded and not mailed, because the alternative is a
+        # prospect holding it. A fixed template is checkable by eye; this one
+        # assembles per-account text, numbers and links nobody reads first.
+        release_gate.enforce(
+            bound,
+            (params.get("identity") or {}),
+            frozen_plan=params.get("frozen_plan"),
+            qr_payloads=[p for p in [portal.get("url")] if p],
+        )
         if warnings:
             brief["_render_warning"] = "; ".join(warnings)[:1000]
         # cover_std is returned as cover_path so process_one uploads it and sets
