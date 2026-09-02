@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+@page { size: 8.5in 11in; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #243447; font-family: "Trebuchet MS", Arial, sans-serif; }
+.page { width: 8.5in; min-height: 11in; padding: .68in .72in .8in; position: relative; }
+.eyebrow { color: #ff9c00; font-size: 8pt; font-weight: bold; letter-spacing: .13em; text-transform: uppercase; }
+h1 { color: #003a70; font-size: 24pt; margin: 7pt 0 2pt; }
+.org { color: #66788a; font-size: 11pt; margin-bottom: 15pt; }
+.rule { width: 54pt; height: 3pt; background: #ff9c00; margin-bottom: 15pt; }
+.layer { border-top: 1pt solid #d9e1e8; padding: 11pt 0 9pt; }
+.layer h2 { color: #003a70; font-size: 13pt; margin: 0 0 6pt; }
+.absent { background: #f3f6f8; border-left: 3pt solid #8796a5; color: #566575; font-size: 9.5pt; line-height: 1.4; padding: 8pt 10pt; }
+.claim { break-inside: avoid; margin: 0 0 9pt; }
+.claim h3 { color: #182c40; font-size: 10.5pt; margin: 0 0 3pt; }
+.claim p { font-size: 9pt; line-height: 1.35; margin: 2pt 0; }
+.quote { font-style: italic; color: #284965; border-left: 2pt solid #ff9c00; padding-left: 8pt; }
+.source { color: #657789; font-size: 8pt; overflow-wrap: anywhere; }
+.rungs { margin-top: 12pt; padding: 9pt 10pt; background: #003a70; color: white; font-size: 8pt; }
+.rungs span { margin-right: 8pt; white-space: nowrap; }
+.inference { margin-top: 9pt; color: #657789; font-size: 8.5pt; font-style: italic; }
+.foot { position: absolute; left: .72in; right: .72in; bottom: .36in; border-top: .5pt solid #b8c2cc; padding-top: 5pt; color: #7a8997; font-size: 7pt; }
+</style></head><body><section class="page">
+<div class="eyebrow">Governed evidence appendix</div><h1>Groundwork</h1><div class="org">Prepared exclusively for {{ org_name }}</div><div class="rule"></div>
+{% for name, layer in layers %}<section class="layer"><h2>{{ name }}</h2>
+{% if layer.status == 'absent' %}<div class="absent">{{ layer.absence_copy }}</div>{% else %}
+{% for claim in layer.claims %}<article class="claim"><h3>{{ claim.headline }}</h3>{% if claim.detail %}<p>{{ claim.detail }}</p>{% endif %}{% if claim.verbatim_quote %}<p class="quote">“{{ claim.verbatim_quote }}”</p>{% endif %}<p class="source">{{ claim.source_label }} · {{ claim.source_date }} · {{ claim.source_url }}</p></article>{% endfor %}
+{% endif %}</section>{% endfor %}
+<div class="rungs">{% for name, count in rungs %}<span>{{ name|upper }} {{ count }}</span>{% endfor %}</div>
+<div class="inference">INFERENCE — none stated. Any future inference must be separately labelled and attributed to category experience.</div>
+<div class="foot">Groundwork contract {{ checksum[:12] }} · Sources and limitations are shown; absent evidence is never filled.</div>
+</section></body></html>
+

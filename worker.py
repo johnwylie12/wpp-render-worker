@@ -50,6 +50,7 @@ sys.path.insert(0, os.path.join(HERE, "case_study"))
 sys.path.insert(0, os.path.join(HERE, "closing"))
 sys.path.insert(0, os.path.join(HERE, "note_card"))
 sys.path.insert(0, os.path.join(HERE, "exec_brief"))
+sys.path.insert(0, os.path.join(HERE, "groundwork"))
 sys.path.insert(0, os.path.join(HERE, "enrich_990_xml"))  # 990 Part IX batch (isolated, lazy-imported)
 import cover_engine       # noqa: E402
 import snapshot_engine    # noqa: E402
@@ -59,6 +60,7 @@ import case_study_engine  # noqa: E402
 import closing_engine     # noqa: E402
 import note_card_engine   # noqa: E402
 import exec_brief_engine  # noqa: E402
+import groundwork_engine  # noqa: E402
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SERVICE_KEY  = (os.environ.get("WPP_SB_SECRET")
@@ -460,7 +462,7 @@ def _study_by_slug(slug):
 # The six bound pieces of the Executive Opening Package, in print order. The two
 # loose pieces (5x7 note, cover letter) are NOT here - the note is produced
 # outside the worker, the cover letter is a separate print handled below.
-BOUND_PIECES = ["cover", "snapshot", "cir", "benchmark", "case_study", "closing"]
+BOUND_PIECES = ["cover", "snapshot", "cir", "groundwork", "benchmark", "case_study", "closing"]
 
 # case_study + benchmark are enrichment sections: if their inputs are missing the
 # package still ships without them. cover/snapshot/cir/closing are essential.
@@ -527,6 +529,16 @@ def _render_piece(piece, content, params, workdir, hero_lookup=None):
     if piece == "cir":
         out = os.path.join(workdir, "03_cir.pdf")
         render_cir(content, out, hero=False)  # packaged copy: no photo band
+        return out
+    if piece == "groundwork":
+        payload = content.get("groundwork")
+        if not payload:
+            raise RenderError("package: Groundwork contract missing; no source means no print")
+        out = os.path.join(workdir, "04_groundwork.pdf")
+        try:
+            groundwork_engine.render(payload, org.get("name") or "", out)
+        except groundwork_engine.GroundworkError as e:
+            raise RenderError(f"package Groundwork: {e}")
         return out
     if piece == "benchmark":
         sector = (params.get("benchmark") or {}).get("sector")
