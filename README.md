@@ -22,18 +22,28 @@ worker runs, briefs sit `queued` forever (which is exactly what was happening).
 Only doc_types in `SUPPORTED_DOC_TYPES` are claimed; everything else is left
 untouched in the queue (so unbuilt types never get stuck in a fail loop).
 
-## Deploy (Railway — recommended, ~$5/mo)
+## Deploy the Fathum candidate (isolated QA only)
+
+The `codex/fathum-private-renderer` candidate is hard-bound to Supabase project
+`ivbhlgsxmcokyjazxlkb` and the private `collateral` bucket. `worker.py` performs
+that preflight before claiming work and refuses production, a public bucket,
+or any other target. Do not reuse the production worker's environment values.
+
+Railway or an equivalent Linux/Pango-capable runtime may be used:
+
 1. Push this folder to a repo (or a subfolder).
 2. Railway → **New Project → Deploy from Repo** (it auto-detects the Dockerfile).
 3. **Variables**:
-   - `SUPABASE_URL` = `https://ouzrrkskrfcvtnmhlycd.supabase.co`
-   - `SUPABASE_SERVICE_ROLE_KEY` = *(service-role key — bypasses RLS; never ship to the browser)*
+   - `SUPABASE_URL` = `https://ivbhlgsxmcokyjazxlkb.supabase.co`
+   - `SUPABASE_SERVICE_ROLE_KEY` = *(isolated-QA service-role key — bypasses RLS; never ship to the browser)*
+   - `STORAGE_BUCKET` = `collateral` *(must remain private)*
 4. Deploy. It polls every 60s. Logs print `[claim] / [done] / [fail]` per brief.
 
 Near-$0 alternative: Fly.io scale-to-zero machine + a Supabase DB webhook on
 `content_briefs` insert that wakes it. Same image.
 
-Already provisioned in Supabase (done via MCP, not by this service):
+Required in isolated QA before starting the worker (prepared by the Fathum
+migration bundle; not applied by this service):
 - `claim_next_brief(text[])` RPC
 - public Storage bucket `collateral`
 - `content_briefs.contact_id` + `content_briefs.cover_letter` columns
