@@ -14,9 +14,12 @@ worker runs, briefs sit `queued` forever (which is exactly what was happening).
 3. **Cover letter** — when the brief's `cover_letter = true`, renders a 1-page
    ERA letter (separate template in `cover/`) addressed to the brief's
    `contact_id`, and merges it in **front** of the CIR with pypdf.
-4. **Uploads** the final PDF to Supabase Storage bucket `collateral` at
-   `cir/<account_id>/<brief_id>-<slug>.pdf` and writes the public URL to
-   `content_briefs.rendered_url`, `status='rendered'`, `rendered_at=now()`.
+4. **Uploads** the final PDF to the private Supabase Storage bucket `collateral`
+   at `cir/<account_id>/<brief_id>-<slug>.pdf` and writes the private
+   bucket/object identity to `content_briefs`, with `status='rendered'` and
+   `rendered_at=now()`. The application must mint an authenticated signed URL
+   when an authorized operator requests the artifact; the worker never makes
+   the object public.
    On failure: `status='failed'`, `error=<message>`.
 
 Only doc_types in `SUPPORTED_DOC_TYPES` are claimed; everything else is left
