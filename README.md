@@ -45,7 +45,7 @@ Near-$0 alternative: Fly.io scale-to-zero machine + a Supabase DB webhook on
 Required in isolated QA before starting the worker (prepared by the Fathum
 migration bundle; not applied by this service):
 - `claim_next_brief(text[])` RPC
-- public Storage bucket `collateral`
+- private Storage bucket `collateral`
 - `content_briefs.contact_id` + `content_briefs.cover_letter` columns
 
 ## Params contract (what the enqueue must put in `content_briefs.params`)
