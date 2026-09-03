@@ -11,10 +11,16 @@ import sys, os
 import fitz
 import qrcode
 
-BOOK_URL = ("https://outlook.office.com/bookwithme/user/"
-            "7aa3d169518c4b1caeb9f72a2f23f9d8@eragroup.com/"
-            "meetingtype/CMjo2-07uk2-Q0n_F1MSvQ2"
-            "?anonymous&ismsaljsauthenabled&ep=mcard")
+# THE MEETING LINK IS CALENDLY. John, 2026-09-03: "Calendly is the one. Get rid
+# of anything else." Two different Outlook Bookings URLs were in circulation -
+# one here, one with a different meetingtype id in generate-outreach - and there
+# was no way to tell which was live.
+#
+# This constant is a FALLBACK for a label printed without a partner. The
+# authority is partner_signature.booking_url, per partner: a label carries the
+# calendar of the partner whose name is on it, or no QR at all. Printing one
+# partner's calendar under another's name is worse than printing none.
+BOOK_URL = "https://calendly.com/john_wylie/30min"
 
 NAVY  = (0x00/255, 0x3A/255, 0x70/255)
 WHITE = (1, 1, 1)

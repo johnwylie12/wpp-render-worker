@@ -35,7 +35,7 @@ JOHN = {"partner_id": 3, "signoff_name": "John Wylie",
         "signoff_title": "Senior Consultant", "signoff_firm": "ERA Group",
         "signoff_email": "jwylie@eragroup.com", "signoff_phone": "703.244.9868",
         "is_renderable": True, "missing": [],
-        "booking_url": "https://outlook.office.com/bookwithme/user/x/meetingtype/y"}
+        "booking_url": "https://calendly.com/example/30min"}
 NO_BOOKING = dict(JOHN, partner_id=1, signoff_name="Arvo Kaseorg",
                   signoff_email="akaseorg@eragroup.com", booking_url=None)
 
