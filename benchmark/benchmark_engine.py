@@ -48,7 +48,7 @@ SECTORS = {
     "LEAD": "The opportunity in your Snapshot is not a guess. It is grounded in independent "
             "healthcare-sector research and what ERA has recovered across thousands of similar "
             "engagements. A no-risk baseline review is the next step that confirms it against your own contracts.",
-    "CTX": "So the real question is not whether savings exist in the sector &mdash; the authorities below "
+    "CTX": "So the real question is not whether recoverable value exists in the sector &mdash; the authorities below "
            "settle that. It is how much is sitting in your cost base, and what it would take to get it back.",
     "BN": "$150M+", "S1N": "1,344", "S1L": "HEALTHCARE<br>CLIENTS", "S2N": "3,492", "S3N": "$1B+",
     "OSN": "$8&ndash;30M",
@@ -63,7 +63,7 @@ SECTORS = {
     "I3N": "Zero cuts", "I3T": "Recovered non-clinical spend drops straight to margin &mdash; without touching "
            "staffing, service lines, or patient care. The rare lever with no trade-off.", "I3S": "The ERA model",
     "COLA": _HC_A, "COLB": _HC_B,
-    "CAP": "These are a sample of the 50-plus indirect categories ERA benchmarks. Ranges are typical savings as a share of category spend, from prior healthcare engagements and "
+    "CAP": "These are a sample of the 50-plus indirect categories ERA benchmarks. Ranges are typical recovery as a share of category spend, from prior healthcare engagements and "
            "independent benchmarking &mdash; not a forecast. Which categories apply is confirmed only in the "
            "no-risk baseline review.",
   },
@@ -73,7 +73,7 @@ SECTORS = {
     "LEAD": "The opportunity in your Snapshot is grounded in independent nonprofit-sector "
             "research and what ERA has recovered across thousands of similar engagements. "
             "",
-    "CTX": "The question is not whether savings exist &mdash; the authorities below settle "
+    "CTX": "The question is not whether recoverable value exists &mdash; the authorities below settle "
            "that. It is how much sits in your cost base, and what it would free for the mission.",
     "BN": "$50M+", "S1N": "604", "S1L": "NOT-FOR-PROFIT<br>CLIENTS", "S2N": "1,057", "S3N": "$300M+",
     "OSN": "$1&ndash;3M",
@@ -89,7 +89,7 @@ SECTORS = {
     "I3N": "100%", "I3T": "of recovered overhead funds programs directly &mdash; and lifts the program-expense "
            "ratio funders and watchdogs judge you on. No trade-off against mission.", "I3S": "Charity Navigator",
     "COLA": _NFP_A, "COLB": _NFP_B,
-    "CAP": "These are a sample of the 50-plus indirect categories ERA benchmarks. Ranges are typical savings as a share of category spend, from prior not-for-profit engagements and "
+    "CAP": "These are a sample of the 50-plus indirect categories ERA benchmarks. Ranges are typical recovery as a share of category spend, from prior not-for-profit engagements and "
            "independent benchmarking &mdash; not a forecast. Which categories apply is confirmed only in the "
            "no-risk baseline review.",
   },

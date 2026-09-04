@@ -37,6 +37,21 @@ def normalize(signoff, *, need_signature=True, need_booking=False):
         raise PartnerError("no partner signoff resolved; refusing to print an unattributed piece")
     s = dict(signoff)
 
+    # ACCEPT BOTH COLUMN SHAPES. account_signoff() returns firm / email / phone;
+    # this module has always required signoff_firm / signoff_email /
+    # signoff_phone. Two names for the same three fields, and nothing reconciled
+    # them - so passing the database function's own output straight in raised
+    # "partner signoff is missing signoff_firm, signoff_email, signoff_phone"
+    # AFTER the letter and all six bound pieces had already rendered.
+    #
+    # Aliased rather than renamed on either side: account_signoff() is read by
+    # the app as well, and REQUIRED is the contract every engine checks against.
+    for short, long in (("firm", "signoff_firm"), ("email", "signoff_email"),
+                        ("phone", "signoff_phone"), ("name", "signoff_name"),
+                        ("title", "signoff_title")):
+        if not str(s.get(long) or "").strip() and str(s.get(short) or "").strip():
+            s[long] = s[short]
+
     if s.get("is_renderable") is False:
         raise PartnerError(f"partner is not renderable; missing {s.get('missing') or 'unknown'}")
     missing = [f for f in REQUIRED if not str(s.get(f) or "").strip()]

@@ -43,6 +43,35 @@ BANNED = [
     (r"\bsavings?\b(?!\s+account)", "savings"),
 ]
 
+# THE ONE EXEMPTION LAW 8 GRANTS, AND THE GATE DID NOT HONOUR IT.
+#
+# LAW 8, verbatim: '"Opportunity" for prospect estimates. "Savings" only for
+# realized results in case studies.'
+#
+# The bound package carries an ERA case study - North Texas Food Bank, One
+# Community Health - which reports DELIVERED results and quotes named people at
+# the client. "Total annual savings realized · $200,500" is exactly what the law
+# permits, and rewording a quotation attributed to Ann Dunlap would put words in
+# her mouth.
+#
+# Scanning the whole composed PDF as one string made that legal page indistinguishable
+# from a prospect estimate, so the gate would have blocked the package for
+# obeying the law. Pages whose text carries these markers are checked for
+# everything EXCEPT the savings term.
+CASE_STUDY_MARKERS = (
+    "case study",
+    "total annual savings realized",
+    "the client", "the challenge", "the solution", "the result",
+)
+
+
+def _is_case_study_page(page_text):
+    """A page is a case study only if it announces itself as one. Deliberately
+    narrow: the exemption must never leak onto a page carrying a PROSPECT
+    estimate, which is the whole point of the ban."""
+    low = (page_text or "").lower()
+    return sum(1 for m in CASE_STUDY_MARKERS if m in low) >= 2
+
 # A token the composer failed to resolve. A literal {A[...]} in print is an
 # automatic no-print.
 UNRESOLVED_TOKEN = re.compile(r"\{[A-Za-z]?\[[^\]]*\]\}|\{\{[^}]*\}\}|\{[A-Z_]{3,}\}")
@@ -97,10 +126,18 @@ def check(rendered_pdf, identity, frozen_plan=None, qr_payloads=(), priority_cou
         if re.search(r"\b" + re.escape(w) + r"\b", low):
             failures.append(f"UK spelling in rendered text: {w!r} (LAW 7)")
 
-    # 3 — banned vocabulary
+    # 3 — banned vocabulary, page by page so the case-study exemption can apply
+    #     to the page that earns it and nowhere else.
     for pattern, label in BANNED:
-        if re.search(pattern, low):
-            failures.append(f"banned vocabulary in rendered text: {label!r} (LAW 8)")
+        for i, ptxt in enumerate(pages, 1):
+            plow = (ptxt or "").lower()
+            if not re.search(pattern, plow):
+                continue
+            if label == "savings" and _is_case_study_page(plow):
+                continue          # LAW 8 permits it for realized results
+            failures.append(
+                f"banned vocabulary in rendered text: {label!r} on page {i} (LAW 8)")
+            break
 
     # 4 — QR payloads. Checked as strings, not pixels; see the module docstring.
     sub = (identity or {}).get("portal_subdomain")
