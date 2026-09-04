@@ -24,7 +24,7 @@ h1 { color: #003a70; font-size: 24pt; margin: 7pt 0 2pt; }
 <div class="eyebrow">Governed evidence appendix</div><h1>Groundwork</h1><div class="org">Prepared exclusively for {{ org_name }}</div><div class="rule"></div>
 {% for name, layer in layers %}<section class="layer"><h2>{{ name }}</h2>
 {% if layer.status == 'absent' %}<div class="absent">{{ layer.absence_copy }}</div>{% else %}
-{% for claim in layer.claims %}<article class="claim"><h3>{{ claim.headline }}</h3>{% if claim.detail %}<p>{{ claim.detail }}</p>{% endif %}{% if claim.verbatim_quote %}<p class="quote">“{{ claim.verbatim_quote }}”</p>{% endif %}<p class="source">{{ claim.source_label }} · {{ claim.source_date }} · {{ claim.source_url }}</p></article>{% endfor %}
+{% for claim in layer.claims %}<article class="claim"><h3>{{ claim.headline }}</h3>{% if claim.get('detail') %}<p>{{ claim.detail }}</p>{% endif %}{% if claim.get('verbatim_quote') %}<p class="quote">“{{ claim.verbatim_quote }}”</p>{% endif %}<p class="source">{{ claim.source_label }} · {{ claim.source_date }} · {{ claim.source_url }}</p></article>{% endfor %}
 {% endif %}</section>{% endfor %}
 <div class="rungs">{% for name, count in rungs %}<span>{{ name|upper }} {{ count }}</span>{% endfor %}</div>
 <div class="inference">INFERENCE — none stated. Any future inference must be separately labelled and attributed to category experience.</div>

@@ -135,6 +135,18 @@ def resolve_signoff(signoff):
             "cover letter: wpp_signoff reports the partner is not renderable; missing "
             f"{sd.get('missing') or 'unknown'}")
 
+    # ACCEPT BOTH COLUMN SHAPES, the same reconciliation wpp_partner.normalize()
+    # needed. account_signoff() returns firm / email / phone; this module has
+    # always required signoff_firm / signoff_email / signoff_phone. The mismatch
+    # is duplicated in THREE places - here, wpp_partner, and the sticker - so
+    # passing the database function's own output raised on the COVER LETTER,
+    # page 1 of the mailing, after everything else had rendered.
+    for short, long in (("firm", "signoff_firm"), ("email", "signoff_email"),
+                        ("phone", "signoff_phone"), ("name", "signoff_name"),
+                        ("title", "signoff_title")):
+        if not str(sd.get(long) or "").strip() and str(sd.get(short) or "").strip():
+            sd[long] = sd[short]
+
     missing = [f for f in REQUIRED_SIGNOFF_FIELDS if not str(sd.get(f) or "").strip()]
     if missing:
         raise SignoffError(f"cover letter: signoff is missing {', '.join(missing)}")
