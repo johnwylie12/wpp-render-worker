@@ -57,12 +57,19 @@ def est_display(c):
         return c["est_display"]
     return f"{usd_k(c['est_low'])}–{usd_k(c['est_high'])}"
 
+# THE ASK CARRIES NO DURATION. John, 2026-09-03: "A conversation that is all."
+# Naming a length negotiates scope before the reader has agreed there is
+# anything to discuss, and "20-minute call" put a clock on the first step of
+# every mailed Brief.
 DEFAULT_STEPS = [
-    {"n":1,"title":"20-minute call","body":"We walk your largest categories and confirm what's worth a closer look."},
+    {"n":1,"title":"A conversation","body":"We walk your largest categories and confirm what is worth a closer look."},
     {"n":2,"title":"30-day baseline","body":"No cost. We replace these estimates with your actual contract data."},
     {"n":3,"title":"Options report","body":"Category-by-category findings. You decide what, if anything, to pursue."},
 ]
-DEFAULT_AGG = {"clients":916,"spend":"$2.25B","projects":"6,420","with_savings":"2,656","wtd_avg":"27.5%"}
+# LAW 8: "savings" is never a noun. with_savings was a KEY in a default that
+# ships on every Brief with no per-account content - the app was swept for this
+# on 2026-09-03 and the renderer was missed entirely.
+DEFAULT_AGG = {"clients":916,"spend":"$2.25B","projects":"6,420","with_recovery":"2,656","wtd_avg":"27.5%"}
 
 
 NAVY_GRADIENT = "linear-gradient(100deg,#002851 0%,#003A70 55%,#0a4a86 100%)"
@@ -100,7 +107,17 @@ def render(content, out_pdf):
     cap1, cap2 = balance(c["opportunity"]["basis_note"])
 
     agg = {**DEFAULT_AGG, **c.get("aggregate", {})}
-    so = c.get("signoff", {"name":"John Wylie","title":"Senior Consultant","email":"jwylie@eragroup.com","phone":"703.244.9868"})
+    # THE TITLE IS CONSULTING PARTNER. Settled #143, enforced in the database by
+    # a CHECK constraint on partner_signature. It has drifted EIGHT times, and
+    # this line was one of the sources: a Brief rendered without an explicit
+    # signoff printed "Senior Consultant" on the back page of a mailed document.
+    #
+    # The name should not be hardcoded either - a Brief for one of Arvo's
+    # accounts that falls back to this default signs with John's name. The
+    # caller supplies content["signoff"] from account_signoff(); this fallback
+    # exists only so a render never dies for want of it.
+    so = c.get("signoff", {"name":"John Wylie","title":"Consulting Partner",
+                           "email":"jwylie@eragroup.com","phone":"703.244.9868"})
     src = c.get("source", {})
     src_line = (f"Source: {src['filing']} {src.get('basis','')}".strip()
                 if src.get("filing") and c.get("org",{}).get("has_990")
@@ -118,7 +135,10 @@ def render(content, out_pdf):
         method_intro=c.get("method_intro","A transparent, outside-in estimate built from three inputs — and a candid account of what an external view can and cannot establish."),
         methodology=c["methodology"], aggregate=agg, honesty=c["honesty"],
         next_steps=c.get("next_steps", DEFAULT_STEPS),
-        reassurance_tail=c.get("reassurance","No savings, no fee. No upfront cost. Nothing changes without your approval.").replace("No savings, no fee. ","").replace(". 90%",".<br>90%",1),
+        # LAW 8 again. The leading clause is stripped because the page prints it
+        # separately as a heading; the default itself still had the banned noun
+        # in it, so any account without explicit reassurance copy shipped it.
+        reassurance_tail=c.get("reassurance","No recovery, no fee. No upfront cost. Nothing changes without your approval.").replace("No recovery, no fee. ","").replace("No savings, no fee. ","").replace(". 90%",".<br>90%",1),
         signoff=so, source_line=src_line,
         hero_bg=hero_background(c),
         icons={k:icon_svg(k,"#FFFFFF") for k in _GLYPH},

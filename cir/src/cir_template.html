@@ -269,7 +269,7 @@
     </div>
 
     <div class="reassure">
-      {% if '<br>' in reassurance_tail %}<div class="rline"><b>No savings, no fee.</b> {{ reassurance_tail.split('<br>')[0] }}</div><div class="rmid"><span class="rrule"></span></div><div class="rline">{{ reassurance_tail.split('<br>')[1] }}</div>{% else %}<b>No savings, no fee.</b> {{ reassurance_tail }}{% endif %}
+      {% if '<br>' in reassurance_tail %}<div class="rline"><b>No recovery, no fee.</b> {{ reassurance_tail.split('<br>')[0] }}</div><div class="rmid"><span class="rrule"></span></div><div class="rline">{{ reassurance_tail.split('<br>')[1] }}</div>{% else %}<b>No recovery, no fee.</b> {{ reassurance_tail }}{% endif %}
     </div>
     <div class="signoff">{{ signoff.name }} · {{ signoff.title }} · {{ signoff.email }} · {{ signoff.phone }}</div>
     <div class="srcline">{{ source_line }}</div>
