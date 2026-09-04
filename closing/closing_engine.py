@@ -85,7 +85,7 @@ DEFAULT = {
 
     "signature_uri":  "",              # drop in a scanned signature PNG/URL here
     "signature_name": "John Wylie",
-    "signature_role": "Senior Consultant",
+    "signature_role": "Consulting Partner",
 
     "right_title": "What You Can Expect From Me",
     "commitments": [
@@ -103,12 +103,12 @@ DEFAULT = {
          "s": "Nothing changes without your approval. Ever."},
         {"icon": _IC["compass"],
          "h": "My success depends on yours.",
-         "s": "If we don\u2019t create verified savings, there is no fee."},
+         "s": "If we don\u2019t recover value, there is no fee."},
     ],
 
     "person": {
         "name": "John Wylie",
-        "role": "Senior Consultant",
+        "role": "Consulting Partner",
         "org":  "ERA Group",
         "email": "jwylie@eragroup.com",
         "phone": "703.244.9868",

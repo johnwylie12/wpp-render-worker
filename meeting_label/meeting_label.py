@@ -29,7 +29,7 @@ GOLD  = (0xFF/255, 0x9C/255, 0x00/255)
 HEADLINE = "Let's start a conversation"
 TAGLINE  = "VALUE THROUGH INSIGHT"
 C_NAME  = "John Wylie"
-C_TITLE = "Senior Consultant, ERA Group"
+C_TITLE = "Consulting Partner, ERA Group"
 C_PHONE = "703.244.9868"
 C_EMAIL = "jwylie@eragroup.com"
 

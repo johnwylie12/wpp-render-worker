@@ -32,7 +32,7 @@ if os.path.exists(_FONTS):
     os.environ.setdefault("FONTCONFIG_FILE", os.path.abspath(_FONTS))
 
 DEFAULT_AGG = {"clients": 916, "spend": "$2.25B", "projects": "6,420",
-               "with_savings": "2,656", "wtd_avg": "27.5%"}
+               "with_recovery": "2,656", "wtd_avg": "27.5%"}
 
 # ---- intro variants (swap the noun the reader self-identifies with) --------
 INTRO = {
@@ -110,7 +110,7 @@ VERTICAL_DEFAULTS = {
     "manufacturing": {
         "intro": "company",
         "headline": "Your next margin point may already be hiding in your indirect spend.",
-        "horizon_label": "in cumulative bottom-line savings over five years",
+        "horizon_label": "in cumulative bottom-line recovery over five years",
         "equivalent": {"mode": "revenue", "margin_pct": 8,
                        "label": "in equivalent new sales at your current margin",
                        "qualifier": "without raising a price or adding a line"},
@@ -118,7 +118,7 @@ VERTICAL_DEFAULTS = {
     "wholesale_distribution": {
         "intro": "company",
         "headline": "Your next margin point may already be hiding in your indirect spend.",
-        "horizon_label": "in cumulative bottom-line savings over five years",
+        "horizon_label": "in cumulative bottom-line recovery over five years",
         "equivalent": {"mode": "revenue", "margin_pct": 4,
                        "label": "in equivalent new sales at your current margin",
                        "qualifier": "without signing a single new account"},
@@ -126,7 +126,7 @@ VERTICAL_DEFAULTS = {
     "construction": {
         "intro": "company",
         "headline": "Your next piece of equipment may already be hiding in your overhead.",
-        "horizon_label": "in cumulative bottom-line savings over five years",
+        "horizon_label": "in cumulative bottom-line recovery over five years",
         "equivalent": {"mode": "revenue", "margin_pct": 4,
                        "label": "in equivalent contract revenue at your current margin",
                        "qualifier": "without winning a single extra bid"},
@@ -134,7 +134,7 @@ VERTICAL_DEFAULTS = {
     "hvac_plumbing_electrical": {
         "intro": "company",
         "headline": "Your next crew may already be hiding in your overhead.",
-        "horizon_label": "in cumulative bottom-line savings over five years",
+        "horizon_label": "in cumulative bottom-line recovery over five years",
         "equivalent": {"mode": "revenue", "margin_pct": 8,
                        "label": "in equivalent service revenue at your current margin",
                        "qualifier": "without raising a single invoice"},
@@ -142,7 +142,7 @@ VERTICAL_DEFAULTS = {
     "business_services": {
         "intro": "company",
         "headline": "Your next margin point may already be hiding in your indirect spend.",
-        "horizon_label": "in cumulative bottom-line savings over five years",
+        "horizon_label": "in cumulative bottom-line recovery over five years",
         "equivalent": {"mode": "revenue", "margin_pct": 10,
                        "label": "in equivalent new revenue at your current margin",
                        "qualifier": "without signing a single new client"},
@@ -150,7 +150,7 @@ VERTICAL_DEFAULTS = {
     "multi_site_services": {
         "intro": "company",
         "headline": "Your next margin point may already be hiding in your indirect spend.",
-        "horizon_label": "in cumulative bottom-line savings over five years",
+        "horizon_label": "in cumulative bottom-line recovery over five years",
         "equivalent": {"mode": "revenue", "margin_pct": 8,
                        "label": "in equivalent new revenue at your current margin",
                        "qualifier": "without opening a single new site"},
@@ -158,7 +158,7 @@ VERTICAL_DEFAULTS = {
     "roll_ups": {
         "intro": "company",
         "headline": "Your next point of EBITDA may already be hiding in your operating budget.",
-        "horizon_label": "in cumulative savings over five years, on top of the value above",
+        "horizon_label": "in cumulative recovery over five years, on top of the value above",
         "equivalent": {"mode": "ebitda", "multiple": 7,
                        "label": "in enterprise value at exit",
                        "qualifier": "from EBITDA that drops straight to the bottom line"},
@@ -166,7 +166,7 @@ VERTICAL_DEFAULTS = {
     "pe_backed_services": {
         "intro": "company",
         "headline": "Your next point of EBITDA may already be hiding in your operating budget.",
-        "horizon_label": "in cumulative savings over five years, on top of the value above",
+        "horizon_label": "in cumulative recovery over five years, on top of the value above",
         "equivalent": {"mode": "ebitda", "multiple": 7,
                        "label": "in enterprise value at exit",
                        "qualifier": "from EBITDA that drops straight to the bottom line"},
@@ -175,7 +175,7 @@ VERTICAL_DEFAULTS = {
 GENERIC_DEFAULT = {
     "intro": "company",
     "headline": "Your next margin point may already be hiding in your indirect spend.",
-    "horizon_label": "in cumulative bottom-line savings over five years",
+    "horizon_label": "in cumulative bottom-line recovery over five years",
     "equivalent": {"mode": "revenue", "margin_pct": 8,
                    "label": "in equivalent new sales at your current margin",
                    "qualifier": "without raising a price or winning a new bid"},
@@ -183,7 +183,7 @@ GENERIC_DEFAULT = {
 # org.type == "pe_backed" forces the EBITDA framing regardless of vertical.
 PE_OVERRIDE = {
     "headline": "Your next point of EBITDA may already be hiding in your operating budget.",
-    "horizon_label": "in cumulative savings over five years, on top of the value above",
+    "horizon_label": "in cumulative recovery over five years, on top of the value above",
     "equivalent": {"mode": "ebitda", "multiple": 7,
                    "label": "in enterprise value at exit",
                    "qualifier": "from EBITDA that drops straight to the bottom line"},
@@ -259,8 +259,8 @@ def render(content, out_pdf):
              f"engagements at {agg['clients']} organizations."),
             ("Validation is a no-cost, 30-day baseline that replaces these outside-in estimates with your "
              "actual contract data. Nothing changes without your approval \u2014 every recommendation is yours to accept or decline. Most organizations are already competitive in some categories; the baseline identifies both the opportunities and the areas performing well."),
-            ("The engagement is contingency-based: a share of verified savings only \u2014 "
-             "no savings, no fee, and no upfront cost."),
+            ("The engagement is contingency-based: a share of verified recovery only \u2014 "
+             "no recovery, no fee, and no upfront cost."),
         ]
 
     eyebrow = snap.get("eyebrow",
@@ -282,7 +282,7 @@ def render(content, out_pdf):
                    f"{org['name']} \u2014 before any meeting, using public filings and ERA's category benchmarks. "
                    "The remaining step is to validate those observations against information available only inside the organization.")
 
-    so = c.get("signoff", {"name": "John Wylie", "title": "Senior Consultant", "org": "ERA Group",
+    so = c.get("signoff", {"name": "John Wylie", "title": "Consulting Partner", "org": "ERA Group",
                            "email": "jwylie@eragroup.com", "phone": "703.244.9868"})
     prepared_date = snap.get("date") or c.get("date") or date.today().strftime("%B %-d, %Y")
 

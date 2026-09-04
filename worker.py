@@ -1050,7 +1050,7 @@ def selftest():
     cir_pdf = render_cir(content, os.path.join(wd, "cir.pdf"))
     cover = cover_engine.build_cover(
         {"signoff": {"partner_id": 3, "signoff_name": "John Wylie",
-                     "signoff_title": "Senior Consultant", "signoff_firm": "ERA Group",
+                     "signoff_title": "Consulting Partner", "signoff_firm": "ERA Group",
                      "signoff_email": "jwylie@eragroup.com", "signoff_phone": "703.244.9868",
                      "is_renderable": True}},
         {"name": "Nick Jacobi", "title": "General Manager"},

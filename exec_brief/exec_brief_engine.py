@@ -6,7 +6,7 @@ IFCJ-style personalized opportunity analysis for ONE account. Reads the
 hero) PLUS the exec_brief-specific fields (why_now, proof_stats,
 decision_makers, next_step, model). Renders a multi-page branded PDF with the
 same navy/gold system as the CIR + snapshot (palette #003A70 / #FF9C00, signoff
-"Senior Consultant", "value through insight" lockup).
+"Consulting Partner", "value through insight" lockup).
 
 Params are the FLAT object shown in content_contracts.example_params (the PPSAT
 reference artifact) — NOT wrapped in a `content` block. `render()` also accepts
@@ -38,11 +38,11 @@ NAVY_OVERLAY = ("linear-gradient(105deg, rgba(0,40,81,0.92) 0%, "
                 "rgba(0,52,100,0.62) 46%, rgba(10,74,134,0.28) 100%)")
 NAVY_GRADIENT = "linear-gradient(100deg,#002851 0%,#003A70 55%,#0a4a86 100%)"
 
-DEFAULT_SIGNOFF = {"name": "John Wylie", "title": "Senior Consultant",
+DEFAULT_SIGNOFF = {"name": "John Wylie", "title": "Consulting Partner",
                    "org": "ERA Group", "email": "jwylie@eragroup.com",
                    "phone": "703.244.9868"}
-DEFAULT_CONTINGENCY = ("Contingency-based — a share of verified savings. "
-                       "No savings, no fee.")
+DEFAULT_CONTINGENCY = ("Contingency-based — a share of what is recovered. "
+                       "No recovery, no fee.")
 
 
 def money(n):

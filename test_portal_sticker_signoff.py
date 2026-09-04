@@ -32,7 +32,7 @@ OUT = "/tmp/_sticker_guard"
 URL, CODE = "https://wpp-us.com/p/7T9Q2VB", "7T9Q2VB"
 
 JOHN = {"partner_id": 3, "signoff_name": "John Wylie",
-        "signoff_title": "Senior Consultant", "signoff_firm": "ERA Group",
+        "signoff_title": "Consulting Partner", "signoff_firm": "ERA Group",
         "signoff_email": "jwylie@eragroup.com", "signoff_phone": "703.244.9868",
         "is_renderable": True, "missing": [],
         "booking_url": "https://calendly.com/example/30min"}
