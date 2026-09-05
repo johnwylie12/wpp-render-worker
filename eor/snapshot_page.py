@@ -90,44 +90,60 @@ for name, amt in NO_PEER:
     </tr>"""
 
 HTMLDOC = f"""<html><head><meta charset="utf-8"><style>
-@page {{ size: Letter; margin: 0.38in 0.85in 0.28in 0.85in; }}
+@page {{
+  size: Letter; margin: 0.38in 0.85in 0.62in 0.85in;
+  @bottom-left  {{ content:"value through insight™"; font-size:7.5pt;
+                   font-weight:bold; color:#003A70; vertical-align:top;
+                   padding-top:6px; }}
+  @bottom-center{{ content:"Prepared exclusively for {ORG}"; font-size:8pt;
+                   font-weight:bold; color:#16243F; vertical-align:top;
+                   padding-top:6px; }}
+  @bottom-right {{ content:"PAGE " counter(page) " OF 16"; font-size:7pt;
+                   color:#6C7686; letter-spacing:.04em; vertical-align:top;
+                   padding-top:6px; }}
+}}
 * {{ font-family:'Liberation Sans','Trebuchet MS',Arial,sans-serif; }}
 body {{ color:#3C4658; font-size:10.5pt; line-height:1.45; }}
 .hd {{ display:flex; align-items:flex-end; border-bottom:2px solid #003A70;
       padding-bottom:6px; margin-bottom:16px; }}
 .hd .l {{ font-size:8.2pt; letter-spacing:.14em; color:#6C7686; text-transform:uppercase; }}
 .hd .r {{ margin-left:auto; text-align:right; font-size:8.2pt; color:#6C7686; }}
-h1 {{ font-size:17.5pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
-.lede {{ color:#3C4658; margin:0 0 12px; max-width:88%; }}
+h1 {{ font-size:17pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
+.lede {{ color:#3C4658; margin:0 0 10px; max-width:88%; }}
 /* THE THIRTY-SECOND ROW. #173's acceptance test is that a reader can tell at a
    glance how many categories were examined, how many sit above peer median, and
    how many are evidence-supported priorities. That is this strip and nothing
    else on the page competes with it. */
 .kpi {{ display:flex; gap:10px; margin:0 0 6px; }}
-.kpi > div {{ flex:1; border:1px solid #DCE3ED; padding:9px 11px; }}
-.kpi .n {{ font-size:19pt; color:#003A70; font-weight:bold; line-height:1.1; }}
+.kpi > div {{ flex:1; border:1px solid #DCE3ED; padding:7px 9px; }}
+.kpi .n {{ font-size:18pt; color:#003A70; font-weight:bold; line-height:1.1; }}
 .kpi .k {{ font-size:7.8pt; letter-spacing:.1em; text-transform:uppercase;
           color:#6C7686; margin-top:3px; }}
-.kpi .s {{ font-size:8.6pt; color:#6C7686; margin-top:5px; line-height:1.4; }}
+.kpi .s {{ font-size:8.4pt; color:#6C7686; margin-top:4px; line-height:1.35; }}
 .kpi .hi {{ border-color:#FF9C00; border-left-width:3px; }}
-.note {{ font-size:8.6pt; color:#6C7686; margin:7px 0 11px; }}
-h2 {{ font-size:12pt; color:#003A70; margin:13px 0 4px; }}
+.note {{ font-size:8.4pt; color:#6C7686; margin:6px 0 9px; }}
+h2 {{ font-size:12pt; color:#003A70; margin:11px 0 4px; }}
 table {{ width:100%; border-collapse:collapse; font-size:9.8pt; }}
 th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:uppercase;
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 5px 0; }}
-td {{ padding:4px 7px 4px 0; border-bottom:1px solid #DCE3ED; }}
+td {{ padding:3.4px 7px 3.4px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
-.split {{ display:flex; gap:14px; margin-top:11px; }}
+.split {{ display:flex; gap:14px; margin-top:10px; }}
 .split > div {{ flex:1; }}
-.box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:9px 12px; }}
+.box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:7px 10px; }}
 .box.g {{ border-left-color:#157A42; }}
 .box h3 {{ margin:0 0 5px; font-size:10.4pt; color:#003A70; }}
-.box p {{ margin:0; font-size:9.4pt; line-height:1.5; }}
-.prov {{ margin-top:9px; padding-top:7px; border-top:1px solid #DCE3ED;
+.box p {{ margin:0; font-size:9.4pt; line-height:1.45; }}
+.prov {{ margin-top:7px; padding-top:6px; border-top:1px solid #DCE3ED;
         font-size:8pt; color:#6C7686; }}
 .prov b {{ color:#003A70; }}
-.foot {{ margin-top:0.11in; display:flex; font-size:7.6pt; color:#8A93A3; }}
-.foot .p {{ margin-left:auto; }}
+.footer {{ margin-top:0.12in; }}
+.footer .hair {{ border-top:1px solid #DCE3ED; margin-bottom:6px; }}
+.footer .row {{ display:flex; justify-content:space-between; align-items:center; }}
+.footer .vti {{ font-weight:bold; font-size:7.5pt; color:#003A70; }}
+.footer .vti em {{ color:#FF9C00; font-style:normal; font-weight:normal; }}
+.footer .mid {{ font-size:8pt; font-weight:bold; color:#16243F; }}
+.footer .pg {{ font-size:7pt; color:#6C7686; letter-spacing:.04em; }}
 </style></head><body>
 
 <div class="hd">
@@ -136,9 +152,9 @@ td.r, th.r {{ text-align:right; }}
 </div>
 
 <h1>Six categories examined. Two look worth a conversation.<br>Two look well bought.</h1>
-<div class="lede">Every indirect category your filing breaks out, compared against organizations
-of comparable size and type. Position is a starting point for a question &mdash; it is never a
-verdict on how you are run.</div>
+<div class="lede">Every indirect category your filing breaks out, compared against organizations of
+comparable size and type. Position is a starting point for a question, never a verdict on how you
+are run.</div>
 
 <div class="kpi">
   <div><div class="n">{EXAMINED}</div><div class="k">Categories examined</div>
@@ -168,10 +184,10 @@ every organization breaks out every line.</div>
   <div class="box">
     <h3>Why insurance, and not simply because it is largest</h3>
     <p>It sits at the <b>99th percentile of 10,953 comparable filers</b> &mdash; six times the peer
-    median as a share of revenue. It is also the one category where a second public filing tells us
-    something a Form 990 cannot: your plan&rsquo;s Schedule A discloses <b>{usd(FEES)}</b> of
-    intermediary compensation across two relationships, covering {LIVES} people. Two independent
-    layers pointing at the same category is what earns it a page.</p>
+    median as a share of revenue. It is also the one category where a second filing shows something
+    a Form 990 cannot: your plan&rsquo;s Schedule A discloses <b>{usd(FEES)}</b> of intermediary
+    compensation across two relationships, covering {LIVES} people. Two independent layers on one
+    category is what earns it a page.</p>
   </div>
   <div class="box g">
     <h3>Where you appear to be buying well</h3>
