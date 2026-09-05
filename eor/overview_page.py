@@ -91,22 +91,28 @@ body {{ color:#3C4658; font-size:10pt; line-height:1.5; }}
 .hd .l {{ font-size:8pt; letter-spacing:.14em; color:#6C7686; text-transform:uppercase; }}
 .hd .r {{ margin-left:auto; text-align:right; font-size:8pt; color:#6C7686; }}
 h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
-.lede {{ color:#3C4658; margin:0 0 9px; max-width:92%; }}
+.lede {{ color:#3C4658; margin:0 0 14px; max-width:92%; }}
 /* THE NUMBER LEADS. It is the reason to read on and it belongs where the eye
    lands, not buried in a category table. */
-.hero {{ display:flex; align-items:center; gap:16px; background:#003A70; color:#fff;
-        padding:11px 15px; margin:0 0 10px; }}
-.hero .big {{ font-size:22pt; font-weight:bold; line-height:1; white-space:nowrap; }}
-.hero .k {{ white-space:nowrap; font-size:8pt; letter-spacing:.13em; text-transform:uppercase; color:#FF9C00;
-           font-weight:bold; }}
-.hero .s2 {{ font-size:10pt; color:#FF9C00; margin-top:3px; }}
-.hero .s {{ font-size:10pt; color:#DCE7F5; margin-top:4px; line-height:1.45; }}
-h2 {{ font-size:11pt; color:#003A70; margin:9px 0 4px; }}
+.hero {{ display:flex; align-items:stretch; gap:28px; background:#003A70; color:#fff;
+        padding:22px 26px; margin:2px 0 18px; }}
+.hero .figure {{ flex:0 0 auto; padding-right:26px; border-right:1px solid #2A5074; }}
+.hero .unit {{ font-size:10pt; color:#DCE7F5; margin-top:2px; }}
+.hero .floor {{ font-size:10pt; color:#FF9C00; margin-top:9px; }}
+.hero .say {{ flex:1; display:flex; flex-direction:column; justify-content:center; }}
+.hero .say p {{ margin:0; font-size:10pt; line-height:1.5; color:#DCE7F5; }}
+.hero .say p b {{ color:#fff; }}
+.hero .stat {{ margin-top:11px; padding-top:9px; border-top:1px solid #2A5074;
+              font-size:10pt; color:#fff; }}
+.hero .stat b {{ font-size:14pt; color:#FF9C00; }}
+.hero .stat span {{ color:#DCE7F5; }}
+.hero .big {{ font-size:34pt; letter-spacing:-0.5pt; font-weight:bold; line-height:1; white-space:nowrap; }}
+h2 {{ font-size:11pt; color:#003A70; margin:20px 0 8px; }}
 .two {{ display:flex; gap:18px; }} .two > div {{ flex:1; }}
 ul.pl {{ list-style:none; margin:0; padding:0; }}
-ul.pl li {{ padding:2.6px 0; border-bottom:1px solid #DCE3ED; font-size:10pt; }}
+ul.pl li {{ padding:6px 0; border-bottom:1px solid #DCE3ED; font-size:10pt; }}
 ul.pl li:last-child {{ border-bottom:none; }}
-.rd {{ display:flex; gap:8px; padding:2.2px 0; border-bottom:1px solid #DCE3ED;
+.rd {{ display:flex; gap:9px; padding:5.5px 0; border-bottom:1px solid #DCE3ED;
       font-size:10pt; color:#003A70; align-items:flex-start; }}
 .rd:last-child {{ border-bottom:none; }}
 .rd .i {{ flex:0 0 17px; height:17px; border-radius:50%; background:#003A70; color:#fff;
@@ -117,8 +123,8 @@ th {{ text-align:left; font-size:8pt; letter-spacing:.09em; text-transform:upper
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 4px 0; }}
 td {{ padding:2.8px 7px 2.8px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
-.scope {{ display:flex; gap:12px; margin:8px 0 0; }}
-.sc {{ flex:1; border-top:3px solid #DCE3ED; padding:9px 0 0; }}
+.scope {{ display:flex; gap:14px; margin:10px 0 0; }}
+.sc {{ flex:1; border-top:3px solid #DCE3ED; padding:11px 0 0; }}
 .sc.on {{ border-top-color:#FF9C00; }}
 .sc .amt {{ font-size:22pt; color:#003A70; font-weight:bold; line-height:1; }}
 .sc .lab {{ font-size:8pt; letter-spacing:.13em; text-transform:uppercase; color:#6C7686;
@@ -136,13 +142,17 @@ before contacting you, because a useful conversation should begin with evidence 
 capability presentation.</div>
 
 <div class="hero">
-  <div><div class="k">Median outcome, our completed work</div>
+  <div class="figure">
     <div class="big">{usd(LIKELY)}</div>
-    <div class="s2">a year &mdash; {usd(WEAK)} on our weakest quartile</div></div>
-  <div class="s">Not a published range. This is the <b>median outcome across {PROJECTS_BEHIND}
-  completed ERA engagements</b> in your own categories, applied to the {usd(FILED)} your filing
-  names. Of 2,660 engagements overall, <b>2,649 recovered value</b> &mdash; and the weakest quarter
-  still returned 14%.</div>
+    <div class="unit">a year</div>
+    <div class="floor">{usd(WEAK)} on our weakest quartile</div>
+  </div>
+  <div class="say">
+    <p>Not a published range. The <b>median outcome across {PROJECTS_BEHIND} completed ERA
+    engagements</b> in your own categories, applied to the {usd(FILED)} your filing names.</p>
+    <div class="stat"><b>2,649</b> of 2,660 engagements recovered value<span>
+    &mdash; the weakest quarter still returned 14%</span></div>
+  </div>
 </div>
 
 <div class="two">
