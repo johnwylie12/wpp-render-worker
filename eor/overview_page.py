@@ -28,7 +28,9 @@ EXPENSES = 185_120_170
 FILED = 43_658_367
 UNCLASSIFIED = 38_458_237
 INDIRECT = FILED + UNCLASSIFIED
-OPP_LOW, OPP_HIGH, OPP_MID = 4_366_000, 12_504_000, 8_434_775
+# fn_recovery_summary(23895) - quartiles of COMPLETED ERA projects, not bands.
+WEAK, LIKELY, STRONG = 5_486_743, 8_693_297, 14_022_890
+PROJECTS_BEHIND = 158
 
 _VTI = "/home/claude/worker/meeting_label/assets/vti_logo.png"
 _im = Image.open(_VTI); _im.thumbnail((186, 186), Image.LANCZOS)
@@ -42,13 +44,13 @@ def usd(n):
 
 # category, filed, position words, percentile, ERA projects, ERA median %
 CATS = [
-    ("Operating Supply",       37_971_710, "Well above", 98,  89, 27),
-    ("Freight / Small Parcel",  2_631_840, "Above",      64, 112, 29),
-    ("Fleet Management",        2_122_533, "Below",      46,  17, 18),
-    ("Office Supplies",         1_372_501, "Not compared", None, 227, 27),
+    ("Operating Supply",       37_971_710, "Well above", 98,  69, 21.3),
+    ("Freight / Small Parcel",  2_631_840, "Above",      64,  89, 23.0),
+    ("Fleet Management",        2_122_533, "Below",      46,   0, 0),
+    ("Office Supplies",         1_372_501, "Not compared", None, 204, 25.0),
     ("Professional Services",     637_913, "Not compared", None, 0, 0),
-    ("Marketing Services",        482_421, "At median",  49,   0, 0),
-    ("Travel",                    449_863, "Below",      39,   0, 0),
+    ("Marketing Services",        482_421, "At median",  49,  56, 30.1),
+    ("Travel",                    449_863, "Below",      39,  46, 18.4),
 ]
 
 ROADMAP = [
@@ -65,57 +67,57 @@ rows = ""
 for name, amt, pos, pct, proj, med in CATS:
     posn = f"{pos} &middot; {pct}th" if pct else pos
     colour = "#111127" if pct and pct >= 90 else ("#E08A00" if pct and pct >= 50 else "#97999B")
-    proof = f"{med}% median &middot; {proj} projects" if proj >= 5 else "&mdash;"
+    proof = f"{med:.0f}% median &middot; {proj} projects" if proj >= 15 else "&mdash;"
     rows += (f'<tr><td><b>{name}</b></td><td class="r">{usd(amt)}</td>'
              f'<td class="r">{amt/FILED*100:.0f}%</td>'
              f'<td class="r" style="color:{colour};font-weight:bold">{posn}</td>'
              f'<td class="r" style="color:#003A70">{proof}</td></tr>')
 
 road = "".join(
-  f'<div class="rd"><span class="i">{i}</span><div><b>{t}</b>'
-  f'<div class="sub">{d}</div></div></div>'
+  f'<div class="rd"><span class="i">{i}</span><div><b>{t}</b></div></div>'
   for i,(t,d) in enumerate(ROADMAP, 1))
 
 DOC = f"""<html><head><meta charset="utf-8"><style>
-@page {{ size: Letter; margin: 0.38in 0.85in 0.62in 0.85in;
+@page {{ size: Letter; margin: 0.34in 0.8in 0.58in 0.8in;
   @bottom-left  {{ content:url("{VTI_URI}"); vertical-align:top; padding-top:5px; }}
   @bottom-center{{ content:"{ORG}"; font-size:8pt; font-weight:bold; color:#16243F;
                    vertical-align:top; padding-top:6px; }}
   @bottom-right {{ content:"PAGE " counter(page) " OF 16"; font-size:7pt; color:#6C7686;
                    letter-spacing:.04em; vertical-align:top; padding-top:6px; }} }}
 * {{ font-family:'Liberation Sans','Trebuchet MS',Arial,sans-serif; }}
-body {{ color:#3C4658; font-size:10.2pt; line-height:1.44; }}
+body {{ color:#3C4658; font-size:10pt; line-height:1.4; }}
 .hd {{ display:flex; align-items:flex-end; border-bottom:2px solid #003A70;
       padding-bottom:6px; margin-bottom:14px; }}
 .hd .l {{ font-size:8.2pt; letter-spacing:.14em; color:#6C7686; text-transform:uppercase; }}
 .hd .r {{ margin-left:auto; text-align:right; font-size:8.2pt; color:#6C7686; }}
 h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
-.lede {{ color:#3C4658; margin:0 0 12px; max-width:92%; }}
+.lede {{ color:#3C4658; margin:0 0 9px; max-width:92%; }}
 /* THE NUMBER LEADS. It is the reason to read on and it belongs where the eye
    lands, not buried in a category table. */
-.hero {{ display:flex; align-items:center; gap:18px; background:#003A70; color:#fff;
-        padding:14px 18px; margin:0 0 13px; }}
-.hero .big {{ font-size:25pt; font-weight:bold; line-height:1; white-space:nowrap; }}
-.hero .k {{ font-size:7.8pt; letter-spacing:.13em; text-transform:uppercase; color:#FF9C00;
+.hero {{ display:flex; align-items:center; gap:16px; background:#003A70; color:#fff;
+        padding:11px 15px; margin:0 0 10px; }}
+.hero .big {{ font-size:23pt; font-weight:bold; line-height:1; white-space:nowrap; }}
+.hero .k {{ white-space:nowrap; font-size:7.6pt; letter-spacing:.13em; text-transform:uppercase; color:#FF9C00;
            font-weight:bold; }}
+.hero .s2 {{ font-size:9pt; color:#FF9C00; margin-top:3px; }}
 .hero .s {{ font-size:9.2pt; color:#DCE7F5; margin-top:4px; line-height:1.45; }}
-h2 {{ font-size:11.5pt; color:#003A70; margin:12px 0 5px; }}
-.two {{ display:flex; gap:20px; }} .two > div {{ flex:1; }}
+h2 {{ font-size:11pt; color:#003A70; margin:9px 0 4px; }}
+.two {{ display:flex; gap:18px; }} .two > div {{ flex:1; }}
 ul.pl {{ list-style:none; margin:0; padding:0; }}
-ul.pl li {{ padding:4px 0; border-bottom:1px solid #DCE3ED; font-size:9.4pt; }}
+ul.pl li {{ padding:2.6px 0; border-bottom:1px solid #DCE3ED; font-size:9pt; }}
 ul.pl li:last-child {{ border-bottom:none; }}
-.rd {{ display:flex; gap:9px; padding:3.4px 0; border-bottom:1px solid #DCE3ED;
+.rd {{ display:flex; gap:8px; padding:2.2px 0; border-bottom:1px solid #DCE3ED;
       font-size:9.4pt; color:#003A70; align-items:flex-start; }}
 .rd:last-child {{ border-bottom:none; }}
 .rd .i {{ flex:0 0 17px; height:17px; border-radius:50%; background:#003A70; color:#fff;
          font-size:7pt; font-weight:bold; text-align:center; line-height:17px; margin-top:1px; }}
-.rd .sub {{ font-size:8.4pt; color:#6C7686; font-weight:normal; }}
+.rd .sub {{ font-size:8pt; color:#6C7686; font-weight:normal; }}
 table {{ width:100%; border-collapse:collapse; font-size:9.4pt; margin-top:3px; }}
 th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:uppercase;
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 4px 0; }}
-td {{ padding:3.2px 7px 3.2px 0; border-bottom:1px solid #DCE3ED; }}
+td {{ padding:2.8px 7px 2.8px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
-.note {{ font-size:8.2pt; color:#6C7686; margin-top:6px; line-height:1.5; }}
+.note {{ font-size:8pt; color:#6C7686; margin-top:5px; line-height:1.45; }}
 </style></head><body>
 
 <div class="hd"><div class="l">Executive Overview</div>
@@ -127,30 +129,31 @@ before contacting you, because a useful conversation should begin with evidence 
 capability presentation.</div>
 
 <div class="hero">
-  <div><div class="k">What an outside-in review points to</div>
-    <div class="big">{usd(OPP_LOW)} &ndash; {usd(OPP_HIGH)}</div></div>
-  <div class="s">a year in recoverable indirect cost, against the {usd(FILED)} your filing names by
-  category. Directional, from public information only &mdash; and validated, or ruled out, in a
-  no-cost baseline. Across <b>2,660 completed ERA engagements, 2,649 recovered value</b>.</div>
+  <div><div class="k">Median outcome, our completed work</div>
+    <div class="big">{usd(LIKELY)}</div>
+    <div class="s2">a year &mdash; {usd(WEAK)} on our weakest quartile</div></div>
+  <div class="s">Not a published range. This is the <b>median outcome across {PROJECTS_BEHIND}
+  completed ERA engagements</b> in your own categories, applied to the {usd(FILED)} your filing
+  names. Of 2,660 engagements overall, <b>2,649 recovered value</b> &mdash; and the weakest quarter
+  still returned 14%.</div>
 </div>
 
 <div class="two">
   <div>
     <h2>How it was built</h2>
     <ul class="pl">
-      <li><b>Your public filing.</b> Nineteen expense lines from your FY2024 Form 990; seven map to
-        categories we work.</li>
+      <li><b>Your public filing.</b> Nineteen expense lines; seven map to categories we work.</li>
       <li><b>A peer comparison.</b> Each category against every nonprofit filer that breaks it out
-        separately, as a share of revenue.</li>
-      <li><b>Our own completed work.</b> What ERA has actually recovered in each of those
-        categories, not a projection.</li>
+        separately.</li>
+      <li><b>Our own completed work.</b> What ERA has recovered in those categories &mdash; not a
+        projection.</li>
     </ul>
     <h2>Reading the position</h2>
     <ul class="pl">
-      <li><b>Above the median</b> is a question, not a verdict. Categories sit high for sound
-        reasons, and your model is one of them.</li>
-      <li><b>At or below the median</b> is not proof of competitive buying. The median is drawn
-        from organizations that have mostly never tested these categories either.</li>
+      <li><b>Above the median</b> is a question, not a verdict. Your model is one reason a category
+        sits high.</li>
+      <li><b>At or below it</b> is not proof of competitive buying &mdash; the median is drawn from
+        organizations that have mostly never tested either.</li>
     </ul>
   </div>
   <div>
@@ -159,15 +162,20 @@ capability presentation.</div>
   </div>
 </div>
 
-<h2>All seven categories at a glance</h2>
+<h2>What we have deliberately not put a number on</h2>
 <table>
-  <tr><th>Category</th><th class="r">Filed</th><th class="r">Share</th>
-      <th class="r">Position</th><th class="r">What ERA has recovered here</th></tr>
-  {rows}
+  <tr><th>Filed line</th><th class="r">Amount</th><th>Why it is not in the figure above</th></tr>
+  <tr><td><b>Occupancy</b></td><td class="r">$24.4M</td><td>Rent, utilities, maintenance and
+    janitorial reported as one figure. We work the services; rent is not recoverable the same way,
+    and the filing does not separate them.</td></tr>
+  <tr><td><b>Fees for services &mdash; other</b></td><td class="r">$8.1M</td><td>A catch-all that
+    can hold programme delivery as easily as advisory spend.</td></tr>
+  <tr><td><b>Service charges</b></td><td class="r">$2.4M</td><td>Typically banking and card
+    processing, which we work &mdash; the filing does not confirm what is inside it.</td></tr>
 </table>
-<div class="note">A further {usd(UNCLASSIFIED)} of indirect spend sits in lines your filing does not
-name &mdash; occupancy, fees for services, service charges. None of it is in the range above. ERA
-benchmarks 55 categories; the baseline covers every one that applies to you.</div>
+<div class="note"><b>{usd(UNCLASSIFIED)} of real indirect spend we have chosen not to estimate
+rather than guess at.</b> Each is a category ERA works, and each is sized in the no-cost baseline.
+We would rather show you the question than invent the answer.</div>
 
 </body></html>"""
 
