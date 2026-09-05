@@ -162,20 +162,25 @@ capability presentation.</div>
   </div>
 </div>
 
-<h2>What we have deliberately not put a number on</h2>
+<h2>What we looked at, and what we did not</h2>
+<div class="note" style="margin:0 0 5px">ERA works <b>55 indirect categories</b>. Your Form 990
+reports <b>12 lines of indirect spend</b>, totalling <b>$82.1M</b>. Here is every one of them.</div>
 <table>
-  <tr><th>Filed line</th><th class="r">Amount</th><th>Why it is not in the figure above</th></tr>
-  <tr><td><b>Occupancy</b></td><td class="r">$24.4M</td><td>Rent, utilities, maintenance and
-    janitorial reported as one figure. We work the services; rent is not recoverable the same way,
-    and the filing does not separate them.</td></tr>
-  <tr><td><b>Fees for services &mdash; other</b></td><td class="r">$8.1M</td><td>A catch-all that
-    can hold programme delivery as easily as advisory spend.</td></tr>
-  <tr><td><b>Service charges</b></td><td class="r">$2.4M</td><td>Typically banking and card
-    processing, which we work &mdash; the filing does not confirm what is inside it.</td></tr>
+  <tr><th>&nbsp;</th><th class="r">Lines</th><th class="r">Amount</th><th>What we did, and why</th></tr>
+  <tr><td><b>Modelled</b></td><td class="r">2</td><td class="r"><b>$40.6M</b></td>
+      <td>Operating supply and freight. We have <b>158 completed engagements</b> in these two, so
+      the figure above is a median outcome rather than a range.</td></tr>
+  <tr><td><b>We work these</b></td><td class="r">3</td><td class="r">$3.1M</td>
+      <td>Fleet, marketing and travel. Fewer than 15 completed engagements each, so a median would
+      be noise &mdash; we have not put a number on them.</td></tr>
+  <tr><td><b>Too broad to model</b></td><td class="r">7</td><td class="r">$38.5M</td>
+      <td>Chiefly occupancy at $24.4M, which reports rent alongside utilities, maintenance and
+      janitorial as one figure. We work everything in that line except the rent, and the filing
+      does not separate them.</td></tr>
 </table>
-<div class="note"><b>{usd(UNCLASSIFIED)} of real indirect spend we have chosen not to estimate
-rather than guess at.</b> Each is a category ERA works, and each is sized in the no-cost baseline.
-We would rather show you the question than invent the answer.</div>
+<div class="note"><b>Nothing has been left out and nothing has been assumed.</b> The $8.7M above
+comes only from the first row. The other $41.6M is real indirect spend in categories we work
+&mdash; it is sized in the no-cost baseline, where your own contract data replaces the filing.</div>
 
 </body></html>"""
 
