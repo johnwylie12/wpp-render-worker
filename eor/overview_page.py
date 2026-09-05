@@ -82,41 +82,48 @@ DOC = f"""<html><head><meta charset="utf-8"><style>
   @bottom-left  {{ content:url("{VTI_URI}"); vertical-align:top; padding-top:5px; }}
   @bottom-center{{ content:"{ORG}"; font-size:8pt; font-weight:bold; color:#16243F;
                    vertical-align:top; padding-top:6px; }}
-  @bottom-right {{ content:"PAGE " counter(page) " OF 16"; font-size:7pt; color:#6C7686;
+  @bottom-right {{ content:"PAGE " counter(page) " OF 16"; font-size:8pt; color:#6C7686;
                    letter-spacing:.04em; vertical-align:top; padding-top:6px; }} }}
 * {{ font-family:'Liberation Sans','Trebuchet MS',Arial,sans-serif; }}
-body {{ color:#3C4658; font-size:10pt; line-height:1.4; }}
+body {{ color:#3C4658; font-size:10pt; line-height:1.5; }}
 .hd {{ display:flex; align-items:flex-end; border-bottom:2px solid #003A70;
       padding-bottom:6px; margin-bottom:14px; }}
-.hd .l {{ font-size:8.2pt; letter-spacing:.14em; color:#6C7686; text-transform:uppercase; }}
-.hd .r {{ margin-left:auto; text-align:right; font-size:8.2pt; color:#6C7686; }}
+.hd .l {{ font-size:8pt; letter-spacing:.14em; color:#6C7686; text-transform:uppercase; }}
+.hd .r {{ margin-left:auto; text-align:right; font-size:8pt; color:#6C7686; }}
 h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
 .lede {{ color:#3C4658; margin:0 0 9px; max-width:92%; }}
 /* THE NUMBER LEADS. It is the reason to read on and it belongs where the eye
    lands, not buried in a category table. */
 .hero {{ display:flex; align-items:center; gap:16px; background:#003A70; color:#fff;
         padding:11px 15px; margin:0 0 10px; }}
-.hero .big {{ font-size:23pt; font-weight:bold; line-height:1; white-space:nowrap; }}
-.hero .k {{ white-space:nowrap; font-size:7.6pt; letter-spacing:.13em; text-transform:uppercase; color:#FF9C00;
+.hero .big {{ font-size:22pt; font-weight:bold; line-height:1; white-space:nowrap; }}
+.hero .k {{ white-space:nowrap; font-size:8pt; letter-spacing:.13em; text-transform:uppercase; color:#FF9C00;
            font-weight:bold; }}
-.hero .s2 {{ font-size:9pt; color:#FF9C00; margin-top:3px; }}
-.hero .s {{ font-size:9.2pt; color:#DCE7F5; margin-top:4px; line-height:1.45; }}
+.hero .s2 {{ font-size:10pt; color:#FF9C00; margin-top:3px; }}
+.hero .s {{ font-size:10pt; color:#DCE7F5; margin-top:4px; line-height:1.45; }}
 h2 {{ font-size:11pt; color:#003A70; margin:9px 0 4px; }}
 .two {{ display:flex; gap:18px; }} .two > div {{ flex:1; }}
 ul.pl {{ list-style:none; margin:0; padding:0; }}
-ul.pl li {{ padding:2.6px 0; border-bottom:1px solid #DCE3ED; font-size:9pt; }}
+ul.pl li {{ padding:2.6px 0; border-bottom:1px solid #DCE3ED; font-size:10pt; }}
 ul.pl li:last-child {{ border-bottom:none; }}
 .rd {{ display:flex; gap:8px; padding:2.2px 0; border-bottom:1px solid #DCE3ED;
-      font-size:9.4pt; color:#003A70; align-items:flex-start; }}
+      font-size:10pt; color:#003A70; align-items:flex-start; }}
 .rd:last-child {{ border-bottom:none; }}
 .rd .i {{ flex:0 0 17px; height:17px; border-radius:50%; background:#003A70; color:#fff;
-         font-size:7pt; font-weight:bold; text-align:center; line-height:17px; margin-top:1px; }}
+         font-size:8pt; font-weight:bold; text-align:center; line-height:17px; margin-top:1px; }}
 .rd .sub {{ font-size:8pt; color:#6C7686; font-weight:normal; }}
-table {{ width:100%; border-collapse:collapse; font-size:9.4pt; margin-top:3px; }}
-th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:uppercase;
+table {{ width:100%; border-collapse:collapse; font-size:10pt; margin-top:3px; }}
+th {{ text-align:left; font-size:8pt; letter-spacing:.09em; text-transform:uppercase;
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 4px 0; }}
 td {{ padding:2.8px 7px 2.8px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
+.scope {{ display:flex; gap:12px; margin:8px 0 0; }}
+.sc {{ flex:1; border-top:3px solid #DCE3ED; padding:9px 0 0; }}
+.sc.on {{ border-top-color:#FF9C00; }}
+.sc .amt {{ font-size:22pt; color:#003A70; font-weight:bold; line-height:1; }}
+.sc .lab {{ font-size:8pt; letter-spacing:.13em; text-transform:uppercase; color:#6C7686;
+           font-weight:bold; margin:5px 0 6px; }}
+.sc .txt {{ font-size:10pt; line-height:1.45; }}
 .note {{ font-size:8pt; color:#6C7686; margin-top:5px; line-height:1.45; }}
 </style></head><body>
 
@@ -163,26 +170,28 @@ capability presentation.</div>
 </div>
 
 <h2>What we looked at, and what we did not</h2>
-<div class="note" style="margin:0 0 5px">ERA works <b>55 indirect categories</b>. Your Form 990
-reports <b>12 lines of indirect spend</b>, totalling <b>$82.1M</b>. Here is every one of them.</div>
-<table>
-  <tr><th>&nbsp;</th><th class="r">Lines</th><th class="r">Amount</th><th>What we did, and why</th></tr>
-  <tr><td><b>Modelled</b></td><td class="r">2</td><td class="r"><b>$40.6M</b></td>
-      <td>Operating supply and freight. We have <b>158 completed engagements</b> in these two, so
-      the figure above is a median outcome rather than a range.</td></tr>
-  <tr><td><b>Additional, to be<br>quantified</b></td><td class="r">3</td><td class="r">$3.1M</td>
-      <td>Fleet, marketing and travel &mdash; all categories we work. We hold fewer than 15
-      completed engagements in each, so rather than quote a median we would rather size these
-      against your own data. <b>Upside to the figure above, not part of it.</b></td></tr>
-  <tr><td><b>Additional, needs<br>your detail</b></td><td class="r">7</td><td class="r">$38.5M</td>
-      <td>Chiefly occupancy at $24.4M. We work everything in that line except the rent &mdash;
-      utilities, maintenance, janitorial, grounds, security &mdash; but a Form 990 reports them as
-      one figure. Thirty seconds of your own ledger splits it. <b>Also upside.</b></td></tr>
-</table>
-<div class="note"><b>The $8.7M above comes only from the first row.</b> The other $41.6M is real
-indirect spend in categories we work &mdash; we have simply chosen not to put a number on it from a
-public filing. It is sized in the no-cost baseline, against your contract data rather than ours.
-Nothing has been left out, and nothing has been assumed.</div>
+<div class="scope">
+  <div class="sc on">
+    <div class="amt">$40.6M</div>
+    <div class="lab">Modelled</div>
+    <div class="txt">Operating supply and freight. <b>158 completed engagements</b> stand behind
+      the figure above.</div>
+  </div>
+  <div class="sc">
+    <div class="amt">$3.1M</div>
+    <div class="lab">To be quantified</div>
+    <div class="txt">Fleet, marketing, travel. We work all three &mdash; too few engagements to
+      quote a median. <b>Upside.</b></div>
+  </div>
+  <div class="sc">
+    <div class="amt">$38.5M</div>
+    <div class="lab">Needs your detail</div>
+    <div class="txt">Mostly occupancy. We work everything in it but the rent, and a 990 reports
+      them as one figure. <b>Upside.</b></div>
+  </div>
+</div>
+<div class="note">ERA works <b>55 categories</b>. Your filing reports <b>12 lines of indirect
+spend</b>, $82.1M in total, and all twelve are above. The $8.7M comes from the first card only.</div>
 
 </body></html>"""
 
