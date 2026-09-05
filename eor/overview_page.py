@@ -82,7 +82,7 @@ DOC = f"""<html><head><meta charset="utf-8"><style>
   @bottom-left  {{ content:url("{VTI_URI}"); vertical-align:top; padding-top:5px; }}
   @bottom-center{{ content:"{ORG}"; font-size:8pt; font-weight:bold; color:#16243F;
                    vertical-align:top; padding-top:6px; }}
-  @bottom-right {{ content:"PAGE " counter(page) " OF 16"; font-size:8pt; color:#6C7686;
+  @bottom-right {{ content:"PAGE 2 OF 16"; font-size:8pt; color:#6C7686;
                    letter-spacing:.04em; vertical-align:top; padding-top:6px; }} }}
 * {{ font-family:'Liberation Sans','Trebuchet MS',Arial,sans-serif; }}
 body {{ color:#3C4658; font-size:10pt; line-height:1.5; }}

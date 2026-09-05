@@ -72,15 +72,15 @@ INDIRECT     = FILED + UNCLASSIFIED
 # ERA projects in that category, ERA median recovery %
 ROWS = [
     ("Operating Supply",      37_971_710, 19.36, 2.40, 98, 2_573,
-     "Running the stores and processing donated goods", 89, 27.2),
+     "Running the stores and processing donated goods", 69, 21.3),
     ("Freight / Small Parcel", 2_631_840,  1.34, 0.79, 64,   140,
-     "Moving donated goods between sites and to customers", 112, 29.1),
+     "Moving donated goods between sites and to customers", 89, 23.0),
     ("Marketing Services",       482_421,  0.25, 0.26, 49, 7_371,
      "Donor and retail advertising", 0, 0),
     ("Fleet Management",       2_122_533,  1.08, 1.21, 46,   396,
-     "The trucks that collect donations", 17, 17.7),
+     "The trucks that collect donations", 0, 0),
     ("Travel",                   449_863,  0.23, 0.37, 39, 8_769,
-     "Staff movement across the programme", 0, 0),
+     "Staff movement across the program", 0, 0),
 ]
 NO_PEER = []   # moved to the full category page; they carry no position and no finding
 
@@ -140,7 +140,7 @@ HTMLDOC = f"""<html><head><meta charset="utf-8"><style>
   @bottom-center{{ content:"{ORG}"; font-size:8pt;
                    font-weight:bold; color:#16243F; vertical-align:top;
                    padding-top:6px; }}
-  @bottom-right {{ content:"PAGE " counter(page) " OF 16"; font-size:7pt;
+  @bottom-right {{ content:"PAGE 3 OF 16"; font-size:7pt;
                    color:#6C7686; letter-spacing:.04em; vertical-align:top;
                    padding-top:6px; }}
 }}
@@ -233,7 +233,7 @@ position, and the categories a filing does not break out are sized in the baseli
     <p>At <b>19.4% of revenue against a 2.4% peer median</b> it is roughly eight times, on 2,573
     filers. A donated-goods retailer genuinely buys more supply than most nonprofits, so part of
     that gap is your model rather than your buying &mdash; how much is exactly the question. ERA
-    has completed <b>89 operating-supply engagements at a median of 27%</b>.</p>
+    has completed <b>69 operating-supply engagements at a median of 21%</b>.</p>
   </div>
   <div class="box g">
     <h3>Being at the median is not the same as being competitive</h3>
