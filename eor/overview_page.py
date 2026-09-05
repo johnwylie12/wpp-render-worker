@@ -98,8 +98,9 @@ h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weig
         padding:22px 26px; margin:2px 0 14px; }}
 .hero .figure {{ flex:0 0 auto; }}
 .hero .rule {{ flex:0 0 1px; align-self:stretch; background:#2A5074; }}
-.hero .unit {{ font-size:10pt; color:#DCE7F5; margin-top:2px; }}
-.hero .floor {{ font-size:10pt; color:#FF9C00; margin-top:9px; }}
+.hero .unit {{ font-size:11pt; color:#DCE7F5; font-weight:normal;
+              letter-spacing:0; margin-left:9px; }}
+.hero .floor {{ font-size:10pt; color:#FF9C00; margin-top:7px; }}
 .hero .say {{ flex:1; }}
 .hero .say p {{ margin:0; font-size:10pt; line-height:1.5; color:#DCE7F5; }}
 .hero .say p b {{ color:#fff; }}
@@ -145,8 +146,7 @@ capability presentation.</div>
 
 <div class="hero">
   <div class="figure">
-    <div class="big">{usd(LIKELY)}</div>
-    <div class="unit">a year</div>
+    <div class="big">{usd(LIKELY)}<span class="unit">a year</span></div>
     <div class="floor">{usd(WEAK)} on our weakest quartile</div>
   </div>
   <div class="rule"></div>
