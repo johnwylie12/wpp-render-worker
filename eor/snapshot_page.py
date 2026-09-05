@@ -75,7 +75,7 @@ ROWS = [
     ("Fleet Management",       2_122_533,  1.08, 1.21, 46,   396),
     ("Travel",                   449_863,  0.23, 0.37, 39, 8_769),
 ]
-NO_PEER = [("Office Supplies", 1_372_501), ("Professional Services: Legal", 637_913)]
+NO_PEER = []   # moved to the full category page; they carry no position and no finding
 
 EXAMINED = len(ROWS) + len(NO_PEER)
 ABOVE    = sum(1 for r in ROWS if r[4] >= 50)
@@ -164,8 +164,8 @@ td.r, th.r {{ text-align:right; }}
 .box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:6px 9px; }}
 .box.g {{ border-left-color:#003A70; }}
 .box h3 {{ margin:0 0 5px; font-size:10.4pt; color:#003A70; }}
-.box p {{ margin:0; font-size:9.4pt; line-height:1.45; }}
-.prov {{ margin-top:6px; padding-top:5px; border-top:1px solid #DCE3ED;
+.box p {{ margin:0; font-size:9.2pt; line-height:1.42; }}
+.prov {{ margin-top:5px; padding-top:4px; border-top:1px solid #DCE3ED;
         font-size:7.4pt; color:#6C7686; line-height:1.5; }}
 .prov b {{ color:#003A70; }}
 .footer {{ margin-top:0.12in; }}
@@ -212,11 +212,9 @@ and are shown as empty rather than filled.</div>
       <th class="r">Peer<br>median</th><th class="r">Peers</th><th class="r">Position</th></tr>
   {rows}
 </table>
-<div class="note">Each category is compared against every nonprofit filer that breaks that category
-out separately, measured the same way &mdash; category spend as a share of total revenue. Cohort
-sizes differ because not every organization discloses every line, and a category needs at least 30
-filers before we will state a position. The categories a filing does not break out are sized in the
-baseline, not here.</div>
+<div class="note">Each category is compared against every nonprofit filer that breaks it out
+separately, as a share of total revenue. A category needs at least 30 filers before we state a
+position, and the categories a filing does not break out are sized in the baseline, not here.</div>
 
 <div class="split">
   <div class="box">
@@ -227,19 +225,22 @@ baseline, not here.</div>
     How much is the question, and it is the one worth answering first.</p>
   </div>
   <div class="box g">
-    <h3>Where the filing looks competitive</h3>
-    <p><b>Fleet sits at the 46th percentile and travel at the 39th</b>, with marketing at the
-    median. On the public record these already look well bought, so they are not where this Report
-    points first. A baseline covers every applicable category and would confirm it either way.</p>
+    <h3>Being at the median is not the same as being competitive</h3>
+    <p>Fleet sits at the 46th percentile and travel at the 39th, with marketing at the median. That
+    is worth knowing &mdash; but the median is drawn from organizations that have mostly never
+    market-tested these categories either. It describes what is <i>normal</i>, not what is
+    <i>available</i>. Of <b>2,660 completed ERA engagements, 2,649 recovered value</b> &mdash;
+    a median of 28% of category spend, and the weakest quarter still returned 14%. Almost none of
+    those clients were outliers on a filing.</p>
   </div>
 </div>
 
 <div class="prov">
   <b>FILED</b> Form 990 Part IX, FY2024 &nbsp;&middot;&nbsp;
-  <b>REGISTRY</b> DOL Form 5500 Schedule A, plan year 2024<br>
-  <b>BENCHMARK</b> per-category peer cohorts as shown, 30-filer minimum
-  &nbsp;&middot;&nbsp; <b>DERIVED</b> arithmetic on filed figures only
-  &nbsp;&middot;&nbsp; OPERATING, RETRIEVED, ENGAGEMENT, VERIFIED &mdash; absent
+  <b>BENCHMARK</b> per-category peer cohorts as shown, 30-filer minimum &nbsp;&middot;&nbsp;
+  <b>DERIVED</b> arithmetic on filed figures only<br>
+  OPERATING, RETRIEVED, ENGAGEMENT and VERIFIED are absent for this organization and are shown as
+  absent. Full sources overleaf.
 </div>
 
 </body></html>"""
