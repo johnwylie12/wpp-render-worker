@@ -51,7 +51,7 @@ specified above.
 body { color:#1a1a1a; font-size:11pt; line-height:1.45; }
 
 .hd { margin-bottom:12px; }
-.hd img { height:75px; display:block; margin-bottom:9px; }         /* ERA logo — full-color on white */
+.hd img { height:40px; display:block; margin-bottom:9px; }         /* ERA logo — full-color on white */
 .hd .orange { width:172px; height:4px; background:#FF9C00; }        /* short orange bar */
 .hd .navy   { height:2px; background:#003A70; margin-top:18px; }    /* full-width navy rule */
 
@@ -72,11 +72,11 @@ p     { margin:0 0 9px; }
 .foot .sub { color:#7a7a7a; font-size:8pt; margin-top:6px; }
 
 /* rev-5 portal block — LOCKED 2026-08-11 */
-.portal{position:absolute;right:0.9in;bottom:0.78in;width:2.5in;border-left:3px solid #F2A900;padding:12px 0 12px 16px}
-.portal .hd2{font-size:11pt;font-weight:700;color:#0A2E4F;letter-spacing:.01em}
-.portal img{width:1.4in;height:1.4in;display:block;margin:9px 0 8px}
-.portal .url{font-size:9.2pt;color:#41637A;word-break:break-all;line-height:1.4}
-.portal .code{font-size:9pt;font-weight:700;color:#0A2E4F;margin-top:5px}
+.portal{margin:0.26in 0 0.18in;padding-top:11px;border-top:1px solid #0A2E4F;display:flex;align-items:center;gap:18px}
+.portal .hd2{font-size:8.4pt;letter-spacing:.14em;font-weight:700;color:#0A2E4F;text-transform:uppercase}
+.portal img{width:0.92in;height:0.92in;flex:0 0 auto}
+.portal .url{font-size:10pt;color:#0A2E4F;margin-top:5px}
+.portal .code{font-size:9pt;color:#5A6672;line-height:1.5;text-align:right;margin-left:auto;flex:0 0 auto}
 </style></head><body>
   <div class="hd">
     <img src="{{era_logo_uri}}" alt="ERA Group">
@@ -88,7 +88,7 @@ p     { margin:0 0 9px; }
 
   <div class="addr">
     <span class="rn">{{recipient_name}}</span><br>
-    {{recipient_title}}<br>
+    {% if recipient_title and recipient_title != recipient_name %}{{recipient_title}}<br>{% endif %}
     {{org_name}}<br>
     {{addr_line1}}<br>
     {{addr_city_state_zip}}
@@ -96,11 +96,10 @@ p     { margin:0 0 9px; }
 
   <div class="sal">Dear {{first_name}},</div>
 
-  <p>We are sending the enclosed Executive Opportunity Report because we believe that every dollar that does not have to be spent on indirect expense is a dollar available for {{mission_line}}.</p>
-  <p>We prepared it before reaching out to you, from public information only. Its purpose is to show where the available evidence suggests opportunity, and where it does not. We treat these patterns as starting points of discussion rather than conclusions.</p>
-  <p>ERA Group has reviewed more than $2.25 billion of indirect spend across 6,420 engagements at 916 organizations. We work in one thing: the recurring operating costs that sit outside your program delivery.</p>
-  <p>If any of it is directionally useful, we would welcome a short conversation. If your current arrangements are already competitive, that is a valuable conclusion as well &mdash; and it costs you nothing to establish.</p>
-  <p>Nothing about the way we work commits you to anything. No supplier changes without your approval, incumbent suppliers frequently remain, and if we do not create verified recovery there is no fee.</p>
+  <p>We prepared the enclosed Executive Opportunity Report before reaching out, because a useful conversation should begin with evidence rather than a capability presentation. For an organization whose mission is helping people get and keep meaningful work, every dollar that does not need to remain in indirect operating expense is a dollar that can stay closer to that mission.</p>
+  <p>The Report was built from public information only. It shows what the available record suggests may be worth understanding, what appears less important, and &mdash; just as importantly &mdash; what the public record cannot tell us. We treat those patterns as questions to validate, not conclusions about how {{org_name}} is being run.</p>
+  <p>ERA Group has reviewed more than $2.25 billion of indirect spend across 6,420 engagements at 916 organizations. Our work is focused on recurring operating costs outside program delivery, using category specialists to test whether current arrangements remain competitive.</p>
+  <p>If the analysis is directionally useful, we would welcome a short conversation. If your current arrangements are already competitive, that is a valuable answer too. Nothing changes without your approval, incumbent suppliers often remain, and if we do not create verified recovery, there is no fee.</p>
 
   <div class="vale">Best regards,</div>
 
@@ -115,6 +114,17 @@ p     { margin:0 0 9px; }
     <div class="ct">{{signoff_email}} &middot; {{signoff_phone}}</div>
   </div>
 
+{% if qr_uri %}
+  <div class="portal">
+    <img src="{{qr_uri}}" alt="Scan for your Report">
+    <div>
+      <div class="hd2">Your Report is live online</div>
+      <div class="url">portal.wpp-us.com/{{portal_subdomain}}</div>
+    </div>
+    <div class="code">No code.<br>No form.<br>No login.</div>
+  </div>
+  {% endif %}
+
   <div class="foot">
     <img src="{{vti_uri}}" alt="Value Through Insight">
     <!-- SECOND hardcoded sender block, found 2026-08-27 by extracting the text of a
@@ -123,12 +133,4 @@ p     { margin:0 0 9px; }
          phone on all 24 of Arvo's letters. -->
   </div>
 
-  {% if qr_uri %}
-  <div class="portal">
-    <div class="hd2">Your Report is live online</div>
-    <img src="{{qr_uri}}" alt="Scan for your Brief">
-    <div class="url">portal.wpp-us.com/{{portal_subdomain}}</div>
-    <div class="code">No code. No form. No login.</div>
-  </div>
-  {% endif %}
 </body></html>
