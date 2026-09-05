@@ -94,19 +94,20 @@ h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weig
 .lede {{ color:#3C4658; margin:0 0 14px; max-width:92%; }}
 /* THE NUMBER LEADS. It is the reason to read on and it belongs where the eye
    lands, not buried in a category table. */
-.hero {{ display:flex; align-items:stretch; gap:28px; background:#003A70; color:#fff;
+.hero {{ display:flex; align-items:center; gap:26px; background:#003A70; color:#fff;
         padding:22px 26px; margin:2px 0 14px; }}
-.hero .figure {{ flex:0 0 auto; padding-right:28px; border-right:1px solid #2A5074;
-                display:flex; flex-direction:column; justify-content:center; }}
+.hero .figure {{ flex:0 0 auto; }}
+.hero .rule {{ flex:0 0 1px; align-self:stretch; background:#2A5074; }}
 .hero .unit {{ font-size:10pt; color:#DCE7F5; margin-top:2px; }}
 .hero .floor {{ font-size:10pt; color:#FF9C00; margin-top:9px; }}
-.hero .say {{ flex:1; display:flex; flex-direction:column; justify-content:center; }}
+.hero .say {{ flex:1; }}
 .hero .say p {{ margin:0; font-size:10pt; line-height:1.5; color:#DCE7F5; }}
 .hero .say p b {{ color:#fff; }}
-.hero .stat {{ margin-top:11px; padding-top:9px; border-top:1px solid #2A5074;
+.hero .stat {{ margin-top:8px; padding-top:7px; border-top:1px solid #2A5074;
               font-size:10pt; color:#fff; }}
 .hero .stat b {{ font-size:14pt; color:#FF9C00; }}
 .hero .stat span {{ color:#DCE7F5; }}
+.hero .say p {{ max-width:none; }}
 .hero .big {{ font-size:34pt; letter-spacing:-0.5pt; margin-top:-3px; font-weight:bold; line-height:1; white-space:nowrap; }}
 h2 {{ font-size:11pt; color:#003A70; margin:16px 0 7px; }}
 .two {{ display:flex; gap:18px; }} .two > div {{ flex:1; }}
@@ -148,9 +149,10 @@ capability presentation.</div>
     <div class="unit">a year</div>
     <div class="floor">{usd(WEAK)} on our weakest quartile</div>
   </div>
+  <div class="rule"></div>
   <div class="say">
-    <p>Not a published range. The <b>median outcome across {PROJECTS_BEHIND} completed ERA
-    engagements</b> in your own categories, applied to the {usd(FILED)} your filing names.</p>
+    <p>Not a range. The <b>median outcome across {PROJECTS_BEHIND} completed ERA
+    engagements</b> in your categories.</p>
     <div class="stat"><b>2,649</b> of 2,660 engagements recovered value<span>
     &mdash; the weakest quarter still returned 14%</span></div>
   </div>
