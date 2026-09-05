@@ -170,17 +170,19 @@ reports <b>12 lines of indirect spend</b>, totalling <b>$82.1M</b>. Here is ever
   <tr><td><b>Modelled</b></td><td class="r">2</td><td class="r"><b>$40.6M</b></td>
       <td>Operating supply and freight. We have <b>158 completed engagements</b> in these two, so
       the figure above is a median outcome rather than a range.</td></tr>
-  <tr><td><b>We work these</b></td><td class="r">3</td><td class="r">$3.1M</td>
-      <td>Fleet, marketing and travel. Fewer than 15 completed engagements each, so a median would
-      be noise &mdash; we have not put a number on them.</td></tr>
-  <tr><td><b>Too broad to model</b></td><td class="r">7</td><td class="r">$38.5M</td>
-      <td>Chiefly occupancy at $24.4M, which reports rent alongside utilities, maintenance and
-      janitorial as one figure. We work everything in that line except the rent, and the filing
-      does not separate them.</td></tr>
+  <tr><td><b>Additional, to be<br>quantified</b></td><td class="r">3</td><td class="r">$3.1M</td>
+      <td>Fleet, marketing and travel &mdash; all categories we work. We hold fewer than 15
+      completed engagements in each, so rather than quote a median we would rather size these
+      against your own data. <b>Upside to the figure above, not part of it.</b></td></tr>
+  <tr><td><b>Additional, needs<br>your detail</b></td><td class="r">7</td><td class="r">$38.5M</td>
+      <td>Chiefly occupancy at $24.4M. We work everything in that line except the rent &mdash;
+      utilities, maintenance, janitorial, grounds, security &mdash; but a Form 990 reports them as
+      one figure. Thirty seconds of your own ledger splits it. <b>Also upside.</b></td></tr>
 </table>
-<div class="note"><b>Nothing has been left out and nothing has been assumed.</b> The $8.7M above
-comes only from the first row. The other $41.6M is real indirect spend in categories we work
-&mdash; it is sized in the no-cost baseline, where your own contract data replaces the filing.</div>
+<div class="note"><b>The $8.7M above comes only from the first row.</b> The other $41.6M is real
+indirect spend in categories we work &mdash; we have simply chosen not to put a number on it from a
+public filing. It is sized in the no-cost baseline, against your contract data rather than ours.
+Nothing has been left out, and nothing has been assumed.</div>
 
 </body></html>"""
 
