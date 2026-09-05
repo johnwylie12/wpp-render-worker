@@ -63,9 +63,38 @@ Fixing Office Supplies alone moves the figure from $8.7M to roughly $9.0M, and
 from **two categories to three** — which matters more, because that is the number
 a CFO asks about.
 
-**Two open questions for you.** Why is Office Supplies excluded? There will be a
-reason. And is the project floor 15, or 10? I picked 15 without evidence. Both
-change every account in the book, so neither should move quietly.
+**Checked after you pushed back — and you were right. See finding #201.**
+
+ERA has completed work in almost everything the model throws away:
+
+| Category | Projects | Recovered | Median |
+|---|---|---|---|
+| Office Supplies, Equipment & Furniture | **444** | **$24.0M** | 25.0% |
+| Cleaning & Janitorial | 248 | $16.5M | 22.5% |
+| Utilities (Trading) | 189 | $6.2M | 21.1% |
+| Facility & Property Management | 100 | $1.9M | 21.5% |
+| Energy Consumption & Efficiency | 88 | $0.9M | 18.6% |
+| Security Services | 35 | $1.1M | 36.2% |
+| Professional Services | 33 | $0.5M | 28.6% |
+| Outdoor & Grounds | 30 | $2.1M | 29.3% |
+
+**Six of those eight live inside the occupancy line we exclude** — 690 projects
+and $28.6M recovered. We discard $10.9B of occupancy across the book to avoid
+mis-stating the rent share. The exclusion is defensible; the cost of it had never
+been measured.
+
+**Four decisions, all yours, all of which re-cut every account:**
+
+1. Does **Office Supplies** come off the category exclusion? The label rule
+   `%office expense%` already handles the ambiguous 990 line.
+2. Does **Professional Services** come off? 33 projects, 28.6% median.
+3. **Occupancy — the big one.** Option: model it at a conservative non-rent share
+   and state the assumption on the page, rather than discarding it. That is a
+   judgement about how much assumption is acceptable.
+4. Is the project floor **15 or 10**? Fleet fails at 13. I picked 15 with nothing
+   behind it.
+
+Only **Taxes** looks genuinely right to exclude — 10 projects, zero usable outcomes.
 
 ---
 
