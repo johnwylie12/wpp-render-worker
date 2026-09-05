@@ -53,8 +53,18 @@ VTI_URI = "data:image/png;base64," + _b64.b64encode(
 REV   = 15_682_676
 FILED = 1_622_323
 FEES, LIVES = 525_754, 581
-EXPENSES = 9_080_516      # total functional expenses, Form 990
-UNSEEN   = EXPENSES - FILED
+# ── THE EXPENSE BASE, SPLIT HONESTLY ────────────────────────────────────────
+# "82% of your filed expenses is not broken out" was WRONG and I wrote it. Of
+# the $7.46M I called invisible, $5.98M is compensation, payroll taxes and
+# benefits and $970K is depreciation - NONE of it is indirect and none of it is
+# workable. Claiming it as unseen opportunity is the kind of overclaim that
+# ends a meeting.
+EXPENSES     = 9_080_516   # total functional expenses, Form 990 Part IX
+PEOPLE       = 5_984_528   # compensation, payroll taxes, employee benefits
+NON_CASH     = 970_456     # depreciation, depletion, amortization
+GRANTS       =    54_105
+UNCLASSIFIED =   449_104   # "other expenses", management fees, all-other
+INDIRECT     = FILED + UNCLASSIFIED
 
 # category, filed, their % of revenue, peer median %, percentile, peers
 ROWS = [
@@ -171,24 +181,26 @@ td.r, th.r {{ text-align:right; }}
   <div class="r">{ORG}<br>Form 990 FY2024</div>
 </div>
 
-<h1>Your filing breaks out $1.62M of $9.08M in expenses.<br>We can see six categories. There are 55.</h1>
-<div class="lede">What follows compares every category your Form 990 discloses separately against
-organizations of comparable size and type. It is a starting point for a question, never a verdict on
-how you are run &mdash; and it is deliberately the smaller half of the picture.</div>
+<h1>$2.07M of indirect spend sits inside a $9.08M expense base.<br>Your filing names six categories of it. ERA works 55.</h1>
+<div class="lede">Compensation, depreciation and grants make up the rest of your expenses and are
+not ours to work. What follows compares the indirect categories your Form 990 names separately
+against organizations of comparable size and type &mdash; a starting point for a question, never a
+verdict on how you are run.</div>
 
 <div class="kpi">
-  <div class="hi"><div class="n">${UNSEEN/1e6:.1f}M</div>
-       <div class="k">Not broken out</div>
-       <div class="s">82% of your filed expenses. Freight, waste, telecom, packaging, payment
-       processing and more never appear separately on a 990.</div></div>
-  <div><div class="n">{usd(FILED)}</div><div class="k">Visible in the filing</div>
-       <div class="s">Across six categories. What is examinable from outside, not what is
-       recoverable.</div></div>
+  <div class="hi"><div class="n">${INDIRECT/1e6:.2f}M</div>
+       <div class="k">Indirect spend, as filed</div>
+       <div class="s">{INDIRECT/EXPENSES*100:.0f}% of total expenses. The remainder is
+       compensation, depreciation and grants &mdash; not indirect.</div></div>
+  <div><div class="n">${FILED/1e6:.2f}M</div><div class="k">Named by category</div>
+       <div class="s">Six categories. A further {usd(UNCLASSIFIED)} sits in lines the filing does
+       not name.</div></div>
   <div><div class="n">55</div><div class="k">Categories ERA works</div>
-       <div class="s">The baseline covers every one that applies to you, not only the six a form
-       happens to disclose.</div></div>
+       <div class="s">Most never appear separately on a 990 at all. The baseline covers every one
+       that applies to you.</div></div>
   <div><div class="n">1</div><div class="k">Priority the public record can already evidence</div>
-       <div class="s">Insurance, on two independent layers. The rest of the case is built inside.</div></div>
+       <div class="s">Insurance, on two independent layers. The rest of the case is built
+       inside.</div></div>
 </div>
 <div class="note">Evidence depth: four of nine layers carry something for this organization &mdash;
 filed, benchmark, derived and registry. Operating, retrieved, engagement and verified are empty,
