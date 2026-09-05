@@ -39,7 +39,7 @@ Every figure below was queried live on 2026-09-04:
 import os
 from weasyprint import HTML
 
-ORG   = "Coastal Enterprises of Jacksonville"
+ORG   = "Goodwill Industries of South Florida"
 
 # The registered lockup, from the brand asset. NEVER retyped in CSS.
 _VTI = "/home/claude/worker/meeting_label/assets/vti_logo.png"
@@ -50,31 +50,32 @@ _im.thumbnail((186, 186), _Img.LANCZOS)   # 0.62in at 300dpi; LANCZOS from 3066p
 _im.save("/tmp/vti_footer.png", optimize=True)
 VTI_URI = "data:image/png;base64," + _b64.b64encode(
     open("/tmp/vti_footer.png", "rb").read()).decode()
-REV   = 15_682_676
-FILED = 1_622_323
-FEES, LIVES = 525_754, 581
+REV   = 196_096_296
+FILED = 43_658_367
+FEES, BROKERS = 173_354, 4
 # ── THE EXPENSE BASE, SPLIT HONESTLY ────────────────────────────────────────
 # "82% of your filed expenses is not broken out" was WRONG and I wrote it. Of
 # the $7.46M I called invisible, $5.98M is compensation, payroll taxes and
 # benefits and $970K is depreciation - NONE of it is indirect and none of it is
 # workable. Claiming it as unseen opportunity is the kind of overclaim that
 # ends a meeting.
-EXPENSES     = 9_080_516   # total functional expenses, Form 990 Part IX
-PEOPLE       = 5_984_528   # compensation, payroll taxes, employee benefits
-NON_CASH     = 970_456     # depreciation, depletion, amortization
-GRANTS       =    54_105
-UNCLASSIFIED =   449_104   # "other expenses", management fees, all-other
+EXPENSES     = 185_120_170   # total functional expenses, Form 990 Part IX FY2024
+PEOPLE       =  99_283_913   # salaries, payroll taxes, pension, benefits
+NON_CASH     =   3_493_294   # depreciation and interest
+UNCLASSIFIED =  38_458_237   # occupancy, fees for services - other, service charges,
+                             # all-other. Indirect, but the filing does not name the
+                             # category. NOT modelled in the recovery range.
 INDIRECT     = FILED + UNCLASSIFIED
 
 # category, filed, their % of revenue, peer median %, percentile, peers
 ROWS = [
-    ("Insurance",       1_046_650, 6.67, 1.04, 99, 10_953),
-    ("Maintenance",       264_410, 1.69, 1.00, 67,  4_831),
-    ("Travel",            105_347, 0.67, 0.37, 65,  8_769),
-    ("Utilities",         166_777, 1.06, 1.86, 26,    434),
-    ("SaaS / Software",    15_923, 0.10, 0.36, 17,  1_155),
+    ("Operating Supply",      37_971_710, 19.36, 2.40, 98, 2_573),
+    ("Freight / Small Parcel", 2_631_840,  1.34, 0.79, 64,   140),
+    ("Marketing Services",       482_421,  0.25, 0.26, 49, 7_371),
+    ("Fleet Management",       2_122_533,  1.08, 1.21, 46,   396),
+    ("Travel",                   449_863,  0.23, 0.37, 39, 8_769),
 ]
-NO_PEER = [("Office Supplies", 23_216)]
+NO_PEER = [("Office Supplies", 1_372_501), ("Professional Services: Legal", 637_913)]
 
 EXAMINED = len(ROWS) + len(NO_PEER)
 ABOVE    = sum(1 for r in ROWS if r[4] >= 50)
@@ -144,28 +145,28 @@ h1 {{ font-size:17pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weig
    how many are evidence-supported priorities. That is this strip and nothing
    else on the page competes with it. */
 .kpi {{ display:flex; gap:10px; margin:0 0 6px; }}
-.kpi > div {{ flex:1; border:1px solid #DCE3ED; padding:7px 9px; }}
+.kpi > div {{ flex:1; border:1px solid #DCE3ED; padding:6px 8px; }}
 .kpi .n {{ font-size:18pt; color:#003A70; font-weight:bold; line-height:1.1; }}
 .kpi .k {{ font-size:7.8pt; letter-spacing:.1em; text-transform:uppercase;
           color:#6C7686; margin-top:3px; }}
 .kpi .s {{ font-size:8.4pt; color:#6C7686; margin-top:4px; line-height:1.35; }}
 .kpi .hi {{ border-color:#FF9C00; border-left-width:3px; }}
-.note {{ font-size:8.4pt; color:#6C7686; margin:6px 0 9px; }}
-h2 {{ font-size:12pt; color:#003A70; margin:11px 0 4px; }}
+.note {{ font-size:8.2pt; color:#6C7686; margin:5px 0 8px; }}
+h2 {{ font-size:12pt; color:#003A70; margin:9px 0 4px; }}
 table {{ width:100%; border-collapse:collapse; font-size:9.8pt; }}
 th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:uppercase;
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 5px 0; }}
-td {{ padding:3.4px 7px 3.4px 0; border-bottom:1px solid #DCE3ED; }}
+td {{ padding:2.8px 7px 2.8px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
 
-.split {{ display:flex; gap:14px; margin-top:10px; }}
+.split {{ display:flex; gap:13px; margin-top:8px; }}
 .split > div {{ flex:1; }}
-.box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:7px 10px; }}
+.box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:6px 9px; }}
 .box.g {{ border-left-color:#003A70; }}
 .box h3 {{ margin:0 0 5px; font-size:10.4pt; color:#003A70; }}
 .box p {{ margin:0; font-size:9.4pt; line-height:1.45; }}
-.prov {{ margin-top:7px; padding-top:6px; border-top:1px solid #DCE3ED;
-        font-size:8pt; color:#6C7686; line-height:1.65; }}
+.prov {{ margin-top:6px; padding-top:5px; border-top:1px solid #DCE3ED;
+        font-size:7.4pt; color:#6C7686; line-height:1.5; }}
 .prov b {{ color:#003A70; }}
 .footer {{ margin-top:0.12in; }}
 .footer .hair {{ border-top:1px solid #DCE3ED; margin-bottom:6px; }}
@@ -181,26 +182,25 @@ td.r, th.r {{ text-align:right; }}
   <div class="r">{ORG}<br>Form 990 FY2024</div>
 </div>
 
-<h1>$2.07M of indirect spend sits inside a $9.08M expense base.<br>Your filing names six categories of it. ERA works 55.</h1>
-<div class="lede">Compensation, depreciation and grants make up the rest of your expenses and are
-not ours to work. What follows compares the indirect categories your Form 990 names separately
-against organizations of comparable size and type &mdash; a starting point for a question, never a
-verdict on how you are run.</div>
+<h1>$82.1M of indirect spend, and one category is<br>eight times the peer median.</h1>
+<div class="lede">Indirect spend is the recurring operating cost that sits outside your program
+delivery and outside your payroll &mdash; it is the only thing we work. What follows compares the
+categories your Form 990 names separately against organizations of comparable size and type: a
+starting point for a question, never a verdict on how you are run.</div>
 
 <div class="kpi">
-  <div class="hi"><div class="n">${INDIRECT/1e6:.2f}M</div>
+  <div class="hi"><div class="n">${INDIRECT/1e6:.1f}M</div>
        <div class="k">Indirect spend, as filed</div>
-       <div class="s">{INDIRECT/EXPENSES*100:.0f}% of total expenses. The remainder is
-       compensation, depreciation and grants &mdash; not indirect.</div></div>
-  <div><div class="n">${FILED/1e6:.2f}M</div><div class="k">Named by category</div>
-       <div class="s">Six categories. A further {usd(UNCLASSIFIED)} sits in lines the filing does
-       not name.</div></div>
+       <div class="s">Salaries, depreciation and interest are excluded &mdash; they are not
+       indirect and not ours to work.</div></div>
+  <div><div class="n">${FILED/1e6:.1f}M</div><div class="k">Named by category</div>
+       <div class="s">Seven categories. A further {usd(UNCLASSIFIED)} sits in lines the filing
+       does not name.</div></div>
   <div><div class="n">55</div><div class="k">Categories ERA works</div>
-       <div class="s">Most never appear separately on a 990 at all. The baseline covers every one
-       that applies to you.</div></div>
+       <div class="s">The baseline covers every one that applies to you, not only those a form
+       happens to disclose.</div></div>
   <div><div class="n">1</div><div class="k">Priority the public record can already evidence</div>
-       <div class="s">Insurance, on two independent layers. The rest of the case is built
-       inside.</div></div>
+       <div class="s">Operating supply, at the 98th percentile of 2,573 filers.</div></div>
 </div>
 <div class="note">Evidence depth: four of nine layers carry something for this organization &mdash;
 filed, benchmark, derived and registry. Operating, retrieved, engagement and verified are empty,
@@ -220,24 +220,22 @@ baseline, not here.</div>
 
 <div class="split">
   <div class="box">
-    <h3>Why insurance, and not simply because it is largest</h3>
-    <p>It sits at the <b>99th percentile of 10,953 filers</b> &mdash; six times the peer median as
-    a share of revenue. It is also the one category where a second filing shows something a Form 990
-    cannot: your plan&rsquo;s Schedule A discloses <b>{usd(FEES)}</b> of intermediary compensation
-    across two relationships, covering {LIVES} people. Two independent layers on one category is
-    what earns it a page.</p>
+    <h3>Why operating supply, and not simply because it is largest</h3>
+    <p>At <b>19.4% of revenue against a 2.4% peer median</b> it sits at the 98th percentile of
+    2,573 filers &mdash; roughly eight times. A retail and donated-goods operation genuinely buys
+    more supply than most nonprofits, so some of that gap is your model rather than your buying.
+    How much is the question, and it is the one worth answering first.</p>
   </div>
   <div class="box g">
     <h3>Where the filing looks competitive</h3>
-    <p><b>Utilities sits at the 26th percentile and software at the 17th</b> &mdash; both below the
-    peer median as a share of revenue. On the public record these already look well bought, so they
-    are not where this Report points first. A baseline covers every applicable category and would
-    confirm it either way, which is worth knowing in its own right.</p>
+    <p><b>Fleet sits at the 46th percentile and travel at the 39th</b>, with marketing at the
+    median. On the public record these already look well bought, so they are not where this Report
+    points first. A baseline covers every applicable category and would confirm it either way.</p>
   </div>
 </div>
 
 <div class="prov">
-  <b>FILED</b> Form 990 Part IX, FY2024, object 202601359349313660 &nbsp;&middot;&nbsp;
+  <b>FILED</b> Form 990 Part IX, FY2024 &nbsp;&middot;&nbsp;
   <b>REGISTRY</b> DOL Form 5500 Schedule A, plan year 2024<br>
   <b>BENCHMARK</b> per-category peer cohorts as shown, 30-filer minimum
   &nbsp;&middot;&nbsp; <b>DERIVED</b> arithmetic on filed figures only
@@ -246,7 +244,7 @@ baseline, not here.</div>
 
 </body></html>"""
 
-out = "/mnt/user-data/outputs/EOR_Snapshot_Coastal.pdf"
+out = "/mnt/user-data/outputs/EOR_Snapshot_Goodwill.pdf"
 HTML(string=HTMLDOC).write_pdf(out)
 from pypdf import PdfReader
 r = PdfReader(out)
