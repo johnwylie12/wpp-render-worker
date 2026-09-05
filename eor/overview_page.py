@@ -95,8 +95,9 @@ h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weig
 /* THE NUMBER LEADS. It is the reason to read on and it belongs where the eye
    lands, not buried in a category table. */
 .hero {{ display:flex; align-items:stretch; gap:28px; background:#003A70; color:#fff;
-        padding:22px 26px; margin:2px 0 18px; }}
-.hero .figure {{ flex:0 0 auto; padding-right:26px; border-right:1px solid #2A5074; }}
+        padding:22px 26px; margin:2px 0 14px; }}
+.hero .figure {{ flex:0 0 auto; padding-right:28px; border-right:1px solid #2A5074;
+                display:flex; flex-direction:column; justify-content:center; }}
 .hero .unit {{ font-size:10pt; color:#DCE7F5; margin-top:2px; }}
 .hero .floor {{ font-size:10pt; color:#FF9C00; margin-top:9px; }}
 .hero .say {{ flex:1; display:flex; flex-direction:column; justify-content:center; }}
@@ -106,13 +107,13 @@ h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weig
               font-size:10pt; color:#fff; }}
 .hero .stat b {{ font-size:14pt; color:#FF9C00; }}
 .hero .stat span {{ color:#DCE7F5; }}
-.hero .big {{ font-size:34pt; letter-spacing:-0.5pt; font-weight:bold; line-height:1; white-space:nowrap; }}
-h2 {{ font-size:11pt; color:#003A70; margin:20px 0 8px; }}
+.hero .big {{ font-size:34pt; letter-spacing:-0.5pt; margin-top:-3px; font-weight:bold; line-height:1; white-space:nowrap; }}
+h2 {{ font-size:11pt; color:#003A70; margin:16px 0 7px; }}
 .two {{ display:flex; gap:18px; }} .two > div {{ flex:1; }}
 ul.pl {{ list-style:none; margin:0; padding:0; }}
 ul.pl li {{ padding:6px 0; border-bottom:1px solid #DCE3ED; font-size:10pt; }}
 ul.pl li:last-child {{ border-bottom:none; }}
-.rd {{ display:flex; gap:9px; padding:5.5px 0; border-bottom:1px solid #DCE3ED;
+.rd {{ display:flex; gap:9px; padding:9.5px 0; border-bottom:1px solid #DCE3ED;
       font-size:10pt; color:#003A70; align-items:flex-start; }}
 .rd:last-child {{ border-bottom:none; }}
 .rd .i {{ flex:0 0 17px; height:17px; border-radius:50%; background:#003A70; color:#fff;
