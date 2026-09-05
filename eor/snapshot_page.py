@@ -65,10 +65,10 @@ def usd(n):
 def band(p):
     """Plain words, because a percentile alone is not a finding and 'above the
     median' is not a criticism. Both readings must feel neutral."""
-    if p >= 90: return ("Well above", "#8A2B2B")
-    if p >= 50: return ("Above",      "#8A6410")
-    if p >= 25: return ("Below",      "#1E6B45")
-    return ("Well below", "#1E6B45")
+    if p >= 90: return ("Well above", "#003A70")
+    if p >= 50: return ("Above",      "#E08A00")
+    if p >= 25: return ("Below",      "#157A42")
+    return ("Well below", "#157A42")
 
 
 rows = ""
@@ -86,47 +86,47 @@ for name, amt in NO_PEER:
     rows += f"""<tr>
       <td><b>{name}</b></td><td class="r">{usd(amt)}</td>
       <td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td>
-      <td class="r" style="color:#6B7783">No comparable cohort</td>
+      <td class="r" style="color:#6C7686">No comparable cohort</td>
     </tr>"""
 
 HTMLDOC = f"""<html><head><meta charset="utf-8"><style>
 @page {{ size: Letter; margin: 0.38in 0.85in 0.28in 0.85in; }}
 * {{ font-family:'Liberation Sans','Trebuchet MS',Arial,sans-serif; }}
-body {{ color:#1a1a1a; font-size:10.5pt; line-height:1.45; }}
+body {{ color:#3C4658; font-size:10.5pt; line-height:1.45; }}
 .hd {{ display:flex; align-items:flex-end; border-bottom:2px solid #003A70;
       padding-bottom:6px; margin-bottom:16px; }}
-.hd .l {{ font-size:8.2pt; letter-spacing:.14em; color:#5a5a5a; text-transform:uppercase; }}
-.hd .r {{ margin-left:auto; text-align:right; font-size:8.2pt; color:#5a5a5a; }}
+.hd .l {{ font-size:8.2pt; letter-spacing:.14em; color:#6C7686; text-transform:uppercase; }}
+.hd .r {{ margin-left:auto; text-align:right; font-size:8.2pt; color:#6C7686; }}
 h1 {{ font-size:17.5pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
-.lede {{ color:#4a5763; margin:0 0 12px; max-width:88%; }}
+.lede {{ color:#3C4658; margin:0 0 12px; max-width:88%; }}
 /* THE THIRTY-SECOND ROW. #173's acceptance test is that a reader can tell at a
    glance how many categories were examined, how many sit above peer median, and
    how many are evidence-supported priorities. That is this strip and nothing
    else on the page competes with it. */
 .kpi {{ display:flex; gap:10px; margin:0 0 6px; }}
-.kpi > div {{ flex:1; border:1px solid #dde3e9; padding:9px 11px; }}
+.kpi > div {{ flex:1; border:1px solid #DCE3ED; padding:9px 11px; }}
 .kpi .n {{ font-size:19pt; color:#003A70; font-weight:bold; line-height:1.1; }}
 .kpi .k {{ font-size:7.8pt; letter-spacing:.1em; text-transform:uppercase;
-          color:#6B7783; margin-top:3px; }}
-.kpi .s {{ font-size:8.6pt; color:#5a5a5a; margin-top:5px; line-height:1.4; }}
+          color:#6C7686; margin-top:3px; }}
+.kpi .s {{ font-size:8.6pt; color:#6C7686; margin-top:5px; line-height:1.4; }}
 .kpi .hi {{ border-color:#FF9C00; border-left-width:3px; }}
-.note {{ font-size:8.6pt; color:#6B7783; margin:7px 0 11px; }}
+.note {{ font-size:8.6pt; color:#6C7686; margin:7px 0 11px; }}
 h2 {{ font-size:12pt; color:#003A70; margin:13px 0 4px; }}
 table {{ width:100%; border-collapse:collapse; font-size:9.8pt; }}
 th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:uppercase;
-     color:#6B7783; border-bottom:1.4px solid #003A70; padding:0 7px 5px 0; }}
-td {{ padding:4px 7px 4px 0; border-bottom:1px solid #eef1f4; }}
+     color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 5px 0; }}
+td {{ padding:4px 7px 4px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
 .split {{ display:flex; gap:14px; margin-top:11px; }}
 .split > div {{ flex:1; }}
-.box {{ border-left:3px solid #FF9C00; background:#f8f9fb; padding:9px 12px; }}
-.box.g {{ border-left-color:#1E6B45; }}
+.box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:9px 12px; }}
+.box.g {{ border-left-color:#157A42; }}
 .box h3 {{ margin:0 0 5px; font-size:10.4pt; color:#003A70; }}
 .box p {{ margin:0; font-size:9.4pt; line-height:1.5; }}
-.prov {{ margin-top:9px; padding-top:7px; border-top:1px solid #dde3e9;
-        font-size:8pt; color:#6B7783; }}
+.prov {{ margin-top:9px; padding-top:7px; border-top:1px solid #DCE3ED;
+        font-size:8pt; color:#6C7686; }}
 .prov b {{ color:#003A70; }}
-.foot {{ margin-top:0.11in; display:flex; font-size:7.6pt; color:#8b96a0; }}
+.foot {{ margin-top:0.11in; display:flex; font-size:7.6pt; color:#8A93A3; }}
 .foot .p {{ margin-left:auto; }}
 </style></head><body>
 
