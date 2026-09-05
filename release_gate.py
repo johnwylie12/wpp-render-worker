@@ -153,6 +153,10 @@ def check(rendered_pdf, identity, frozen_plan=None, qr_payloads=(), priority_cou
     # check that would have caught the contamination: a package carrying another
     # organization's cover, letter, closing and portal URL.
     failures.extend(_identity_failures(text, pages, identity))
+    # LAW 26 runs only when the caller supplies the filing, so existing callers
+    # are unaffected - but worker.py MUST pass it for a package.
+    if line_items is not None:
+        failures.extend(_completeness_failures(text, line_items, declared_absent))
 
     # 6 — every currency and percentage renders complete
     for m in set(TRUNCATED_MONEY.findall(text)):
@@ -176,6 +180,62 @@ def check(rendered_pdf, identity, frozen_plan=None, qr_payloads=(), priority_cou
             failures.append(f"page count {len(pages)} does not match the frozen plan ({planned})")
 
     return failures
+
+
+# ── LAW 26. COMPLETENESS. ───────────────────────────────────────────────────
+# Compensation, depreciation, interest, grants and taxes are NOT indirect and are
+# excluded by rule. Everything else on a Form 990 Part IX IS indirect spend that
+# ERA works, and it must appear in the Report - modelled, or named and explicitly
+# not modelled. Never silently dropped.
+#
+# This exists because the Goodwill EOR printed a $4.4M-$12.5M opportunity while
+# $36.4M of the filer's own indirect lines - Occupancy $24.4M among them - never
+# reached the page, purely because our mapping table did not recognise the label.
+# THE LIMITS OF OUR MAPPING ARE OUR PROBLEM AND MUST NOT REACH THE READER AS A
+# SMALLER OPPORTUNITY.
+NOT_INDIRECT = re.compile(
+    r"salaries|wages|payroll|pension|compensation|employee benefit|"
+    r"depreciation|depletion|amortization|interest|^grants|taxes",
+    re.I)
+
+
+def indirect_lines(line_items):
+    """Every filed line that is indirect spend. Input is account_financials.line_items."""
+    out = []
+    for x in (line_items or []):
+        label = str(x.get("label") or "")
+        amount = float(x.get("amount") or 0)
+        if amount <= 0 or NOT_INDIRECT.search(label):
+            continue
+        out.append((label, amount))
+    return out
+
+
+def _completeness_failures(text, line_items, declared_absent=()):
+    """RAISE if a filed indirect line reached neither the page nor the exclusion list.
+
+    A line counts as present if its amount appears in the rendered text in any of
+    the forms the Report uses - $24,376,137 / $24.4M / $24,376K - or if its label
+    was explicitly declared as named-but-not-modelled by the caller.
+    """
+    if not line_items:
+        return ["completeness: no line items supplied; cannot verify LAW 26"]
+    lowered = text.lower()
+    declared = {d.strip().lower() for d in declared_absent}
+    out = []
+    for label, amount in indirect_lines(line_items):
+        if label.strip().lower() in declared:
+            continue
+        forms = {
+            f"{amount:,.0f}",
+            f"{amount/1e6:.1f}m", f"{amount/1e6:.2f}m",
+            f"{round(amount/1000):,}k",
+        }
+        if not any(f in lowered for f in forms):
+            out.append(
+                f"LAW 26: filed indirect line {label!r} (${amount:,.0f}) appears "
+                f"nowhere in the Report and was not declared as excluded")
+    return out
 
 
 def _identity_failures(text, pages, identity):
