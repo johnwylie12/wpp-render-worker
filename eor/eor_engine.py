@@ -143,6 +143,17 @@ def blank():
     P.append("<div class='blank'></div>")
 
 # ─── 1 COVER ────────────────────────────────────────────────────────────────
+# THE COVER IS NOT DRAWN HERE. It comes from cover/cover_page_engine.py with
+# cover_page_template.html and the per-vertical hero photograph resolved through
+# hero_vertical_map. John has raised this THREE TIMES - once in the original
+# build, twice in the rebuild - and each time a hand-drawn navy panel was used
+# instead. The repo template IS the cover.
+#
+#   cover_page_engine.render(content, out, hero_lookup=..., doc_type="package",
+#                            date_str=...)
+#
+# The block below is the placeholder that must be REMOVED when this engine is
+# parameterised. It exists only so the file renders standalone.
 P.append(f"""<div class='page' style='page:cover;padding:0;min-height:11in'>
 <div style='background:#0A2E4F;height:7.4in;padding:1.15in 0.95in;color:#fff;position:relative'>
   <div style='font-size:8.6pt;letter-spacing:.24em;color:#F2A900;font-weight:700'>PREPARED EXCLUSIVELY FOR</div>
