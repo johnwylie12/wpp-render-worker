@@ -4,7 +4,8 @@
 LOCKED 2026-08-11. John: "That is the new cover letter that should be locked in
 and used 100% of the time."
 
-Renders cover/WPP_EOP_CoverLetter_TEMPLATE_LOCKED_2026-08-11.html. The five body
+Renders cover/WPP_EOP_CoverLetter_TEMPLATE_v2_PARTNER_SIGNOFF.html (NOT the file
+named LOCKED - four templates live here and that one does not render). The five body
 paragraphs live IN that template and are NOT built here — this module only
 resolves the per-account merge fields, the assets, and the portal QR, then hands
 the HTML to WeasyPrint.
@@ -20,9 +21,9 @@ Public API is UNCHANGED — worker.py needs no edits:
 Access-code contract
 --------------------
 `prospect_portals.code` is the INTERNAL record id (e.g. NQKF82W) and must never
-be printed. `prospect_portals.access_code` is what the prospect types (e.g.
-HAC3E9T). This module reads access_code ONLY; if a portal block carries `code`
-but no `access_code`, it prints NOTHING (no QR, no code) and logs a warning,
+be printed. NEITHER IS PRINTED ANY MORE: LAW 9 and settled #86 forbid an access
+code on any surface, in any QR, ever, and the portal resolves on the slug alone.
+The block needs a slug or a URL and nothing else; a code arriving on the URL is
 rather than printing the internal id. That mismatch shipped two different codes
 in one envelope on brief 745.
 """
@@ -221,19 +222,16 @@ def _resolve_letter_date(pc, date_str):
 
 
 def _portal_fields(portal):
-    """Resolve { subdomain, access_code, qr_uri } for the bottom-right invite.
+    """Resolve { subdomain, qr_uri } for the bottom-right invite.
 
-    access_code ONLY. Returns None (whole block omitted) when there is no
-    access_code — a letter must never carry a dead QR or the internal `code`.
-    The QR encodes the FULL coded URL so a scan opens straight in; the printed
-    line is the clean host + slug with the access code beneath.
+    THE SLUG IS ENOUGH. This function used to REQUIRE an access_code and omit
+    the whole block without one — which enforced the exact opposite of LAW 9 and
+    settled #86: no access code on any surface, in any QR, ever. The portal
+    resolves on the slug alone, so a code is not merely forbidden, it is
+    unnecessary. The block is omitted only when there is no slug and no URL,
+    which is the real failure case.
     """
     if not portal:
-        return None
-    access = (_g(portal, "access_code") or "").strip()
-    if not access:
-        log.warning("cover: portal present but access_code missing; omitting the "
-                    "portal block (refusing to print prospect_portals.code)")
         return None
 
     url = (_g(portal, "url") or "").strip()
@@ -245,15 +243,18 @@ def _portal_fields(portal):
         else:                            # legacy: {slug}.wpp-us.com
             sub = host_path.split(".", 1)[0]
 
+    if not url and sub:
+        url = f"https://{PORTAL_HOST}/{sub}"
     if not url:
-        url = f"https://{PORTAL_HOST}/{sub}?c={access}" if sub else None
-    if not url:
-        log.warning("cover: portal access_code present but no URL/subdomain; "
-                    "omitting the portal block")
+        log.warning("cover: portal has neither URL nor slug; omitting the block")
         return None
 
+    # Strip any code that arrived on the URL. The QR must encode the CLEAN
+    # address, because a scanned code is still a code on a surface.
+    url = url.split("?", 1)[0].rstrip("/")
+
     qr_uri = segno.make(url, error="m").svg_data_uri(dark=BRAND_NAVY, border=0)
-    return {"subdomain": sub, "access_code": access, "qr_uri": qr_uri}
+    return {"subdomain": sub, "qr_uri": qr_uri}
 
 
 # ------------------------------------------------------------------ build
@@ -264,7 +265,7 @@ def build_cover(params_cover, recipient, company, *, date_str=None):
         recipient: {name, first_name, title, company, address_lines:[...]}
         sector:    str          (accounts.industry_group, lowercased)
         date:      'YYYY-MM-DD'  (the drop date; falls back to render date)
-        portal:    {subdomain|slug, access_code, url}   <-- access_code, never code
+        portal:    {subdomain|slug, url}   <-- no code of any kind, LAW 9 / #86
         signature: '3' | '2'     (variant override; Sig 3 default)
     `recipient` (worker.fetch_contact) supplies name/title/first_name when the
     block does not. Body copy is NOT here — it lives in the locked template.
@@ -295,7 +296,12 @@ def build_cover(params_cover, recipient, company, *, date_str=None):
         "addr_line1": addr_line1,
         "addr_city_state_zip": addr_csz,
         "sector": sector,
-        # Resolved at render time (access_code only). Absent -> no portal block.
+        # #172: the mission line, in OUR words not theirs. Supplied per account;
+        # a neutral fallback rather than a guess, because naming a mission
+        # wrongly in the opening sentence is worse than not naming it at all.
+        "mission_line": (_g(pc, "mission_line")
+                         or "the people and the work you exist to serve"),
+        # Resolved at render time from the slug. Absent -> no portal block.
         "portal": pc.get("portal") or None,
         # Signature variant ('3' contained default, '2' long-sweep note-card mark).
         "signature": pc.get("signature"),
@@ -346,8 +352,8 @@ def render_cover(cover, out_pdf, page_size="Letter"):
         "addr_line1": cover.get("addr_line1", ""),
         "addr_city_state_zip": cover.get("addr_city_state_zip", ""),
         "sector": cover.get("sector", "your sector"),
+        "mission_line": cover.get("mission_line") or "the people and the work you exist to serve",
         "portal_subdomain": pf["subdomain"] if pf else "",
-        "portal_access_code": pf["access_code"] if pf else "",
         "qr_uri": pf["qr_uri"] if pf else None,   # None -> template omits the block
     }
 
@@ -364,7 +370,7 @@ if __name__ == "__main__":
     # self-test (no DB): resolves canon + renders to /tmp
     c = build_cover(
         {"sector": "senior living",
-         "portal": {"subdomain": "demo-benchmark", "access_code": "HAC3E9T"}},
+         "portal": {"subdomain": "demo-benchmark"}},
         {"name": "Nick Jacobi", "title": "General Manager", "first_name": "Nick",
          "address_lines": ["123 Fairway Dr", "Charlotte, NC 28202"]},
         "Stonebridge Golf Club",
