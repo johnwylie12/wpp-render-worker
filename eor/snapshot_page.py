@@ -68,12 +68,19 @@ UNCLASSIFIED =  38_458_237   # occupancy, fees for services - other, service cha
 INDIRECT     = FILED + UNCLASSIFIED
 
 # category, filed, their % of revenue, peer median %, percentile, peers
+# name, filed, their %, peer median %, percentile, peers, WHAT IT IS TO THEM,
+# ERA projects in that category, ERA median recovery %
 ROWS = [
-    ("Operating Supply",      37_971_710, 19.36, 2.40, 98, 2_573),
-    ("Freight / Small Parcel", 2_631_840,  1.34, 0.79, 64,   140),
-    ("Marketing Services",       482_421,  0.25, 0.26, 49, 7_371),
-    ("Fleet Management",       2_122_533,  1.08, 1.21, 46,   396),
-    ("Travel",                   449_863,  0.23, 0.37, 39, 8_769),
+    ("Operating Supply",      37_971_710, 19.36, 2.40, 98, 2_573,
+     "Running the stores and processing donated goods", 89, 27.2),
+    ("Freight / Small Parcel", 2_631_840,  1.34, 0.79, 64,   140,
+     "Moving donated goods between sites and to customers", 112, 29.1),
+    ("Marketing Services",       482_421,  0.25, 0.26, 49, 7_371,
+     "Donor and retail advertising", 0, 0),
+    ("Fleet Management",       2_122_533,  1.08, 1.21, 46,   396,
+     "The trucks that collect donations", 17, 17.7),
+    ("Travel",                   449_863,  0.23, 0.37, 39, 8_769,
+     "Staff movement across the programme", 0, 0),
 ]
 NO_PEER = []   # moved to the full category page; they carry no position and no finding
 
@@ -104,15 +111,20 @@ def band(p):
 
 
 rows = ""
-for name, amt, theirs, med, pct, peers in ROWS:
+for name, amt, theirs, med, pct, peers, means, proj, era_med in ROWS:
     label, colour = band(pct)
+    # THE PROOF COLUMN. Never shown without its project count - Fleet at 17
+    # projects is not the same claim as Freight at 112, and the page must not
+    # pretend otherwise. Below 5 projects we say nothing at all.
+    proof = (f"{era_med:.0f}% median &middot; {proj} projects" if proj >= 5
+             else "&mdash;")
     rows += f"""<tr>
-      <td><b>{name}</b></td>
+      <td><b>{name}</b><div class="means">{means}</div></td>
       <td class="r">{usd(amt)}</td>
       <td class="r">{theirs:.2f}%</td>
       <td class="r">{med:.2f}%</td>
-      <td class="r">{peers:,}</td>
       <td class="r" style="color:{colour};font-weight:bold">{label} &middot; {pct}th</td>
+      <td class="r" style="color:#003A70">{proof}</td>
     </tr>"""
 for name, amt in NO_PEER:
     rows += f"""<tr>
@@ -138,26 +150,27 @@ body {{ color:#3C4658; font-size:10.5pt; line-height:1.45; }}
       padding-bottom:6px; margin-bottom:16px; }}
 .hd .l {{ font-size:8.2pt; letter-spacing:.14em; color:#6C7686; text-transform:uppercase; }}
 .hd .r {{ margin-left:auto; text-align:right; font-size:8.2pt; color:#6C7686; }}
-h1 {{ font-size:17pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
+h1 {{ font-size:16pt; color:#003A70; margin:0 0 6px; line-height:1.22; font-weight:bold; }}
 .lede {{ color:#3C4658; margin:0 0 10px; max-width:88%; }}
 /* THE THIRTY-SECOND ROW. #173's acceptance test is that a reader can tell at a
    glance how many categories were examined, how many sit above peer median, and
    how many are evidence-supported priorities. That is this strip and nothing
    else on the page competes with it. */
 .kpi {{ display:flex; gap:10px; margin:0 0 6px; }}
-.kpi > div {{ flex:1; border:1px solid #DCE3ED; padding:6px 8px; }}
-.kpi .n {{ font-size:18pt; color:#003A70; font-weight:bold; line-height:1.1; }}
+.kpi > div {{ flex:1; border:1px solid #DCE3ED; padding:5px 7px; }}
+.kpi .n {{ font-size:16.5pt; color:#003A70; font-weight:bold; line-height:1.1; }}
 .kpi .k {{ font-size:7.8pt; letter-spacing:.1em; text-transform:uppercase;
           color:#6C7686; margin-top:3px; }}
-.kpi .s {{ font-size:8.4pt; color:#6C7686; margin-top:4px; line-height:1.35; }}
+.kpi .s {{ font-size:8pt; color:#6C7686; margin-top:3px; line-height:1.3; }}
 .kpi .hi {{ border-color:#FF9C00; border-left-width:3px; }}
 .note {{ font-size:8.2pt; color:#6C7686; margin:5px 0 8px; }}
 h2 {{ font-size:12pt; color:#003A70; margin:9px 0 4px; }}
-table {{ width:100%; border-collapse:collapse; font-size:9.8pt; }}
+table {{ width:100%; border-collapse:collapse; font-size:9.4pt; }}
 th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:uppercase;
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 5px 0; }}
 td {{ padding:2.8px 7px 2.8px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
+.means {{ font-size:8.2pt; color:#6C7686; font-weight:normal; margin-top:1px; }}
 
 .split {{ display:flex; gap:13px; margin-top:8px; }}
 .split > div {{ flex:1; }}
@@ -165,7 +178,7 @@ td.r, th.r {{ text-align:right; }}
 .box.g {{ border-left-color:#003A70; }}
 .box h3 {{ margin:0 0 5px; font-size:10.4pt; color:#003A70; }}
 .box p {{ margin:0; font-size:9.2pt; line-height:1.42; }}
-.prov {{ margin-top:5px; padding-top:4px; border-top:1px solid #DCE3ED;
+.prov {{ margin-top:4px; padding-top:4px; border-top:1px solid #DCE3ED;
         font-size:7.4pt; color:#6C7686; line-height:1.5; }}
 .prov b {{ color:#003A70; }}
 .footer {{ margin-top:0.12in; }}
@@ -194,12 +207,9 @@ starting point for a question, never a verdict on how you are run.</div>
        <div class="s">Salaries, depreciation and interest are excluded &mdash; they are not
        indirect and not ours to work.</div></div>
   <div><div class="n">${FILED/1e6:.1f}M</div><div class="k">Named by category</div>
-       <div class="s">Seven categories. A further {usd(UNCLASSIFIED)} sits in lines the filing
-       does not name.</div></div>
-  <div><div class="n">55</div><div class="k">Categories ERA works</div>
-       <div class="s">The baseline covers every one that applies to you, not only those a form
-       happens to disclose.</div></div>
-  <div><div class="n">1</div><div class="k">Priority the public record can already evidence</div>
+       <div class="s">A further {usd(UNCLASSIFIED)} sits in lines the filing does not name. ERA
+       works 55 categories; the baseline covers every one that applies.</div></div>
+  <div><div class="n">1</div><div class="k">Priority the record can already evidence</div>
        <div class="s">Operating supply, at the 98th percentile of 2,573 filers.</div></div>
 </div>
 <div class="note">Evidence depth: four of nine layers carry something for this organization &mdash;
@@ -208,8 +218,9 @@ and are shown as empty rather than filled.</div>
 
 <h2>Where each category sits</h2>
 <table>
-  <tr><th>Category</th><th class="r">Filed</th><th class="r">Your %<br>of revenue</th>
-      <th class="r">Peer<br>median</th><th class="r">Peers</th><th class="r">Position</th></tr>
+  <tr><th>Category &mdash; and what it is in your operation</th><th class="r">Filed</th>
+      <th class="r">Your %<br>of revenue</th><th class="r">Peer<br>median</th>
+      <th class="r">Position</th><th class="r">What ERA has<br>recovered here</th></tr>
   {rows}
 </table>
 <div class="note">Each category is compared against every nonprofit filer that breaks it out
@@ -218,29 +229,26 @@ position, and the categories a filing does not break out are sized in the baseli
 
 <div class="split">
   <div class="box">
-    <h3>Why operating supply, and not simply because it is largest</h3>
-    <p>At <b>19.4% of revenue against a 2.4% peer median</b> it sits at the 98th percentile of
-    2,573 filers &mdash; roughly eight times. A retail and donated-goods operation genuinely buys
-    more supply than most nonprofits, so some of that gap is your model rather than your buying.
-    How much is the question, and it is the one worth answering first.</p>
+    <h3>Why operating supply comes first</h3>
+    <p>At <b>19.4% of revenue against a 2.4% peer median</b> it is roughly eight times, on 2,573
+    filers. A donated-goods retailer genuinely buys more supply than most nonprofits, so part of
+    that gap is your model rather than your buying &mdash; how much is exactly the question. ERA
+    has completed <b>89 operating-supply engagements at a median of 27%</b>.</p>
   </div>
   <div class="box g">
     <h3>Being at the median is not the same as being competitive</h3>
-    <p>Fleet sits at the 46th percentile and travel at the 39th, with marketing at the median. That
-    is worth knowing &mdash; but the median is drawn from organizations that have mostly never
-    market-tested these categories either. It describes what is <i>normal</i>, not what is
-    <i>available</i>. Of <b>2,660 completed ERA engagements, 2,649 recovered value</b> &mdash;
-    a median of 28% of category spend, and the weakest quarter still returned 14%. Almost none of
-    those clients were outliers on a filing.</p>
+    <p>The median is drawn from organizations that have mostly never market-tested these categories
+    either. It describes what is <i>normal</i>, not what is <i>available</i>. Of <b>2,660 completed
+    ERA engagements, 2,649 recovered value</b> &mdash; a median of 28% of category spend, and the
+    weakest quarter still returned 14%. Almost none of those clients were outliers on a filing.</p>
   </div>
 </div>
 
 <div class="prov">
-  <b>FILED</b> Form 990 Part IX, FY2024 &nbsp;&middot;&nbsp;
-  <b>BENCHMARK</b> per-category peer cohorts as shown, 30-filer minimum &nbsp;&middot;&nbsp;
-  <b>DERIVED</b> arithmetic on filed figures only<br>
-  OPERATING, RETRIEVED, ENGAGEMENT and VERIFIED are absent for this organization and are shown as
-  absent. Full sources overleaf.
+  <b>FILED</b> Form 990 Part IX, FY2024 &nbsp;&middot;&nbsp; <b>BENCHMARK</b> per-category cohorts
+  as shown, 30-filer minimum &nbsp;&middot;&nbsp; <b>ERA RECOVERY</b> completed engagements,
+  median of category spend. Operating, retrieved, engagement and verified are absent. Full sources
+  overleaf.
 </div>
 
 </body></html>"""
