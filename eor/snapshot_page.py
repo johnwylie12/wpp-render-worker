@@ -62,18 +62,33 @@ def usd(n):
     return f"${n:,}"
 
 
+OXBLOOD = "#7A1F2B"   # invented. Deep and authoritative; sits WITH navy.
+FOREST  = "#0E5C36"   # invented. Same weight on the positive side.
+
+
 def band(p):
-    """Plain words, because a percentile alone is not a finding and 'above the
-    median' is not a criticism. Both readings must feel neutral."""
-    if p >= 90: return ("Well above", "#003A70")
+    """Plain words carry the meaning; colour carries the weight. Both readings
+    are stated neutrally - 'well above' is not an accusation and 'well below' is
+    not praise - but neither of them whispers."""
+    if p >= 90: return ("Well above", OXBLOOD)
     if p >= 50: return ("Above",      "#E08A00")
-    if p >= 25: return ("Below",      "#157A42")
-    return ("Well below", "#157A42")
+    if p >= 25: return ("Below",      FOREST)
+    return ("Well below", FOREST)
 
 
 rows = ""
 for name, amt, theirs, med, pct, peers in ROWS:
     label, colour = band(pct)
+    if pct >= 90:
+        rows += f"""<tr class="lead">
+      <td><b>{name}</b></td>
+      <td class="r">{usd(amt)}</td>
+      <td class="r">{theirs:.2f}%</td>
+      <td class="r">{med:.2f}%</td>
+      <td class="r">{peers:,}</td>
+      <td class="r"><b>{label} &middot; {pct}th</b></td>
+    </tr>"""
+        continue
     rows += f"""<tr>
       <td><b>{name}</b></td>
       <td class="r">{usd(amt)}</td>
@@ -128,10 +143,15 @@ th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:upp
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 5px 0; }}
 td {{ padding:3.4px 7px 3.4px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
+/* The lead row is the finding. It gets the page's only reversed block. */
+tr.lead td {{ background:#003A70; color:#FFFFFF; border-bottom:none;
+             padding-top:7px; padding-bottom:7px; }}
+tr.lead td:first-child {{ padding-left:8px; }}
+tr.lead td:last-child {{ color:#FF9C00; padding-right:8px; }}
 .split {{ display:flex; gap:14px; margin-top:10px; }}
 .split > div {{ flex:1; }}
-.box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:7px 10px; }}
-.box.g {{ border-left-color:#157A42; }}
+.box {{ border-left:3px solid #7A1F2B; background:#F5F7FB; padding:7px 10px; }}
+.box.g {{ border-left-color:#0E5C36; }}
 .box h3 {{ margin:0 0 5px; font-size:10.4pt; color:#003A70; }}
 .box p {{ margin:0; font-size:9.4pt; line-height:1.45; }}
 .prov {{ margin-top:7px; padding-top:6px; border-top:1px solid #DCE3ED;

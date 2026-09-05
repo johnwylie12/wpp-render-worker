@@ -22,6 +22,12 @@
     "black": "#000000",
     "_reserved": {
       "sustainability_green": "#30703A \u2014 sustainability materials only; never a UI/priority color"
+    },
+    "eor_above": "#7A1F2B",
+    "eor_below": "#0E5C36",
+    "_notes": {
+      "eor_above": "Oxblood. Peer position WELL ABOVE median on the EOR. Deep and authoritative, sits with navy rather than fighting it - a red that has read the filing, not a warning red. Never used for anything except peer position.",
+      "eor_below": "Deep forest. Peer position BELOW median - the 'well bought' signal. Same weight as eor_above so a positive finding lands as hard as a negative one."
     }
   },
   "font": {
