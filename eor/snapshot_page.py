@@ -53,6 +53,8 @@ VTI_URI = "data:image/png;base64," + _b64.b64encode(
 REV   = 15_682_676
 FILED = 1_622_323
 FEES, LIVES = 525_754, 581
+EXPENSES = 9_080_516      # total functional expenses, Form 990
+UNSEEN   = EXPENSES - FILED
 
 # category, filed, their % of revenue, peer median %, percentile, peers
 ROWS = [
@@ -105,7 +107,7 @@ for name, amt in NO_PEER:
     rows += f"""<tr>
       <td><b>{name}</b></td><td class="r">{usd(amt)}</td>
       <td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td>
-      <td class="r" style="color:#6C7686">No comparable cohort</td>
+      <td class="r" style="color:#6C7686">Not yet compared</td>
     </tr>"""
 
 HTMLDOC = f"""<html><head><meta charset="utf-8"><style>
@@ -169,20 +171,24 @@ td.r, th.r {{ text-align:right; }}
   <div class="r">{ORG}<br>Form 990 FY2024</div>
 </div>
 
-<h1>Six categories examined. One evidence-supported priority.<br>Two appear well bought.</h1>
-<div class="lede">Every indirect category your filing breaks out, compared against organizations of
-comparable size and type. Position is a starting point for a question, never a verdict on how you
-are run.</div>
+<h1>Your filing breaks out $1.62M of $9.08M in expenses.<br>We can see six categories. There are 55.</h1>
+<div class="lede">What follows compares every category your Form 990 discloses separately against
+organizations of comparable size and type. It is a starting point for a question, never a verdict on
+how you are run &mdash; and it is deliberately the smaller half of the picture.</div>
 
 <div class="kpi">
-  <div><div class="n">{EXAMINED}</div><div class="k">Categories examined</div>
-       <div class="s">Every indirect line your filing breaks out, not a selection.</div></div>
-  <div><div class="n">{usd(FILED)}</div><div class="k">Addressable, as filed</div>
-       <div class="s">{FILED/REV*100:.1f}% of revenue, as filed. What is examinable, not what is recoverable.</div></div>
-  <div><div class="n">{ABOVE}</div><div class="k">Above peer median</div>
-       <div class="s">Above median is a question, not a priority. {BELOW} sit below it.</div></div>
-  <div class="hi"><div class="n">{PRIORITIES}</div><div class="k">Evidence-supported priority</div>
-       <div class="s">Earned on a second evidence layer, not on size.</div></div>
+  <div class="hi"><div class="n">${UNSEEN/1e6:.1f}M</div>
+       <div class="k">Not broken out</div>
+       <div class="s">82% of your filed expenses. Freight, waste, telecom, packaging, payment
+       processing and more never appear separately on a 990.</div></div>
+  <div><div class="n">{usd(FILED)}</div><div class="k">Visible in the filing</div>
+       <div class="s">Across six categories. What is examinable from outside, not what is
+       recoverable.</div></div>
+  <div><div class="n">55</div><div class="k">Categories ERA works</div>
+       <div class="s">The baseline covers every one that applies to you, not only the six a form
+       happens to disclose.</div></div>
+  <div><div class="n">1</div><div class="k">Priority the public record can already evidence</div>
+       <div class="s">Insurance, on two independent layers. The rest of the case is built inside.</div></div>
 </div>
 <div class="note">Evidence depth: four of nine layers carry something for this organization &mdash;
 filed, benchmark, derived and registry. Operating, retrieved, engagement and verified are empty,
@@ -197,7 +203,8 @@ and are shown as empty rather than filled.</div>
 <div class="note">Each category is compared against every nonprofit filer that breaks that category
 out separately, measured the same way &mdash; category spend as a share of total revenue. Cohort
 sizes differ because not every organization discloses every line, and a category needs at least 30
-filers before we will state a position.</div>
+filers before we will state a position. The categories a filing does not break out are sized in the
+baseline, not here.</div>
 
 <div class="split">
   <div class="box">
