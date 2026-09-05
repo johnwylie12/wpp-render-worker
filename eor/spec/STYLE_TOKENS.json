@@ -23,12 +23,16 @@
     "_reserved": {
       "sustainability_green": "#30703A \u2014 sustainability materials only; never a UI/priority color"
     },
-    "eor_above": "#7A1F2B",
-    "eor_below": "#0E5C36",
     "_notes": {
-      "eor_above": "Oxblood. Peer position WELL ABOVE median on the EOR. Deep and authoritative, sits with navy rather than fighting it - a red that has read the filing, not a warning red. Never used for anything except peer position.",
-      "eor_below": "Deep forest. Peer position BELOW median - the 'well bought' signal. Same weight as eor_above so a positive finding lands as hard as a negative one."
-    }
+      "secondary_palette": "Midnight Blue, Royal Blue and Sea Green are SANCTIONED secondary colours from Brand Playbook v3.0 p37. They exist so nothing has to be invented. Opacity versions of Daybreak Blue and Sunrise Yellow are permitted down to 10%.",
+      "sustainability_green": "#30703A. RESERVED. Sustainability materials ONLY, per Playbook p35. Never a UI or priority colour, and never a 'positive' signal on an EOR."
+    },
+    "daybreak_blue": "#003A70",
+    "sunrise_yellow": "#FF9C00",
+    "cool_grey": "#97999B",
+    "midnight_blue": "#111127",
+    "royal_blue": "#0304C8",
+    "sea_green": "#3CDBC0"
   },
   "font": {
     "head": [

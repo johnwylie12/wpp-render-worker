@@ -36,6 +36,16 @@ import os
 from weasyprint import HTML
 
 ORG   = "Coastal Enterprises of Jacksonville"
+
+# The registered lockup, from the brand asset. NEVER retyped in CSS.
+_VTI = "/home/claude/worker/meeting_label/assets/vti_logo.png"
+import base64 as _b64
+from PIL import Image as _Img
+_im = _Img.open(_VTI)
+_im.thumbnail((150, 150))          # ~0.52in wide in print; rule and dot stay legible
+_im.save("/tmp/vti_footer.png")
+VTI_URI = "data:image/png;base64," + _b64.b64encode(
+    open("/tmp/vti_footer.png", "rb").read()).decode()
 REV   = 15_682_676
 FILED = 1_622_323
 FEES, LIVES = 525_754, 581
@@ -62,33 +72,23 @@ def usd(n):
     return f"${n:,}"
 
 
-OXBLOOD = "#7A1F2B"   # invented. Deep and authoritative; sits WITH navy.
-FOREST  = "#0E5C36"   # invented. Same weight on the positive side.
+MIDNIGHT = "#111127"  # Midnight Blue, Brand Playbook secondary palette
+COOLGREY = "#97999B"  # Cool Grey, core palette
 
 
 def band(p):
     """Plain words carry the meaning; colour carries the weight. Both readings
     are stated neutrally - 'well above' is not an accusation and 'well below' is
     not praise - but neither of them whispers."""
-    if p >= 90: return ("Well above", OXBLOOD)
+    if p >= 90: return ("Well above", MIDNIGHT)
     if p >= 50: return ("Above",      "#E08A00")
-    if p >= 25: return ("Below",      FOREST)
-    return ("Well below", FOREST)
+    if p >= 25: return ("Below",      COOLGREY)
+    return ("Well below", COOLGREY)
 
 
 rows = ""
 for name, amt, theirs, med, pct, peers in ROWS:
     label, colour = band(pct)
-    if pct >= 90:
-        rows += f"""<tr class="lead">
-      <td><b>{name}</b></td>
-      <td class="r">{usd(amt)}</td>
-      <td class="r">{theirs:.2f}%</td>
-      <td class="r">{med:.2f}%</td>
-      <td class="r">{peers:,}</td>
-      <td class="r"><b>{label} &middot; {pct}th</b></td>
-    </tr>"""
-        continue
     rows += f"""<tr>
       <td><b>{name}</b></td>
       <td class="r">{usd(amt)}</td>
@@ -107,9 +107,8 @@ for name, amt in NO_PEER:
 HTMLDOC = f"""<html><head><meta charset="utf-8"><style>
 @page {{
   size: Letter; margin: 0.38in 0.85in 0.62in 0.85in;
-  @bottom-left  {{ content:"value through insight™"; font-size:7.5pt;
-                   font-weight:bold; color:#003A70; vertical-align:top;
-                   padding-top:6px; }}
+  @bottom-left  {{ content:url("{VTI_URI}"); vertical-align:top;
+                   padding-top:5px; }}
   @bottom-center{{ content:"Prepared exclusively for {ORG}"; font-size:8pt;
                    font-weight:bold; color:#16243F; vertical-align:top;
                    padding-top:6px; }}
@@ -143,15 +142,11 @@ th {{ text-align:left; font-size:7.8pt; letter-spacing:.09em; text-transform:upp
      color:#6C7686; border-bottom:1.4px solid #003A70; padding:0 7px 5px 0; }}
 td {{ padding:3.4px 7px 3.4px 0; border-bottom:1px solid #DCE3ED; }}
 td.r, th.r {{ text-align:right; }}
-/* The lead row is the finding. It gets the page's only reversed block. */
-tr.lead td {{ background:#003A70; color:#FFFFFF; border-bottom:none;
-             padding-top:7px; padding-bottom:7px; }}
-tr.lead td:first-child {{ padding-left:8px; }}
-tr.lead td:last-child {{ color:#FF9C00; padding-right:8px; }}
+
 .split {{ display:flex; gap:14px; margin-top:10px; }}
 .split > div {{ flex:1; }}
-.box {{ border-left:3px solid #7A1F2B; background:#F5F7FB; padding:7px 10px; }}
-.box.g {{ border-left-color:#0E5C36; }}
+.box {{ border-left:3px solid #FF9C00; background:#F5F7FB; padding:7px 10px; }}
+.box.g {{ border-left-color:#003A70; }}
 .box h3 {{ margin:0 0 5px; font-size:10.4pt; color:#003A70; }}
 .box p {{ margin:0; font-size:9.4pt; line-height:1.45; }}
 .prov {{ margin-top:7px; padding-top:6px; border-top:1px solid #DCE3ED;
