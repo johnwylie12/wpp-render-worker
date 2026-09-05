@@ -68,16 +68,15 @@ p     { margin:0 0 9px; }
 .sig .ct { font-size:10pt; color:#4a4a4a; }
 
 .foot { position:fixed; bottom:0.15in; left:0; right:0; text-align:center; } /* LOWERED */
-.foot img { height:22px; opacity:.95; }                                       /* VTI -25% */
+.foot img{height:26px}                                       /* VTI -25% */
 .foot .sub { color:#7a7a7a; font-size:8pt; margin-top:6px; }
 
 /* rev-5 portal block — LOCKED 2026-08-11 */
-.portal { position:fixed; right:1in; bottom:1.15in; width:2.35in;
-          border-left:3px solid #FF9C00; padding:6px 0 6px 10px; }
-.portal .hd2 { color:#003A70; font-weight:bold; font-size:9pt; margin-bottom:5px; }
-.portal img  { width:86px; height:86px; display:block; margin-bottom:5px; }
-.portal .url { color:#5a5a5a; font-size:7.5pt; line-height:1.3; word-break:break-all; }
-.portal .code{ color:#003A70; font-size:8pt; font-weight:bold; margin-top:3px; }
+.portal{position:absolute;right:0.9in;bottom:0.78in;width:2.5in;border-left:3px solid #F2A900;padding:12px 0 12px 16px}
+.portal .hd2{font-size:11pt;font-weight:700;color:#0A2E4F;letter-spacing:.01em}
+.portal img{width:1.4in;height:1.4in;display:block;margin:9px 0 8px}
+.portal .url{font-size:9.2pt;color:#41637A;word-break:break-all;line-height:1.4}
+.portal .code{font-size:9pt;font-weight:700;color:#0A2E4F;margin-top:5px}
 </style></head><body>
   <div class="hd">
     <img src="{{era_logo_uri}}" alt="ERA Group">
@@ -109,7 +108,7 @@ p     { margin:0 0 9px; }
        nothing about the sender is hardcoded here. The v1 LOCKED template carried
        John's name, title, email and phone as literals, so a batch assigned to
        another partner printed under John's name. -->
-  <div class="sig">
+  <div class="sig" style="max-width:3.5in">
     {% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}" style="width:{{signature_width_px}}px">{% endif %}
     <div class="nm">{{signoff_name}}</div>
     <div class="tl">{{signoff_title}} &middot; {{signoff_firm}}</div>
@@ -122,7 +121,6 @@ p     { margin:0 0 9px; }
          rendered proof rather than trusting the signoff block alone. The brief named
          only the sign-off; this footer would still have printed John's email and
          phone on all 24 of Arvo's letters. -->
-    <div class="sub">{{signoff_email}} &nbsp;&middot;&nbsp; {{signoff_phone}}</div>
   </div>
 
   {% if qr_uri %}
