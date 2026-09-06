@@ -27,7 +27,7 @@ REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, REPO)
 from wpp_signatures import signature_data_uri  # noqa: E402
 
-TEMPLATE = os.path.join(REPO, "cover", "WPP_EOP_CoverLetter_TEMPLATE_v3_QUESTION_LED.html")
+TEMPLATE = os.path.join(REPO, "cover", "WPP_EOP_CoverLetter_TEMPLATE_v4_VALUE_SELLING.html")
 
 
 def data_uri(path, mime="image/png"):
