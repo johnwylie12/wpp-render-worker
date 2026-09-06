@@ -239,7 +239,7 @@ def block(b):
     raise SystemExit(f"unknown block type {kind!r} — add it to block() in engine.py")
 
 
-def sheet_html(s, org, vti_src):
+def sheet_html(s, org, vti_src, density=1.0):
     """One content sheet. Its header and foot are running elements: they become
     this page's furniture and stay correct if the content flows to a second page."""
     head = (
@@ -261,22 +261,109 @@ def sheet_html(s, org, vti_src):
         f'<div class="who">{esc(org)}</div>'
         f'<div class="pg"></div></div>'
     )
-    return f'<div class="sheet">{head}{foot}{body}</div>'
+    return f'<div class="sheet" style="--rh:{density}">{head}{foot}{body}</div>'
 
 
-def render_interior(content, out_pdf):
+def _document(html_body, css):
+    return (f"<!DOCTYPE html><html><head><meta charset='utf-8'><style>{css}</style>"
+            f"</head><body>{html_body}</body></html>")
+
+
+def _measure(html_body, css):
+    """Pages, and how full the EMPTIEST of them is.
+
+    The first cut measured the last page only, and optimised it to 87% by pushing
+    air onto the pages in front — which just moves the hole. What a reader calls
+    white space is the emptiest page in the sheet, so that is the number to
+    maximise. Every sheet carries break-after:page, so a sheet paginates the same
+    alone as it does in the document; that is what makes fitting one sheet at a
+    time sound rather than a guess about its neighbours."""
+    import io
+
+    import pymupdf
+    from weasyprint import HTML
+
+    buf = io.BytesIO()
+    HTML(string=_document(html_body, css), base_url=REPO).write_pdf(buf)
+    doc = pymupdf.open(stream=buf.getvalue(), filetype="pdf")
+    fills = []
+    for page in doc:
+        limit = page.rect.height - 40                   # above the running footer
+        ink = [b[3] for b in page.get_text("blocks") if b[4].strip()]
+        ink += [d["rect"].y1 for d in page.get_drawings()]
+        ink = [y for y in ink if y < limit]
+        fills.append((max(ink) if ink else 0) / limit)
+    return doc.page_count, min(fills)
+
+
+def fit(sheet, org, vti, css, floor=0.82):
+    """Choose this sheet's rhythm. Nothing here touches a word or a type size.
+
+    Two moves, in this order:
+      1. TIGHTEN, only if the sheet spills. A sheet that runs 15pt past its page
+         costs a whole further page, and that page comes back 40% full.
+      2. LOOSEN otherwise — including a ONE-page sheet that ends at 40%. The
+         first cut of this returned early on any single-page sheet, on the
+         reasoning that there is no break to move. There isn't; but there is a
+         page to fill, and a one-page sheet ending at 40% is exactly the white
+         space being complained about. v1 is seventeen one-page sheets, so that
+         early return skipped the entire document.
+    A sheet already full enough is left at --rh:1 exactly."""
+    base, pages, fill = _try(sheet, org, vti, css, 1.0)
+    if fill >= floor:
+        return base, pages, fill, None
+
+    if pages > 1:
+        for rh in (0.94, 0.88, 0.82, 0.76, 0.70):
+            html, n, f = _try(sheet, org, vti, css, rh)
+            if n < pages:
+                return html, n, f, rh
+
+    best = (base, pages, fill, None)
+    for rh in (1.08, 1.16, 1.24, 1.32, 1.40, 1.45):   # 1.45 is the cap: past it the
+        # rhythm of one sheet stops matching the rest of the document, and John
+        # asked for components that read the same throughout.
+        html, n, f = _try(sheet, org, vti, css, rh)
+        if n > pages:
+            break                      # past the point where it costs a page
+        if f > best[2]:
+            best = (html, n, f, rh)
+    return best
+
+
+def _try(sheet, org, vti, css, rh):
+    html = sheet_html(sheet, org, vti, rh)
+    n, f = _measure(html, css)
+    return html, n, f
+
+
+def render_interior(content, out_pdf, fit_pass=True):
     from weasyprint import HTML
 
     org = content["organization"]
     vti = "file://" + os.path.join(REPO, content["vti_lockup"]).replace(" ", "%20")
     sheets = content["sheets"]
-    total = len(sheets)                      # computed. never a literal.
-    html_body = "".join(sheet_html(s, org, vti) for s in sheets)
     css = stylesheet()
-    doc = f"<!DOCTYPE html><html><head><meta charset='utf-8'><style>{css}</style></head><body>{html_body}</body></html>"
+
+    parts, report = [], []
+    for i, sheet in enumerate(sheets, 1):
+        if fit_pass:
+            html, pages, fill, density = fit(sheet, org, vti, css)
+        else:
+            html = sheet_html(sheet, org, vti)
+            pages, fill = _measure(html, css)
+            density = None
+        parts.append(html)
+        report.append((i, pages, fill, density))
+
+    html_body = "".join(parts)
     assert_no_forbidden_colour(css, html_body)
-    HTML(string=doc, base_url=REPO).write_pdf(out_pdf)
-    return total
+    HTML(string=_document(html_body, css), base_url=REPO).write_pdf(out_pdf)
+    for i, pages, fill, density in report:
+        if density or pages > 1:
+            print(f"  sheet {i:>2}: {pages}pp, emptiest page {fill*100:.0f}% full"
+                  + (f"  [rhythm x{density}]" if density else ""))
+    return len(sheets)
 
 
 # ── imposition. Computed from the rendered length, both ways, same content. ──

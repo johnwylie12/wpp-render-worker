@@ -243,3 +243,47 @@ p{ orphans:2; widows:2; }
            margin-bottom:8pt; max-width:64em; }
 .fig-note{ font-size:var(--t-meta); color:var(--slate); margin-top:5pt; }
 .fig{ width:100%; height:auto; }
+
+
+/* ── DENSITY. The white-space pass. ───────────────────────────────────────────
+   A sheet either runs a little past its page — costing a whole further page that
+   comes back 40% full — or genuinely holds two pages and ends the second one at
+   43%. Both read as "a ton of white space", and neither is fixed by cutting a
+   sentence: rule 2 in baseline/RULES.md. Both are fixed by moving the rhythm.
+
+   So the rhythm is a variable. --rh scales every vertical margin and padding in
+   the sheet and NOTHING ELSE. No font-size appears below and none ever may —
+   that is the line rule 2 draws. Leading is layout and is left alone here
+   because changing it changes the colour of the page.
+
+   The engine renders each sheet on its own, sweeps --rh, and keeps the value
+   that either removes a page or fills the last one best. At --rh:1 every value
+   below is identical to the base rule above it, so a sheet the engine does not
+   touch is byte-for-byte what it was. */
+.sheet{ --rh:1 }
+
+.sheet .h1{ margin-bottom:calc(9pt * var(--rh)) }
+.sheet .h2{ margin-bottom:calc(7pt * var(--rh)) }
+.sheet .lede{ margin-bottom:calc(12pt * var(--rh)) }
+.sheet p{ margin-bottom:calc(8pt * var(--rh)) }
+.sheet p:last-child{ margin-bottom:0 }
+.sheet .eyebrow{ margin-bottom:calc(7pt * var(--rh)) }
+.sheet .panel{ padding:calc(10pt * var(--rh)) 14pt; margin:calc(10pt * var(--rh)) 0 }
+.sheet .panel > :last-child{ margin-bottom:0 }
+.sheet .panel--label{ margin-bottom:calc(6pt * var(--rh)) }
+.sheet .card{ padding:calc(8pt * var(--rh)) 12pt }
+.sheet .card .why{ margin-top:calc(5pt * var(--rh)); padding-top:calc(4pt * var(--rh)) }
+.sheet .card .foot2{ margin-top:calc(5pt * var(--rh)); padding-top:calc(4pt * var(--rh)) }
+.sheet .stats{ gap:10pt; margin:calc(11pt * var(--rh)) 0 }
+.sheet .stat{ padding:calc(10pt * var(--rh)) 12pt }
+.sheet .stat .lab{ margin:calc(5pt * var(--rh)) 0 calc(4pt * var(--rh)) }
+.sheet table{ margin:calc(9pt * var(--rh)) 0 }
+.sheet th{ padding:0 8pt calc(6pt * var(--rh)) }
+.sheet td{ padding:calc(5pt * var(--rh)) 8pt }
+.sheet .rows .row{ padding:calc(7pt * var(--rh)) 0 }
+.sheet .prov{ padding-top:calc(7pt * var(--rh));
+              margin-top:calc(14pt * var(--rh)); margin-bottom:calc(15pt * var(--rh)) }
+.sheet .closing{ padding:calc(20pt * var(--rh)) 22pt; margin-top:calc(15pt * var(--rh)) }
+.sheet .fig-wrap{ margin:calc(12pt * var(--rh)) 0 }
+.sheet .fig-take{ margin-bottom:calc(8pt * var(--rh)) }
+.sheet .fig-note{ margin-top:calc(5pt * var(--rh)) }
