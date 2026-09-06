@@ -111,7 +111,23 @@
         "It combines something we work with something we do not, in one figure, and your return is not required to separate them. We named it and stopped there."
        ],
        "why": "what we decline to estimate tells you as much as what we estimate."
-      },
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "What stood out",
+   "source": "Form 990 FY2024",
+   "headline": "And one thing no filing can show.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "The four above are visible in your return. This one is not, and it is the reason the others are worth asking about."
+    },
+    {
+     "type": "cards",
+     "items": [
       {
        "eyebrow": "What a filing cannot show",
        "set_apart": true,
@@ -159,9 +175,39 @@
      "text": "Evidence depth: four of nine layers carry something for this organization — filed, benchmark, derived and registry. Operating, retrieved, engagement and verified are empty, and are shown as empty rather than filled."
     },
     {
-     "type": "h2",
-     "text": "Where each category sits"
-    },
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "sunrise",
+        "heading": "Why operating supply comes first",
+        "paras": [
+         "At <b>19.4% of revenue against a 2.4% peer median</b> it is roughly eight times, on 2,573 filers. A donated-goods retailer genuinely buys more supply than most nonprofits, so part of that gap is your model rather than your buying — how much is exactly the question. ERA has completed <b>69 operating-supply engagements at a median of 21%</b>."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "navy",
+        "heading": "Being at the median is not the same as being competitive",
+        "paras": [
+         "The median is drawn from organizations that have mostly never market-tested these categories either. It describes what is <i>normal</i>, not what is <i>available</i>. Of <b>2,660 completed ERA engagements, 2,649 recovered value</b> — a median of 28% of category spend, and the weakest quarter still returned 14%. Almost none of those clients were outliers on a filing."
+        ]
+       }
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Executive Opportunity Snapshot",
+   "source": "Form 990 FY2024",
+   "headline": "Where each category sits.",
+   "blocks": [
     {
      "type": "table",
      "columns": [
@@ -285,33 +331,6 @@
     {
      "type": "prov",
      "text": "Each category is compared against every nonprofit filer that breaks it out separately, as a share of total revenue. A category needs at least 30 filers before we state a position, and the categories a filing does not break out are sized in the baseline, not here."
-    },
-    {
-     "type": "cols",
-     "columns": [
-      [
-       {
-        "type": "panel",
-        "ground": "evidence",
-        "rail": "sunrise",
-        "heading": "Why operating supply comes first",
-        "paras": [
-         "At <b>19.4% of revenue against a 2.4% peer median</b> it is roughly eight times, on 2,573 filers. A donated-goods retailer genuinely buys more supply than most nonprofits, so part of that gap is your model rather than your buying — how much is exactly the question. ERA has completed <b>69 operating-supply engagements at a median of 21%</b>."
-        ]
-       }
-      ],
-      [
-       {
-        "type": "panel",
-        "ground": "evidence",
-        "rail": "navy",
-        "heading": "Being at the median is not the same as being competitive",
-        "paras": [
-         "The median is drawn from organizations that have mostly never market-tested these categories either. It describes what is <i>normal</i>, not what is <i>available</i>. Of <b>2,660 completed ERA engagements, 2,649 recovered value</b> — a median of 28% of category spend, and the weakest quarter still returned 14%. Almost none of those clients were outliers on a filing."
-        ]
-       }
-      ]
-     ]
     },
     {
      "type": "prov",

@@ -88,7 +88,7 @@ body{
       renderer's word wrap, so .h1 carries explicit <br> and never balances. */
 .h1{ font-family:'Paralucent',sans-serif; font-weight:500;
      font-size:var(--t-headline); line-height:var(--t-headline-lh);
-     color:var(--daybreak-blue); margin-bottom:11pt; }
+     color:var(--daybreak-blue); margin-bottom:9pt; }
 .h2{ font-family:'Paralucent',sans-serif; font-weight:700;
      font-size:var(--t-subhead); line-height:var(--t-subhead-lh);
      color:var(--daybreak-blue); margin-bottom:7pt; }
@@ -113,7 +113,7 @@ b,strong{ font-weight:700 }
       Deep = a nested panel or a table head.  A fourth ground would kill the
       signal, which is why the measured file's four different panel greys were a
       defect rather than a palette. ───────────────────────────────────────── */
-.panel{ padding:11pt 15pt; margin:11pt 0; }
+.panel{ padding:10pt 14pt; margin:10pt 0; }
 .panel > :last-child{ margin-bottom:0 }
 .panel--evidence{ background:var(--panel-mist); }
 .panel--nested{ background:var(--panel-deep); }
@@ -125,11 +125,11 @@ b,strong{ font-weight:700 }
 
 /* ── CARDS. One card component. The fifth card on the bridge page is set apart
       by taking .card--set-apart, not by being a different kind of card. ──── */
-.cards{ display:flex; flex-direction:column; gap:7pt; }
-.card{ border:1pt solid var(--hairline); padding:9pt 13pt; }
+.cards{ display:flex; flex-direction:column; gap:6pt; }
+.card{ border:1pt solid var(--hairline); padding:8pt 12pt; }
 .card--set-apart{ background:var(--decision-cream);
                   border:1pt solid var(--cream-edge); border-left:var(--rail) solid var(--sunrise-yellow); }
-.card .why{ margin-top:6pt; padding-top:5pt; border-top:1pt solid var(--hairline);
+.card .why{ margin-top:5pt; padding-top:4pt; border-top:1pt solid var(--hairline);
             font-size:var(--t-table); color:var(--slate); }
 .card .why b{ color:var(--daybreak-blue) }
 
@@ -151,12 +151,12 @@ b,strong{ font-weight:700 }
       right-aligned; the category name is the anchor. A fill on a row means
       "this is the shortlist", never "this is a stripe". ─────────────────── */
 table{ width:100%; border-collapse:collapse; table-layout:fixed;
-       font-size:var(--t-table); line-height:var(--t-table-lh); margin:11pt 0; }
+       font-size:var(--t-table); line-height:var(--t-table-lh); margin:9pt 0; }
 thead{ display:table-header-group; }   /* repeats if a table crosses a page */
 thead th{ font-size:var(--t-eyebrow); letter-spacing:.09em; text-transform:uppercase;
           font-weight:700; color:var(--slate); text-align:left;
           padding:0 8pt 6pt; border-bottom:1.6pt solid var(--daybreak-blue); vertical-align:bottom; }
-td{ padding:8pt; border-bottom:1pt solid var(--hairline); vertical-align:top; color:var(--ink); }
+td{ padding:5pt 8pt; border-bottom:1pt solid var(--hairline); vertical-align:top; color:var(--ink); }
 /* nowrap belongs on the FIGURE, never on the column head: a long head like
    "YOUR % OF REVENUE" then overflows its column and collides with its
    neighbour, which is what the first render did. */
