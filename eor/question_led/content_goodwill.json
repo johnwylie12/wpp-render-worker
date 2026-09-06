@@ -5,6 +5,150 @@
  "vti_lockup": "meeting_label/assets/vti_logo.png",
  "sheets": [
   {
+   "title": "Executive overview",
+   "source": "Form 990 FY2024",
+   "headline": "What this is, why we prepared it,<br>and what it does not claim.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "You did not ask for this. We read your public filing, compared it against organizations of comparable size and type, and wrote down where the questions are. Everything in it comes from documents anyone can obtain."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "How it was built"
+       },
+       {
+        "type": "rows",
+        "items": [
+         "Your Form 990 for FY2024, read line by line — the actual return, not a summary of it.",
+         "A peer benchmark drawn per category from nonprofit filers that break out the same line, with a 30-filer minimum before we state a position.",
+         "533 engagements ERA has completed in these categories, used for what has actually been recovered.",
+         "Nothing from you. No data request, no meeting, no NDA."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "Reading the benchmark"
+       },
+       {
+        "type": "para",
+        "text": "A position above the peer median is <b>not a finding that you are overspending</b>, and a position at or below it is not a finding that you are competitive. The median describes what is normal among organizations that have mostly never market-tested these categories either."
+       },
+       {
+        "type": "para",
+        "text": "Neither position is a judgment on how you are run. Both are reasons to ask a question."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "navy",
+     "paras": [
+      "What follows is set out overleaf, in the order it appears."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Executive overview",
+   "source": "Form 990 FY2024",
+   "headline": "What follows.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Ten sections. The first four are orientation and observation; the money does not appear until the fifth."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "",
+       "anchor": true,
+       "width": "34%"
+      },
+      {
+       "label": "",
+       "width": "66%"
+      }
+     ],
+     "rows": [
+      {
+       "cells": [
+        "You may already have this covered",
+        "Why a bid, a broker and a strong process still leave a question open"
+       ]
+      },
+      {
+       "cells": [
+        "What stood out",
+        "Five observations from the filing, none of them a conclusion"
+       ]
+      },
+      {
+       "cells": [
+        "Executive Opportunity Snapshot",
+        "Each category against comparable filers, and what ERA has recovered in it"
+       ]
+      },
+      {
+       "cells": [
+        "Where we would start",
+        "Four lines, and the first question we would ask about each"
+       ]
+      },
+      {
+       "cells": [
+        "Every line",
+        "Every indirect line on your return, including the ones we will not model"
+       ]
+      },
+      {
+       "cells": [
+        "How this works",
+        "One of your own lines, start to finish"
+       ]
+      },
+      {
+       "cells": [
+        "The big one",
+        "The largest line, and why we are least certain about it"
+       ]
+      },
+      {
+       "cells": [
+        "What this rests on",
+        "Nine evidence layers, and the ones that are empty"
+       ]
+      },
+      {
+       "cells": [
+        "How we work",
+        "The rules we hold ourselves to, before you ask"
+       ]
+      },
+      {
+       "cells": [
+        "What happens next",
+        "A question, a no-cost baseline, your decision"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX and Part VII Section B, FY2024, fiscal year ending December · <b>BENCHMARK</b> per-category nonprofit cohorts, 30-filer minimum · <b>ERA RECOVERY</b> completed engagements only, never a published band"
+    }
+   ]
+  },
+  {
    "title": "You may already have this covered",
    "source": "Form 990 FY2024",
    "headline": "You may have tested the price.<br>Has anyone read the agreement?",
@@ -686,6 +830,126 @@
     {
      "type": "prov",
      "text": "<b>ON YOUR FILING</b> Form 990 Part IX · <b>THE COMPARISON</b> your spend on the line as a share of your revenue, against every comparable filer that reports the same line"
+    }
+   ]
+  },
+  {
+   "title": "What this rests on",
+   "source": "Form 990 FY2024",
+   "headline": "Nine evidence layers.<br>Four of them are empty, and we show them empty.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Every figure in this Report sits on a layer of evidence, and the layers are not equal. A number drawn from your filing is not the same kind of fact as a number drawn from work we have finished. So we name which layer each one came from, and where a layer has nothing for you, we leave it visibly empty rather than filling it with an estimate."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "navy",
+        "label": "Carries something for you",
+        "paras": [
+         "<b>Filed.</b> Your Form 990, FY2024. Part IX line by line and Part VII Section B, where your return names three suppliers in your own words.",
+         "<b>Benchmark.</b> Nonprofit filers that break out the same line separately, 30-filer minimum before a position is stated.",
+         "<b>Derived.</b> Share of revenue and percentile, computed from the two above and nothing else.",
+         "<b>Registry.</b> 533 ERA engagements completed in these categories, queried, never estimated."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "panel",
+        "ground": "nested",
+        "label": "Empty for you, and shown empty",
+        "paras": [
+         "<b>Operating.</b> What your contracts actually say. We have not seen one.",
+         "<b>Retrieved.</b> Invoices against those contracts. We have not seen any.",
+         "<b>Engagement.</b> Work performed for you by ERA. There is none.",
+         "<b>Verified.</b> Value confirmed after the fact. There is none, and there cannot be until there is work."
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "decision",
+     "rail": "sunrise",
+     "paras": [
+      "This is why the Report asks questions rather than states findings. The four empty layers are the ones that would turn a question into an answer, and every one of them needs something only you have. <b>That is the entire first data request: one contract and three months of invoices.</b>"
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "An absent layer is shown absent on every page of this Report. A figure that cannot name its layer does not appear."
+    }
+   ]
+  },
+  {
+   "title": "How we work",
+   "source": "Form 990 FY2024",
+   "headline": "The rules we hold ourselves to,<br>before you ask.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "You are entitled to know how a document like this is allowed to talk about your organization. These are the constraints we wrote for ourselves, and they are the reason some things in this Report are missing on purpose."
+    },
+    {
+     "type": "cards",
+     "items": [
+      {
+       "eyebrow": "On the figures",
+       "heading": "Every number states what it means, where it sits, and what backs it.",
+       "paras": [
+        "A percentile on its own is an observation, not an argument. So each material figure in this Report says what the category is <i>in your operation</i>, in your language rather than the IRS's; where your filing sits against comparable filers; and what ERA has actually recovered in that category from completed work."
+       ],
+       "why": "a figure you cannot interrogate is a figure you cannot act on."
+      },
+      {
+       "eyebrow": "On completeness",
+       "heading": "Every indirect line on your return appears, including the ones we will not touch.",
+       "paras": [
+        "Your filing names twelve indirect lines. All twelve are in this Report. Where our mapping cannot reach a line — occupancy, which reports rent alongside services we do work, or office expense, which mixes consumables with equipment — we name it and stop, rather than letting it disappear."
+       ],
+       "why": "the limits of our mapping are our problem, and they must never reach you as a smaller opportunity than your own return supports."
+      },
+      {
+       "eyebrow": "On recovery",
+       "heading": "Percentages come from work we have finished, never from a published range.",
+       "paras": [
+        "We quote a category only where we have completed at least ten engagements in it. Below that bar we name the line and quote nothing. A published band applied to filed spend produces a range too wide to act on and too vague to defend, and it is an assertion rather than a record."
+       ],
+       "why": "you can ask us for the engagement count behind any percentage in this Report, and we can give it to you."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "How we work",
+   "source": "Form 990 FY2024",
+   "headline": "And the commercial terms,<br>stated before you ask for them.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "The three rules overleaf govern how we talk about your figures. This one governs what it costs you to find out whether we are right."
+    },
+    {
+     "type": "cards",
+     "items": [
+      {
+       "eyebrow": "On the commercial terms",
+       "set_apart": true,
+       "heading": "Nothing changes without your say-so, and there is no fee unless value is recovered.",
+       "paras": [
+        "Nothing in this Report obliges you to do anything. If you engage us: your incumbent suppliers often remain — keeping them on better terms is the most common outcome. Nothing is implemented without your approval. We share in value only after it is recovered and verified, and if we find nothing there is no fee and no invoice for the work."
+       ],
+       "why": "if the current arrangements are already competitive, that is a valuable conclusion as well."
+      }
+     ]
     }
    ]
   },
