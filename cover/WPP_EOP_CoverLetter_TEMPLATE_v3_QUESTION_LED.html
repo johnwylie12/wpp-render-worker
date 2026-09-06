@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+================================================================================
+WPP EOP EXECUTIVE COVER LETTER — TEMPLATE LOCKED 2026-08-11
+(John: "That is the new cover letter that should be locked in and used 100% of the time.")
+Supersedes the 2026-07-25 lock. Body copy UNCHANGED from that lock; the 08-10
+logo/compression amendments and the rev-5 portal-QR block are now BAKED IN.
+THIS IS THE ONLY COVER LETTER. The nine-paragraph copy in cover_engine is RETIRED.
+SOURCE OF TRUTH. Do NOT re-derive, re-question, or "improve" any value below.
+Every element here was approved this session. Changing it requires an explicit
+new instruction from John, not a fresh-session guess.
+
+LOCKED VALUES (do not touch):
+- HEADER: full-color ERA logo (asset: ERA_Group__White_Background.png — orange arc
+  + NAVY wordmark on white), top-left, height 40px, placed UNMODIFIED on white.
+  Below it: SHORT orange bar  #FF9C00  172px wide x 4px.
+  Below that: FULL-WIDTH navy rule  #003A70  2px.
+  (NOT a single full-width orange rule. NOT a black wordmark. NOT navy bar.)
+- DATE: grey #5a5a5a.
+- RECIPIENT NAME: navy #003A70, bold, 12pt. Title/org/address: 10.5pt normal.
+- BODY: the 5 locked paragraphs (copy of record: WPP_EOP_CoverLetter_LOCKED_2026-07-25.md). Verbatim.
+- VALEDICTION: "Best regards," — between last paragraph and signature.
+- SIGNATURE: Sig 3 (asset: signature_jw_3.png / SIGNATURE_JW_3_B64), width 115px.
+  (5x7 note card uses Sig 2, NOT this.)
+- FOOTER: VTI mark (asset: Value_Through_Insight__Blue.png) height 22px (reduced 25%),
+  fixed at bottom 0.15in (LOWERED), centered, over "jwylie@eragroup.com · 703.244.9868".
+- FONT: Trebuchet body / worker substitute Liberation Sans. 11pt, line-height 1.45.
+- PAGE: US Letter, margins 0.85in top / 1in sides / 0.55in bottom. One page.
+
+MERGE FIELDS (per account): {{first_name}} {{recipient_name}} {{recipient_title}}
+{{org_name}} {{addr_line1}} {{addr_city_state_zip}} {{sector}} {{date}}
+ICP GATE: {{sector}} must be non-null before render (null-sector = do NOT mail; wave-assembly gate).
+
+STOCK ASSUMPTION (John approved the baked-in-logo version repeatedly): renders for
+BLANK stock with logo+rules IN the file. If printing on PRE-PRINTED ERA letterhead,
+remove .hd and raise @page top margin ~1.8in — that is the ONLY branch that strips these.
+
+Asset URIs are injected by the engine as data: URIs (base64), mirroring VTI_B64 /
+wpp_signatures.py — no container asset paths.
+
+ENGINE NOTE (2026-08-12): the portal block below is wrapped in an "if qr_uri"
+guard so a render with no resolved portal access code omits the whole block
+(QR + code) rather than printing an empty box or a dead code. No locked VALUE
+changed — when a portal exists (the normal case) the block renders exactly as
+specified above.
+================================================================================
+-->
+<html><head><meta charset="utf-8"><style>
+@page { size: Letter; margin: 0.42in 1in 0.32in 1in; }
+* { font-family:'Liberation Sans','Trebuchet MS',Arial,sans-serif; }
+body { color:#1a1a1a; font-size:11pt; line-height:1.45; }
+
+.hd { margin-bottom:8px; }
+.hd img { height:80px; display:block; margin-bottom:9px; }         /* ERA logo — full-color on white */
+.hd .orange { width:172px; height:4px; background:#FF9C00; }        /* short orange bar */
+.hd .navy   { height:2px; background:#003A70; margin-top:12px; }    /* full-width navy rule */
+
+.date { margin:0 0 11px; font-size:10.5pt; color:#5a5a5a; }
+.addr { margin:0 0 12px; font-size:10.5pt; line-height:1.34; }
+.addr .rn { color:#003A70; font-weight:bold; font-size:12pt; }
+.sal  { margin:0 0 10px; }
+p     { margin:0 0 9px; }
+.vale { margin:6px 0 0; }
+
+.sig img { width:115px; height:auto; display:block; margin:4px 0 2px; }   /* fallback; the inline style from signature_width_px wins */
+.sig .nm { font-weight:bold; }
+.sig .tl { font-size:10pt; }
+.sig .ct { font-size:10pt; color:#4a4a4a; }
+
+
+/* CLOSE ROW — signature left, portal right, IN NORMAL FLOW. The portal used to
+   be position:absolute in the bottom-right corner, which is why it collided
+   with the body every time its size changed. A flex row cannot overlap. */
+.close  { display:flex; gap:0.4in; margin:0.14in 0 0; align-items:flex-start; }
+.sig    { flex:1; min-width:0; }
+.portal { flex:0 0 2.35in; border-left:3px solid #FF9C00; padding:1px 0 1px 15px; }
+.portal .hd2 { font-size:9.8pt; font-weight:bold; color:#003A70; }
+.portal img  { width:0.85in; height:0.85in; display:block; margin:5px 0 4px; }
+.portal .url { font-size:8.4pt; color:#5a5a5a; white-space:nowrap; }
+.portal .code{ font-size:9pt; font-weight:bold; color:#003A70; margin-top:4px; }
+
+.foot { margin-top:0.15in; text-align:center; }  /* was 0.30in: with the QR restored to the #174-locked 0.85in the close block sits higher, and 0.30in pushed the VTI mark alone onto a second page */
+.foot img{height:20px}    /* VTI mark. 26 -> 20px, John 2026-09-04. */
+.foot .sub { color:#7a7a7a; font-size:8pt; margin-top:6px; }
+
+/* rev-5 portal block. TWO DEVIATIONS FROM THE LOCKS, CORRECTED HERE ONLY.
+   This block is labelled LOCKED 2026-08-11, but it contradicts two later locks
+   and the v2 template it came from is left untouched:
+     QR was 1.28in. Settled #174 locks the QR at 0.85in, and 1.28in is exactly
+       what pushes the signature block onto a second page — breaking assertion 1
+       of the very decision that governs this letter.
+     Rail was #F2A900 and headings #0A2E4F. brand_tokens rule 30 forbids
+       #F2A900 BY NAME; #0A2E4F is not a token. Sunrise Yellow and Daybreak
+       Blue are the tokens. */
+.portal{flex:0 0 2.6in;border-left:3px solid #FF9C00;padding:2px 0 2px 16px;align-self:flex-start}
+.portal .hd2{font-size:10.5pt;font-weight:700;color:#003A70}
+.portal img{width:0.85in;height:0.85in;display:block;margin:8px 0 7px}
+.portal .url{font-size:9pt;color:#5A6577}
+.portal .code{font-size:9pt;font-weight:700;color:#003A70;margin-top:4px}
+  .close{display:flex;gap:0.5in;margin-top:0.24in;align-items:flex-start}
+</style></head><body>
+  <div class="hd">
+    <img src="{{era_logo_uri}}" alt="ERA Group">
+    <div class="orange"></div>
+    <div class="navy"></div>
+  </div>
+
+  <div class="date">{{date}}</div>
+
+  <div class="addr">
+    <span class="rn">{{recipient_name}}</span><br>
+    {% if recipient_title and recipient_title != recipient_name %}{{recipient_title}}<br>{% endif %}
+    {{org_name}}<br>
+    {{addr_line1}}<br>
+    {{addr_city_state_zip}}
+  </div>
+
+  <div class="sal">Dear {{first_name}},</div>
+
+  <p>We are writing because we have already done the work. ERA Group prepared the enclosed Executive Opportunity Brief on {{org_name}} unasked, at no cost, and without needing anything from you &mdash; because every dollar not spent on indirect operating expense is a dollar available for putting people with barriers to employment into work.</p>
+  <p>It was built from your own FY2024 Form 990, read line by line, for the year ended December 2024: $37.97M in materials and supplies, $1.52M tied to a laundry relationship, and real money in freight and payroll administration. Part VII Section B names three of those suppliers in your own words. We compared each line against nonprofit filers reporting the same line, and against 533 engagements we have finished in these categories.</p>
+  <p>ERA Group has reviewed more than $2.25 billion of indirect spend across 6,420 engagements at 916 organizations. We are category specialists, not a general consultancy: the person who would read your laundry agreement does nothing else. Your buyers know the operation and a bid tests price, but neither necessarily reads the agreement underneath the spend. <b>That is the question we are bringing you, and it is the only thing we do.</b></p>
+  <p>If it is directionally useful, the next step is one question rather than a project: when was any one of those four lines last tested, and against what? If recently, we will say so and stop. If not, one contract and a small invoice sample settle it, and keeping your incumbent on better terms is our most common outcome. If your arrangements are already competitive, that is a valuable conclusion as well.</p>
+
+  <div class="vale">Best regards,</div>
+
+  <!-- PARTNER SIGN-OFF (v2, 2026-08-27). Every value comes from wpp_signoff();
+       nothing about the sender is hardcoded here. The v1 LOCKED template carried
+       John's name, title, email and phone as literals, so a batch assigned to
+       another partner printed under John's name. -->
+  <div class="close">
+  <div class="sig" style="max-width:3.5in">
+    {% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}" style="width:{{signature_width_px}}px">{% endif %}
+    <div class="nm">{{signoff_name}}</div>
+    <div class="tl">{{signoff_title}} &middot; {{signoff_firm}}</div>
+    <div class="ct">{{signoff_email}} &middot; {{signoff_phone}}</div>
+  </div>
+    {% if qr_uri %}
+    <div class="portal">
+      <div class="hd2">Your Report is live online</div>
+      <img src="{{qr_uri}}" alt="Scan for your Report">
+      <div class="url">portal.wpp-us.com/{{portal_subdomain}}</div>
+      <div class="code">No code. No form. No login.</div>
+    </div>
+    {% endif %}
+  </div>
+
+
+
+  <div class="foot">
+    <img src="{{vti_uri}}" alt="Value Through Insight">
+    <!-- SECOND hardcoded sender block, found 2026-08-27 by extracting the text of a
+         rendered proof rather than trusting the signoff block alone. The brief named
+         only the sign-off; this footer would still have printed John's email and
+         phone on all 24 of Arvo's letters. -->
+  </div>
+
+</body></html>
