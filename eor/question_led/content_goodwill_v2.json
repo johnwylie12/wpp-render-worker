@@ -96,6 +96,12 @@
      ]
     },
     {
+     "type": "chart",
+     "chart": "visibility_bar",
+     "takeaway": "The public filing exposes a large starting point, but ERA's value is turning the unresolved portion — and the categories outside the filing entirely — into a usable operating view.",
+     "note": "<b>FILED</b> Form 990 Part IX, FY2024. Segments are filed spend. Nothing here implies recoverable value."
+    },
+    {
      "type": "panel",
      "ground": "nested",
      "label": "Beyond the filing — 55-category capability",
@@ -104,8 +110,28 @@
      ]
     },
     {
-     "type": "prov",
-     "text": "<b>$2.25B reviewed &nbsp;·&nbsp; 6,420 engagements &nbsp;·&nbsp; 916 organizations</b>"
+     "type": "chart",
+     "chart": "proof_strip",
+     "args": {
+      "items": [
+       [
+        "$2.25B",
+        "reviewed"
+       ],
+       [
+        "6,420",
+        "engagements"
+       ],
+       [
+        "916",
+        "organizations"
+       ],
+       [
+        "55",
+        "categories"
+       ]
+      ]
+     }
     }
    ]
   },
@@ -321,6 +347,46 @@
      ]
     },
     {
+     "type": "chart",
+     "chart": "category_bars",
+     "args": {
+      "rows": [
+       [
+        "Operating Supply",
+        37.97,
+        69
+       ],
+       [
+        "Small Parcels",
+        2.63,
+        89
+       ],
+       [
+        "Fleet Management",
+        2.12,
+        13
+       ],
+       [
+        "Uniforms, Workwear & Linens",
+        1.52,
+        109
+       ],
+       [
+        "Insurance",
+        0.558,
+        152
+       ],
+       [
+        "Payroll and HR administration",
+        0.476,
+        101
+       ]
+      ]
+     },
+     "takeaway": "Spend size and evidence depth are different things. ERA prioritises with both, rather than chasing the largest number on the return.",
+     "note": "Bar length is filed spend only. Engagement counts are completed ERA work in that category and are not drawn to scale."
+    },
+    {
      "type": "prov",
      "text": "Each category is compared against every nonprofit filer that breaks it out separately, as a share of total revenue. A category needs at least 30 filers before we state a position, and the categories a filing does not break out are sized in the baseline, not here."
     },
@@ -461,6 +527,58 @@
        ]
       }
      ]
+    },
+    {
+     "type": "chart",
+     "chart": "range_plot",
+     "args": {
+      "rows": [
+       [
+        "Operating Supply",
+        5.13,
+        8.09,
+        "$8.09M",
+        13.06
+       ],
+       [
+        "Small Parcels",
+        0.361,
+        0.605,
+        "$605K",
+        0.961
+       ],
+       [
+        "Fleet Management",
+        0.166,
+        0.314,
+        "$314K",
+        0.698
+       ],
+       [
+        "Uniforms, Workwear & Linens",
+        0.246,
+        0.427,
+        "$427K",
+        0.641
+       ],
+       [
+        "Payroll and HR administration",
+        0.083,
+        0.148,
+        "$148K",
+        0.222
+       ],
+       [
+        "Insurance",
+        0.045,
+        0.084,
+        "$84K",
+        0.138
+       ]
+      ]
+     },
+     "takeaway": "These are completed-work outcomes applied to your filed spend, not a promised result. The spread is the honesty: where the middle half is wide, the answer depends on the agreement rather than the market.",
+     "note": "Endpoints are the lower and upper quartile of completed ERA engagements in each category; the marked point is the median. 533 engagements."
     },
     {
      "type": "panel",
@@ -736,6 +854,23 @@
      ]
     },
     {
+     "type": "chart",
+     "chart": "process_path",
+     "args": {
+      "title": "The operating-supply value path",
+      "mark_last": true,
+      "stages": [
+       "Separate resale and consumed supply",
+       "Build supplier and item baseline",
+       "Normalize requirements",
+       "Test the commercial structure",
+       "Implement and measure"
+      ],
+      "note": "$37.97M filed · 69 completed engagements · 21.3% median · 13.5% to 34.4% middle half. Current suppliers may remain."
+     },
+     "takeaway": "ERA does not apply a percentage and leave. This is how an ambiguous filing line becomes an implementable category decision."
+    },
+    {
      "type": "h2",
      "text": "Potential impact if validated"
     },
@@ -821,6 +956,23 @@
       "4. Compare the complete commercial structure — not only the unit price — with relevant alternatives.",
       "5. Negotiate or redesign the arrangement approved by Goodwill, support the transition if one is needed, and verify the result after implementation."
      ]
+    },
+    {
+     "type": "chart",
+     "chart": "process_path",
+     "args": {
+      "title": "Where the value sits in a uniform and linen agreement",
+      "mark_last": true,
+      "stages": [
+       "Term and renewal",
+       "Rates and adjustments",
+       "Inventory and replacement",
+       "Service levels",
+       "Ancillary charges"
+      ],
+      "note": "$1.52M filed · 109 completed engagements · 28.1% median · 16.2% to 42.2% middle half. Renewal rollover is the single largest risk in this category."
+     },
+     "takeaway": "The opportunity depends on contract architecture and invoice reality, not on obtaining a competing quote."
     },
     {
      "type": "h2",
@@ -978,6 +1130,52 @@
      ]
     },
     {
+     "type": "chart",
+     "chart": "evidence_bridge",
+     "args": {
+      "layers": [
+       [
+        "Filed",
+        true
+       ],
+       [
+        "Registry",
+        true
+       ],
+       [
+        "Benchmark",
+        true
+       ],
+       [
+        "Derived",
+        true
+       ],
+       [
+        "Operating",
+        false
+       ],
+       [
+        "Retrieved",
+        false
+       ],
+       [
+        "Ecosystem",
+        false
+       ],
+       [
+        "Engagement",
+        false
+       ],
+       [
+        "Verified",
+        false
+       ]
+      ]
+     },
+     "takeaway": "ERA turns a credible outside-in hypothesis into a verified operating answer. The five empty layers are the ones that need something only you have.",
+     "note": "An absent layer is shown absent on every page of this Report. A figure that cannot name its layer does not appear."
+    },
+    {
      "type": "panel",
      "ground": "decision",
      "rail": "sunrise",
@@ -989,6 +1187,30 @@
     {
      "type": "prov",
      "text": "No inference is stated in this Report except where it is labelled as such, in italics, and attributed to category experience. You will find two of those, on pages 10 and 11. No published market range is used anywhere: every percentage in this document is the outcome of engagements ERA has finished. &nbsp;·&nbsp; <b>55 categories &nbsp;·&nbsp; 6,420 engagements &nbsp;·&nbsp; 916 organizations &nbsp;·&nbsp; $2.25B reviewed</b>"
+    },
+    {
+     "type": "chart",
+     "chart": "proof_strip",
+     "args": {
+      "items": [
+       [
+        "55",
+        "categories"
+       ],
+       [
+        "6,420",
+        "engagements"
+       ],
+       [
+        "916",
+        "organizations"
+       ],
+       [
+        "$2.25B",
+        "reviewed"
+       ]
+      ]
+     }
     }
    ]
   },
@@ -1038,6 +1260,30 @@
        "why": "Costs you: a share only of verified recovery, after you receive it."
       }
      ]
+    },
+    {
+     "type": "chart",
+     "chart": "outcome_branch",
+     "args": {
+      "stages": [
+       "Understand",
+       "Validate",
+       "Decide",
+       "Capture"
+      ],
+      "outcomes": [
+       [
+        "Current arrangement validated",
+        "An independent read you can stand behind."
+       ],
+       [
+        "Verified value implemented",
+        "Recovered, measured, and only then charged for."
+       ]
+      ],
+      "footer": "No verified recovery, no fee."
+     },
+     "takeaway": "The path is low risk and useful even when no change is recommended — it branches only at the end, and both endings are real results."
     },
     {
      "type": "cols",
@@ -1115,6 +1361,23 @@
      ]
     },
     {
+     "type": "chart",
+     "chart": "process_path",
+     "args": {
+      "title": "What ERA brings, end to end",
+      "mark_last": true,
+      "stages": [
+       "Category specialists",
+       "Factual baseline",
+       "Commercial validation",
+       "Implementation support",
+       "Measured result"
+      ],
+      "note": "Breadth and execution. The Brief is the beginning of the work, not the whole of it."
+     },
+     "takeaway": "ERA brings both the breadth to see the whole portfolio and the execution to turn the right findings into an operating result."
+    },
+    {
      "type": "panel",
      "ground": "decision",
      "rail": "sunrise",
@@ -1125,6 +1388,30 @@
     {
      "type": "prov",
      "text": "We recommend keeping incumbents whenever they are the right choice. The objective is not changing suppliers. You remain in complete control — nothing changes without your approval, ever."
+    },
+    {
+     "type": "chart",
+     "chart": "proof_strip",
+     "args": {
+      "items": [
+       [
+        "55",
+        "categories"
+       ],
+       [
+        "$2.25B",
+        "reviewed"
+       ],
+       [
+        "6,420",
+        "engagements"
+       ],
+       [
+        "916",
+        "organizations"
+       ]
+      ]
+     }
     }
    ]
   }

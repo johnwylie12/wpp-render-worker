@@ -200,9 +200,10 @@ tr.total td{ background:var(--panel-deep); font-weight:700; border-bottom:none; 
        padding-top:7pt; border-top:1pt solid var(--hairline);
        margin-top:14pt; margin-bottom:15pt;
        break-before:avoid; break-inside:avoid; }
-/* the same for a panel that closes a section, and for the last table row */
 table{ break-inside:auto }
-tbody tr:last-child{ break-after:avoid }
+/* NOT "tbody tr:last-child{break-after:avoid}". That rule glues the last row to
+   whatever follows and pushes BOTH to the next page, which is the opposite of
+   what it looks like it does — it emptied the bottom half of the position page. */
 .prov b{ color:var(--daybreak-blue); font-weight:700 }
 
 /* ── the running foot. The mark is the ASSET, never type — settled #175 /
@@ -231,3 +232,14 @@ tbody tr:last-child{ break-after:avoid }
 .card,.stat,.panel,tr{ break-inside:avoid; }
 p{ orphans:2; widows:2; }
 .h1{ margin-top:0 }
+
+
+/* ── figures ───────────────────────────────────────────────────────────────
+   A chart earns its place by answering a question the copy leaves open, so the
+   takeaway sits ABOVE the mark and the source note beneath it. Charts are the
+   thing that fills a half-empty page; stretched paragraphs are not. */
+.fig-wrap{ margin:12pt 0; break-inside:avoid; }
+.fig-take{ font-size:var(--t-body); line-height:1.45; color:var(--ink);
+           margin-bottom:8pt; max-width:64em; }
+.fig-note{ font-size:var(--t-meta); color:var(--slate); margin-top:5pt; }
+.fig{ width:100%; height:auto; }

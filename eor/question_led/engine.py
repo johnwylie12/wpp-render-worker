@@ -46,6 +46,7 @@ FONTS = os.path.join(REPO, "fonts")
 
 sys.path.insert(0, HERE)
 from tokens_generated import TOKENS, FORBIDDEN_HEXES  # noqa: E402
+import charts  # noqa: E402
 
 
 # ── the stylesheet, with the palette poured in from the generated tokens ─────
@@ -219,6 +220,21 @@ def block(b):
 
     if kind == "prov":
         return f'<div class="prov">{rich(b["text"])}</div>'
+
+    if kind == "chart":
+        # Every chart carries a sentence-level takeaway above it and a source or
+        # calculation note beneath, per the whitespace plan. A chart without a
+        # takeaway is decoration, and decoration is what fills a page instead of
+        # answering the question the copy left open.
+        fn = getattr(charts, b["chart"])
+        svg = fn(**b.get("args", {}))
+        out = '<div class="fig-wrap">'
+        if b.get("takeaway"):
+            out += f'<div class="fig-take">{rich(b["takeaway"])}</div>'
+        out += svg
+        if b.get("note"):
+            out += f'<div class="fig-note">{rich(b["note"])}</div>'
+        return out + "</div>"
 
     raise SystemExit(f"unknown block type {kind!r} — add it to block() in engine.py")
 
