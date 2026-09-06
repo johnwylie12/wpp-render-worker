@@ -33,16 +33,16 @@ NAVY = (0x00 / 255, 0x3A / 255, 0x70 / 255)      # ERA Navy, the flat ground her
 MEDIUM = os.path.join(REPO, "fonts", "fonnts.com-Paralucent_Medium.otf")
 LIGHT = os.path.join(REPO, "fonts", "fonnts.com-Paralucent_Light.otf")
 
-HEADLINE = "What the filing reveals is only the beginning."
+HEADLINE = "More of every operating dollar can stay focused on mission."
 BODY = (
-    "A Form 990 shows selected expense lines. ERA brings the category specialists, "
-    "contract and invoice analysis, market knowledge, implementation support and "
-    "measurement needed to examine the full indirect-spend portfolio.",
-    "Across every applicable category, the objective is the same: validate what is "
-    "already working, recover value where the evidence supports it, and return more "
-    "dollars to mission.",
+    "ERA helps determine where that is possible, where current arrangements should "
+    "remain, and how verified value can be captured across the indirect-spend "
+    "portfolio.",
 )
-STRIP = "55 categories  ·  one evidence-led process  ·  results measured after implementation"
+# The spec: "no chart, no proof line, no category list. One orange rule, white
+# headline, quiet contact block." So the 55-categories strip is gone; the close
+# is the promise, not another statistic.
+STRIP = None
 
 # lines of the ORIGINAL that the new close replaces
 KILL_EXACT = {"What we could see is", "the smaller half."}
@@ -111,10 +111,18 @@ def render(out_pdf):
             page.insert_text((x, y), line, fontname="PLL", fontsize=10.4,
                              color=(0.86, 0.90, 0.96)); y += 16.8
         y += 12
-    page.insert_text((x, 452), STRIP, fontname="PLL", fontsize=9, color=(0.62, 0.70, 0.82))
+    if STRIP:
+        page.insert_text((x, 452), STRIP, fontname="PLL", fontsize=10, color=(0.62, 0.70, 0.82))
+    # the close, in the brand's one orange, directly above the contact block
+    page.insert_text((x, 452), "No recovery, no fee.", fontname="PLM", fontsize=13,
+                     color=(1.0, 0x9C / 255, 0.0))
 
     # ── 4. the contact block back, same words, on an ERA face ─────────────────
     for c in contact:
+        # "No recovery, no fee." is now set above the block as the close, so the
+        # copy of it inside John's original contact lines is not printed twice.
+        if c["text"].strip().lower().startswith("no recovery"):
+            continue
         page.insert_text(c["origin"], c["text"], fontsize=c["size"], color=c["colour"],
                          fontname="PLM" if c["bold"] else "PLL")
 

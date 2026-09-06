@@ -24,9 +24,15 @@ html,body { width:8.5in; height:11in; }
 .nrule{ position:absolute; left:7.4%; top:46.8%; width:30%; height:3px; background:var(--gold); }
 .snap{ top:49.6%; color:#fff; font-weight:500; font-size:10pt; letter-spacing:.12em; max-width:42%; }
 .ind{ top:52.3%; color:var(--gold); font-weight:500; font-size:10pt; letter-spacing:.12em; }
-.stmt{ top:56.6%; padding-left:20px; border-left:4px solid var(--gold); color:#fff;
-       font-weight:400; font-size:14pt; line-height:1.5; max-width:34%; }
+/* THE HERO STATEMENT. The spec: "Increase the hero statement's scale and give
+   it room. Highlight only 'returned to mission' in orange." It was 14pt and
+   carried a second explanatory sentence underneath, which made the cover read
+   like instructions. One promise, understood in five seconds. */
+.stmt{ top:55.4%; padding-left:22px; border-left:4px solid var(--gold); color:#fff;
+       font-weight:400; font-size:19pt; line-height:1.34; max-width:38%; }
 .stmt .g{ color:var(--gold); }
+.stmt .quiet{ display:block; margin-top:14px; font-size:10.5pt; line-height:1.5;
+              color:#C6D2E1; letter-spacing:.01em; }
 .date{ top:74.6%; color:#dfe6ef; font-weight:500; font-size:10.5pt; letter-spacing:.22em; }
 .fcol{ position:absolute; top:82.4%; width:30%; text-align:center; }
 .c1{ left:4%; } .c2{ left:35%; } .c3{ left:66%; }

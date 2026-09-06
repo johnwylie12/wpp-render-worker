@@ -190,7 +190,15 @@ tr.total td{ background:var(--panel-deep); font-weight:700; border-bottom:none; 
 .cols > *{ flex:1 }
 .rows{ }
 .rows .row{ padding:7pt 0; border-bottom:1pt solid var(--hairline); font-size:var(--t-table); }
-.rows .row:last-child{ border-bottom:none; color:var(--cool-grey) }
+/* Drop the RULE on the last row, not the row's voice. This used to also set
+   Cool Grey, which is the colour this document uses for ABSENT data (see
+   .absent, and the "Absent" cells on the evidence page). So the last item of
+   every .rows list in the document was printed in the colour that means "we do
+   not have this" — including "Aligned economics. No verified recovery means no
+   fee." on the closing page, and the Part VII Section B supplier evidence on
+   page one. John saw "8 What happens next" and asked why it was grey. It was
+   worse than one line. */
+.rows .row:last-child{ border-bottom:none }
 
 /* ── provenance. Its own line, every page. An absent layer is shown absent. ─ */
 /* A source note belongs to the thing above it. Left to itself it breaks onto
@@ -216,7 +224,11 @@ table{ break-inside:auto }
            font-size:var(--t-meta); color:var(--daybreak-blue); }
 .ftr .pg{ margin-left:auto; font-size:var(--t-meta); color:var(--slate);
           letter-spacing:.06em; }
-.ftr .pg::after{ content:"PAGE " counter(page) " OF " counter(pages); }
+/* NOT counter(page). Each sheet is rendered as its OWN file so the declared
+   imposition can place it, which means the CSS counter restarts at 1 on every
+   sheet and the whole book printed "PAGE 1 OF 1". The number comes from the
+   imposition plan instead — the sheet's actual place in the finished booklet. */
+.ftr .pg{ }
 
 /* ── dark closing ground. Midnight Blue is the deep ground token. NOT #002B54,
       which the measured file used once and which rule 34 forbids by name. ── */

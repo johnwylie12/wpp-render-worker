@@ -119,6 +119,14 @@ p     { margin:0 0 6.5px; }
              border-top:1px solid #D7DFE9; }
 .proofstrip span{ flex:1; text-align:center; font-size:10pt; font-weight:bold;
                   line-height:1.22; color:#003A70; letter-spacing:.01em; padding:0 6px; }
+
+/* THE ASK. One bold question, and it is the only bold sentence in the letter —
+   which is what makes it the ask rather than another paragraph. */
+.ask{ font-weight:bold; color:#003A70; margin:11px 0 9px; }
+
+/* The narrow line above the close. Not a strip, not four boxes: one line. */
+.rule{ height:1px; background:#D7DFE9; margin:13px 0 0; }
+.depth{ font-size:10pt; color:#5A6672; letter-spacing:.02em; margin-top:7px; }
 .proofstrip span + span{ border-left:1px solid #D7DFE9; }
 </style></head><body>
   <div class="hd">
@@ -139,10 +147,17 @@ p     { margin:0 0 6.5px; }
 
   <div class="sal">Dear {{first_name}},</div>
 
-  <p>We prepared the enclosed Executive Opportunity Report before reaching out, because a useful conversation should begin with evidence rather than a capability presentation. For an organization whose mission is helping people get and keep meaningful work, every dollar that does not need to remain in indirect operating expense is a dollar that can stay closer to that mission.</p>
-  <p>The Report was built from public information only. It shows what the available record suggests may be worth understanding, what appears less important, and &mdash; just as importantly &mdash; what the public record cannot tell us. We treat those patterns as questions to validate, not conclusions about how {{org_name}} is being run.</p>
-  <p>ERA Group has reviewed more than $2.25 billion of indirect spend across 6,420 engagements at 916 organizations. Our specialists work across 55 categories. We do more than compare a number with a benchmark: we examine the contract, invoice detail, service requirements, supplier structure and operating constraints, then help implement and measure any improvement that the evidence supports.</p>
-  <p>This Report identifies where your own filing says a closer look may be worthwhile. It is not limited to the two categories examined in depth. Those are simply where the public evidence is strongest today. A short conversation would let us replace assumptions with your facts and determine which of the categories across your operation deserve action. If an arrangement is already competitive, we will say so. If there is verified value to recover, we help carry the work from analysis through implementation. Nothing changes without your approval, incumbents can remain, and if we create no verified recovery, there is no fee.</p>
+  <p>We prepared the enclosed Executive Opportunity Brief before contacting you because a useful conversation should begin with your numbers, not our capabilities.</p>
+
+  <p>Your FY2024 filing identifies $82.1 million of indirect operating expense. Six categories representing $45.3 million can be examined against completed ERA work today. Another $36.1 million is visible but reported too broadly to assess responsibly without your detail. The categories a Form 990 does not show may be equally important.</p>
+
+  <p>We are not concluding that {{org_name}} is overpaying. We are showing where the evidence supports a closer look &mdash; and where it does not.</p>
+
+  <p>ERA works across 55 indirect-spend categories. Our specialists validate the question using contracts, invoices, service requirements and operating facts; develop practical options; support the action you approve; and measure the result. Incumbent suppliers often remain.</p>
+
+  <p class="ask">Would you give me 30 minutes to determine whether the questions in this Brief are worth answering?</p>
+
+  <p>If your current arrangements are already competitive, we will say so. If we create verified recovery, our fee comes only from the value after you receive it. Nothing changes without your approval.</p>
 
   <div class="vale">Best regards,</div>
 
@@ -150,11 +165,11 @@ p     { margin:0 0 6.5px; }
        nothing about the sender is hardcoded here. The v1 LOCKED template carried
        John's name, title, email and phone as literals, so a batch assigned to
        another partner printed under John's name. -->
-  <!-- The proof strip was here. John, 2026-09-06: "Take 55 categories /
-       category specialists / implementation support / paid only from verified
-       off of the cover letter, that is stupid." It was Chat's addition and my
-       build of it. Four fragments in caps do not make an argument; the third
-       paragraph already states the scale in a sentence. -->
+  <!-- ONE narrow line, not a four-item proof strip. John, 2026-09-06: "Take
+       55 categories / category specialists / implementation support / paid only
+       from verified off of the cover letter, that is stupid." -->
+  <div class="rule"></div>
+  <div class="depth">Category depth &nbsp;&middot;&nbsp; Evidence first &nbsp;&middot;&nbsp; Implementation included</div>
   <div class="close">
   <div class="sig" style="max-width:3.5in">
     {% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}" style="width:{{signature_width_px}}px">{% endif %}

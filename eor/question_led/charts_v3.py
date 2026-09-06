@@ -297,7 +297,7 @@ def disposition_flow(lines, w=520):
     lx, rx = 210, w - 158
     top, gap, dgap = 34, 2.0, 30
     total = sum(v for _, v, _ in lines)
-    ribbon = 306.0
+    ribbon = 244.0
     scale = ribbon / total
     amt_w = max(_w(_money(v), 10) for _, v, _ in lines)
     h = top + ribbon + gap * (len(lines) - 1) + dgap * 3 + 54
@@ -347,7 +347,14 @@ def disposition_flow(lines, w=520):
         b += _t(rx + 15, y0 + 12, _money(rtot.get(d, 0)), 13, NAVY if d == 0 else INK, "bold")
         for j, line in enumerate(_wrap(dname, 10, w - rx - 15, bold=True)):
             b += _t(rx + 15, y0 + 26 + j * 12.5, line, 10, SLATE, "bold", ls="0.05em")
-    b += _t(0, 16, "TWELVE FILED LINES", 10, SLATE, "bold", ls="0.08em")
+    # COUNT the rows, never assert twelve. The spec says "twelve filed lines";
+    # the data has fourteen — eleven Part IX expense lines and three service
+    # relationships named in Part VII Section B. A CFO counts the rows.
+    named = sum(1 for n, _, _ in lines if "VII-B" in n)
+    words = {11: "ELEVEN", 12: "TWELVE", 13: "THIRTEEN", 14: "FOURTEEN"}
+    head = (f"{words.get(len(lines)-named, len(lines)-named)} EXPENSE LINES"
+            + (f" AND {words.get(named, named)} NAMED RELATIONSHIPS" if named else ""))
+    b += _t(0, 16, head, 10, SLATE, "bold", ls="0.06em")
     b += _t(rx + 15, 16, "WHAT HAPPENS TO EACH", 10, SLATE, "bold", ls="0.08em")
     note = (f"Ribbon width is filed dollars. The four destinations sum to {_money(total)} "
             f"— the whole of the filing, with nothing folded into a subtotal.")
@@ -501,8 +508,12 @@ def _a_result(x, y, last=True):
 def decision_tree(w=520):
     """One entry, two honest outcomes. Validation is drawn as a real terminus,
     the same weight as recovery, because "your arrangements are competitive" is
-    a result the CFO is allowed to want."""
-    h = 210
+    a result the CFO is allowed to want.
+
+    h is COMPUTED from the last thing drawn. It was a literal 210 while the
+    fee line was drawn at 246, and _svg carries overflow:visible — so the line
+    painted straight across the copy on the sheet below it."""
+    h = 100 + 3 * 44 + 34
     cx = w / 2
     b = ""
     bw, bh = 190, 40
@@ -511,6 +522,7 @@ def decision_tree(w=520):
     b += _t(cx, 38, "no cost, no commitment", 10, "#CFDCEA", anchor="middle")
 
     ly, ry = 100, 100
+    assert h >= ry + 3 * 44 + 20, "decision_tree: content drawn past its own box"
     lxc, rxc = w * 0.24, w * 0.72
     # the verticals stop ABOVE the branch labels; they used to run through them
     b += (f'<path d="M{cx} {6+bh} V70 M{lxc} 70 H{rxc} M{lxc} 70 V80 M{rxc} 70 V80" '

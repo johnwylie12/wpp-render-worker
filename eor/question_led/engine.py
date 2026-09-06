@@ -47,6 +47,7 @@ FONTS = os.path.join(REPO, "fonts")
 sys.path.insert(0, HERE)
 from tokens_generated import TOKENS, FORBIDDEN_HEXES  # noqa: E402
 import charts  # noqa: E402
+import charts_v3  # noqa: E402
 
 
 # ── the stylesheet, with the palette poured in from the generated tokens ─────
@@ -226,7 +227,9 @@ def block(b):
         # calculation note beneath, per the whitespace plan. A chart without a
         # takeaway is decoration, and decoration is what fills a page instead of
         # answering the question the copy left open.
-        fn = getattr(charts, b["chart"])
+        # charts_v3 holds the CFO-rebuild hero visuals and wins where a name
+        # exists in both, so a v3 sheet never silently gets a v2 chart.
+        fn = getattr(charts_v3, b["chart"], None) or getattr(charts, b["chart"])
         svg = fn(**b.get("args", {}))
         out = '<div class="fig-wrap">'
         if b.get("takeaway"):
@@ -239,12 +242,14 @@ def block(b):
     raise SystemExit(f"unknown block type {kind!r} — add it to block() in engine.py")
 
 
-def sheet_html(s, org, vti_src, density=1.0):
+def sheet_html(s, org, vti_src, density=1.0, folio=""):
     """One content sheet. Its header and foot are running elements: they become
     this page's furniture and stay correct if the content flows to a second page."""
+    # The organization's name is in the FOOTER of every page. It was in the header
+    # too, so the reader's eye met it twice on one page before reaching anything
+    # this page has to say. The header now carries what this page IS.
     head = (
-        f'<div class="hdr"><div class="who">{esc(org)}</div>'
-        f'<div class="what">{esc(s["title"])}</div>'
+        f'<div class="hdr"><div class="what">{esc(s["title"])}</div>'
         f'<div class="from">{esc(s.get("source", ""))}</div></div>'
     )
     body = ""
@@ -259,7 +264,7 @@ def sheet_html(s, org, vti_src, density=1.0):
     foot = (
         f'<div class="ftr"><img src="{vti_src}" alt="Value Through Insight">'
         f'<div class="who">{esc(org)}</div>'
-        f'<div class="pg"></div></div>'
+        f'<div class="pg">{esc(folio)}</div></div>'
     )
     return f'<div class="sheet" style="--rh:{density}">{head}{foot}{body}</div>'
 
@@ -296,7 +301,7 @@ def _measure(html_body, css):
     return doc.page_count, min(fills)
 
 
-def fit(sheet, org, vti, css, floor=0.82):
+def fit(sheet, org, vti, css, floor=0.82, one_page=False, folio=""):
     """Choose this sheet's rhythm. Nothing here touches a word or a type size.
 
     Two moves, in this order:
@@ -309,21 +314,27 @@ def fit(sheet, org, vti, css, floor=0.82):
          space being complained about. v1 is seventeen one-page sheets, so that
          early return skipped the entire document.
     A sheet already full enough is left at --rh:1 exactly."""
-    base, pages, fill = _try(sheet, org, vti, css, 1.0)
-    if fill >= floor:
+    base, pages, fill = _try(sheet, org, vti, css, 1.0, folio)
+    if fill >= floor and not (one_page and pages > 1):
         return base, pages, fill, None
 
     if pages > 1:
         for rh in (0.94, 0.88, 0.82, 0.76, 0.70):
-            html, n, f = _try(sheet, org, vti, css, rh)
+            html, n, f = _try(sheet, org, vti, css, rh, folio)
             if n < pages:
                 return html, n, f, rh
+
+    if one_page and pages > 1:
+        # A declared imposition means this sheet IS a physical sheet. Filling it
+        # nicely is worthless if it is still two; report the failure instead of
+        # loosening a sheet that already does not fit.
+        return base, pages, fill, None
 
     best = (base, pages, fill, None)
     for rh in (1.08, 1.16, 1.24, 1.32, 1.40, 1.45):   # 1.45 is the cap: past it the
         # rhythm of one sheet stops matching the rest of the document, and John
         # asked for components that read the same throughout.
-        html, n, f = _try(sheet, org, vti, css, rh)
+        html, n, f = _try(sheet, org, vti, css, rh, folio)
         if n > pages:
             break                      # past the point where it costs a page
         if f > best[2]:
@@ -331,42 +342,68 @@ def fit(sheet, org, vti, css, floor=0.82):
     return best
 
 
-def _try(sheet, org, vti, css, rh):
-    html = sheet_html(sheet, org, vti, rh)
+def _try(sheet, org, vti, css, rh, folio=""):
+    html = sheet_html(sheet, org, vti, rh, folio)
     n, f = _measure(html, css)
     return html, n, f
 
 
-def render_interior(content, out_pdf, fit_pass=True):
+def render_sheet(sheet, org, vti, css, out_pdf, rh):
+    """One sheet, one file. The declared imposition places sheets, not pages, so
+    each is rendered on its own and checked on its own."""
+    from weasyprint import HTML
+    html = sheet_html(sheet, org, vti, rh)
+    HTML(string=_document(html, css), base_url=REPO).write_pdf(out_pdf)
+    return out_pdf
+
+
+def render_interior(content, out_pdf, fit_pass=True, sheet_dir=None):
     from weasyprint import HTML
 
     org = content["organization"]
     vti = "file://" + os.path.join(REPO, content["vti_lockup"]).replace(" ", "%20")
     sheets = content["sheets"]
     css = stylesheet()
+    one_page = "imposition" in content        # a declared plan means one sheet = one page
 
-    parts, report = [], []
+    # The folio is the sheet's place in the FINISHED BOOK, taken from the
+    # imposition plan — blank versos included, because a reader counting leaves
+    # counts those too. Without a plan there is no folio to know.
+    plan = content.get("imposition") or []
+    folios = {}
+    for pos, slot in enumerate(plan, 1):
+        if isinstance(slot, int):
+            folios[slot] = f"PAGE {pos} OF {len(plan)}"
+
+    parts, report, files = [], [], []
     for i, sheet in enumerate(sheets, 1):
+        folio = folios.get(i - 1, "")
         if fit_pass:
-            html, pages, fill, density = fit(sheet, org, vti, css)
+            html, pages, fill, density = fit(sheet, org, vti, css,
+                                             one_page=one_page, folio=folio)
         else:
-            html = sheet_html(sheet, org, vti)
+            html = sheet_html(sheet, org, vti, folio=folio)
             pages, fill = _measure(html, css)
             density = None
         parts.append(html)
         report.append((i, pages, fill, density))
+        if sheet_dir:
+            os.makedirs(sheet_dir, exist_ok=True)
+            f = os.path.join(sheet_dir, f"sheet_{i:02d}.pdf")
+            HTML(string=_document(html, css), base_url=REPO).write_pdf(f)
+            files.append(f)
 
     html_body = "".join(parts)
     assert_no_forbidden_colour(css, html_body)
     HTML(string=_document(html_body, css), base_url=REPO).write_pdf(out_pdf)
     for i, pages, fill, density in report:
+        flag = "  OVERFLOWS" if (one_page and pages > 1) else ""
         if density or pages > 1:
             print(f"  sheet {i:>2}: {pages}pp, emptiest page {fill*100:.0f}% full"
-                  + (f"  [rhythm x{density}]" if density else ""))
-    return len(sheets)
+                  + (f"  [rhythm x{density}]" if density else "") + flag)
+    return files if sheet_dir else len(sheets)
 
 
-# ── imposition. Computed from the rendered length, both ways, same content. ──
 def impose(cover, letter, interior, back, mode, out_pdf):
     from pypdf import PdfReader, PdfWriter
 
@@ -381,26 +418,56 @@ def impose(cover, letter, interior, back, mode, out_pdf):
         return len(r.pages)
 
     def blank():
-        # a real blank leaf, the same trim size as the rest
-        r = PdfReader(interior)
-        w.add_blank_page(width=r.pages[0].mediabox.width,
-                         height=r.pages[0].mediabox.height)
+        w.add_blank_page(width=612, height=792)
 
     if mode == "stitched":
         # cover and letter each open on a recto, so each gets a blank verso.
-        add(cover);  blank()
+        add(cover); blank()
         add(letter); blank()
-        n = add(interior)
+        add(interior)
         # the back cover is the last leaf; pad before it so the whole booklet is
-        # a multiple of four. Solved from the real length, not written down.
-        used = 4 + n + 1
-        pad = (-used) % 4
-        for _ in range(pad):
+        # a multiple of four.
+        used = 4 + len(PdfReader(interior).pages) + 1
+        for _ in range((-used) % 4):
             blank()
         add(back)
     else:
         add(cover); add(letter); add(interior); add(back)
 
+    with open(out_pdf, "wb") as fh:
+        w.write(fh)
+    return len(w.pages)
+
+
+def impose_declared(plan, cover, letter, sheet_pdfs, back, out_pdf):
+    """The imposition the CONTENT declares, sheet by sheet.
+
+    The computed imposition is right when the page count is free. This document
+    is specified as sixteen physical sheets with three intentional blank versos
+    at named positions — a structure, not an arithmetic result — so the content
+    file carries the plan and this lays it down literally. Every entry is one
+    sheet, and a sheet that renders as two pages is a defect, not a decision.
+    """
+    from pypdf import PdfReader, PdfWriter
+
+    w = PdfWriter()
+    named = {"cover": cover, "letter": letter, "back": back}
+    for slot in plan:
+        if slot == "blank":
+            w.add_blank_page(width=612, height=792)
+            continue
+        path = named[slot] if isinstance(slot, str) else sheet_pdfs[slot]
+        if not path or not os.path.exists(path):
+            raise SystemExit(f"imposition slot {slot!r} has no rendered PDF")
+        pages = PdfReader(path).pages
+        if len(pages) != 1:
+            raise SystemExit(
+                f"slot {slot!r} rendered {len(pages)} pages. Every entry in the "
+                f"imposition is ONE physical sheet — the spec asks for 13 designed "
+                f"sheets, not 20 numbered pages. Give the sheet less content or "
+                f"let fit() tighten it further; do not silently ship two.")
+        for pg in pages:
+            w.add_page(pg)
     with open(out_pdf, "wb") as fh:
         w.write(fh)
     return len(w.pages)
@@ -420,9 +487,20 @@ def main():
                              else os.path.join(HERE, a.content)))
     os.makedirs(a.outdir, exist_ok=True)
     interior = os.path.join(a.outdir, "interior.pdf")
+
+    plan = content.get("imposition")
+    if plan:
+        sheet_dir = os.path.join(a.outdir, "sheets_" + content["slug"])
+        files = render_interior(content, interior, sheet_dir=sheet_dir)
+        out = os.path.join(a.outdir, f"EOR_{content['slug']}.pdf")
+        total = impose_declared(plan, a.cover, a.letter, files, a.back, out)
+        designed = sum(1 for x in plan if x != "blank")
+        print(f"{total} physical sheets · {designed} designed · "
+              f"{total - designed} blank versos -> {out}")
+        return
+
     n = render_interior(content, interior)
     print(f"interior: {n} content sheets")
-
     modes = ["plain", "stitched"] if a.mode == "both" else [a.mode]
     for mode in modes:
         out = os.path.join(a.outdir, f"EOR_{content['slug']}_{mode}.pdf")
