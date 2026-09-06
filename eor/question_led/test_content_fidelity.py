@@ -23,8 +23,18 @@ import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RECOVERED = os.path.join(HERE, "recovered", "EOR_QUESTION_LED_extracted.json")
-CONTENT = os.path.join(HERE, "content_goodwill.json")
-OUT = os.path.join(HERE, "out", "interior.pdf")
+# WHICH content set is under test. Default is the shipping one; the guard is
+# meant to prove that the CURRENT document still carries John's copy, not that
+# some older render once did.
+CONTENT = os.path.join(HERE, os.environ.get("EOR_CONTENT", "content_goodwill_v2.json"))
+
+# Its own output path, rebuilt every run. It used to be out/interior.pdf, shared
+# with the ordinary build and only rendered "if not os.path.exists" — so after
+# any normal build the guard silently graded a file it had not produced, from
+# content it was not testing. That is the stale-expectation failure CLAUDE.md
+# describes, pointed the other way: a test that reads a leftover artefact is not
+# a guard either.
+OUT = os.path.join(HERE, "out", "_fidelity_interior.pdf")
 
 # Sheets 1-4 and 14 of the original are the cover, the letter and the blanks.
 # They are rendered by their own locked engines and are not this engine's copy.
@@ -65,11 +75,12 @@ def original_phrases():
 
 @pytest.fixture(scope="module")
 def rendered():
-    if not os.path.exists(OUT):
-        subprocess.run(
-            [sys.executable, os.path.join(HERE, "engine.py"), CONTENT, "--mode", "plain"],
-            check=True, cwd=os.path.dirname(os.path.dirname(HERE)),
-        )
+    import shutil
+    subprocess.run(
+        [sys.executable, os.path.join(HERE, "engine.py"), CONTENT, "--mode", "plain"],
+        check=True, cwd=os.path.dirname(os.path.dirname(HERE)),
+    )
+    shutil.copyfile(os.path.join(HERE, "out", "interior.pdf"), OUT)
     import fitz
     doc = fitz.open(OUT)
     return normalise(" ".join(page.get_text() for page in doc))
