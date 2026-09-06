@@ -1,0 +1,1132 @@
+{
+ "slug": "Goodwill_SouthFlorida_v2",
+ "organization": "Goodwill Industries of South Florida",
+ "source": "Form 990 FY2024",
+ "vti_lockup": "meeting_label/assets/vti_logo.png",
+ "sheets": [
+  {
+   "title": "Executive Overview",
+   "source": "Form 990 FY2024",
+   "headline": "What this is, why we prepared it,<br>and what it does not claim.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "One page of orientation before any numbers. We built this from your public filings before contacting you, because a useful conversation should begin with evidence rather than a capability presentation."
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "label": "What the public record lets us model today",
+     "paras": [
+      "<b>$9.7M a year</b> recovered from what you currently pay suppliers, across six categories of indirect spend. Not a range. The median outcome across 533 completed ERA engagements in the six categories below — operating supply, uniforms and linens, small parcels, payroll and HR, fleet, insurance.",
+      "<b>$6.0M a year</b> on our weakest quartile. <b>1,913 of 2,468 completed engagements</b> recovered value — and some returned nothing.",
+      "This is the visible starting point, not the limit of the work. ERA examines every applicable category using your contracts, invoices and operating requirements, including categories a Form 990 cannot separate or does not report at all."
+     ]
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "How it was built"
+       },
+       {
+        "type": "rows",
+        "items": [
+         "<b>Your public filing.</b> Nineteen expense lines; twelve are indirect and six carry a figure.",
+         "<b>A peer comparison.</b> Each category against every nonprofit filer that breaks it out separately.",
+         "<b>Your filing names its suppliers.</b> Part VII Section B states three service relationships, the service and the amount — three of the six come from there."
+        ]
+       },
+       {
+        "type": "h2",
+        "text": "Reading the position"
+       },
+       {
+        "type": "para",
+        "text": "Above the median is a question, not a verdict. Your model is one reason a category sits high. At or below it is not proof of competitive buying — the median is drawn from organizations that have mostly never tested either."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "What follows"
+       },
+       {
+        "type": "rows",
+        "items": [
+         "1 &nbsp; What we found, and what follows",
+         "2 &nbsp; What your own numbers say",
+         "3 &nbsp; The position, as we read it",
+         "4 &nbsp; Where we looked",
+         "5 &nbsp; Priority 1 — Operating supply",
+         "6 &nbsp; Priority 2 — Uniforms and linens",
+         "7 &nbsp; What this rests on",
+         "8 &nbsp; What happens next"
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "h2",
+     "text": "What we looked at, and what we did not"
+    },
+    {
+     "type": "stats",
+     "items": [
+      {
+       "figure": "$45.3M",
+       "label": "Modelled",
+       "lead": true,
+       "note": "Six categories — operating supply, uniforms and linens, small parcels, payroll and HR, fleet, insurance. 533 completed engagements stand behind the figure above."
+      },
+      {
+       "figure": "$0.93M",
+       "label": "To be quantified",
+       "note": "Marketing and travel. We work both — fewer than ten completed engagements each, so a median would be noise. Upside."
+      },
+      {
+       "figure": "$35.9M",
+       "label": "Needs your detail",
+       "note": "Mostly occupancy. We work everything in it but the rent, and a 990 reports them as one figure. Upside."
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "nested",
+     "label": "Beyond the filing — 55-category capability",
+     "paras": [
+      "Waste, telecom, packaging, payment processing and other indirect costs that a Form 990 normally cannot reveal. ERA works 55 categories. Your filing reports 12 lines of indirect spend, $82.1M in total, and all twelve appear in this Report. The $9.67M above is the first card only — six categories, named on it."
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>$2.25B reviewed &nbsp;·&nbsp; 6,420 engagements &nbsp;·&nbsp; 916 organizations</b>"
+    }
+   ]
+  },
+  {
+   "title": "What we found, and what follows",
+   "source": "Form 990 FY2024",
+   "headline": "Five things stood out.<br>None of them is a conclusion.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "A short summary of what our reading suggested and why each section is here, so you can decide how much of the detail is worth your time."
+    },
+    {
+     "type": "cards",
+     "items": [
+      {
+       "eyebrow": "What you buy is what you sell",
+       "heading": "Your largest indirect line is not overhead. It is inventory.",
+       "paras": [
+        "The biggest expense your filing breaks out apart from people is materials and supplies. In most organizations that line is small and administrative. In yours it is close to the work itself."
+       ],
+       "why": "It means the usual assumption about this line is wrong, and we have said so before quoting anything.",
+       "how": "Separate resale inventory from consumed supply, identify the buying relationships behind the line, and establish the addressable baseline before any recommendation is made.",
+       "set_apart": false
+      },
+      {
+       "eyebrow": "Your filing names its own suppliers",
+       "heading": "Three relationships are stated in your own words, with amounts.",
+       "paras": [
+        "Part VII Section B asks for the highest-paid contractors, what each was engaged to do and what each was paid. Yours describes the service. Most filings say less."
+       ],
+       "why": "It lets us speak about specific arrangements rather than about categories in general.",
+       "how": "Use the disclosed relationships as starting points, then test contract structure, pricing, service levels and alternatives with the relevant category specialists.",
+       "set_apart": false
+      },
+      {
+       "eyebrow": "The largest line is not the strongest evidence",
+       "heading": "The category we can say most about is not the one with the most money in it.",
+       "paras": [
+        "Depth of completed work and size of spend are different things, and here they do not point at the same category. We ordered what follows by evidence."
+       ],
+       "why": "It is why the second section is not simply the second largest number.",
+       "how": "Prioritize by evidence and feasibility, not simply by spend size, so management attention goes first to questions that can be answered credibly.",
+       "set_apart": false
+      },
+      {
+       "eyebrow": "One line is a fifth of everything, and we left it alone",
+       "heading": "The single biggest cost after people is reported in a way we will not model.",
+       "paras": [
+        "It combines something we work with something we do not, in one figure, and your return is not required to separate them. We named it and stopped there."
+       ],
+       "why": "What we decline to estimate tells you as much as what we estimate.",
+       "how": "Break blended lines into their actual components using internal data, while refusing to assign value where the evidence does not support it.",
+       "set_apart": false
+      },
+      {
+       "eyebrow": "The one question that could change the answer",
+       "heading": "We do not know when any of this was last taken to market.",
+       "paras": [
+        "Everything above describes structure. Whether it is competitive depends on something no filing records: when each arrangement was last tested, and against what."
+       ],
+       "why": "If these were tested recently and held, this Report ends there — and that is a useful answer.",
+       "how": "Establish when each arrangement was last tested, what the market was asked to provide, and whether the current outcome should be validated or challenged.",
+       "set_apart": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Executive Opportunity Snapshot",
+   "source": "Form 990 FY2024",
+   "headline": "$82.1M of indirect spend, six categories modelled,<br>one is eight times the peer median.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Indirect spend is the recurring operating cost that sits outside your program delivery and outside your payroll — it is the only thing we work. What follows compares the categories your Form 990 names separately against organizations of comparable size and type: a starting point for a question, never a verdict on how you are run."
+    },
+    {
+     "type": "stats",
+     "items": [
+      {
+       "figure": "$82.1M",
+       "label": "Indirect spend, as filed",
+       "note": "Salaries, depreciation and interest are excluded — they are not indirect and not ours to work."
+      },
+      {
+       "figure": "$45.3M",
+       "label": "Named by category",
+       "note": "A further $36.84M sits in lines the filing does not name. ERA works 55 categories; the baseline covers every one that applies."
+      },
+      {
+       "figure": "55",
+       "label": "Indirect-spend categories ERA can address",
+       "lead": true,
+       "note": "Six can be modelled from this filing today. Internal data reveals the rest of the applicable portfolio."
+      }
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "Evidence depth: four of nine layers carry something for this organization — filed, benchmark, derived and registry. Operating, retrieved, engagement and verified are empty, and are shown as empty rather than filled."
+    },
+    {
+     "type": "h2",
+     "text": "The category portfolio — filed spend, not promised recovery"
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Category — and what it is in your operation",
+       "anchor": true,
+       "width": "27%"
+      },
+      {
+       "label": "Filed",
+       "num": true,
+       "width": "11%"
+      },
+      {
+       "label": "Evidence depth",
+       "width": "15%"
+      },
+      {
+       "label": "Question to validate",
+       "width": "27%"
+      },
+      {
+       "label": "ERA contribution",
+       "width": "20%"
+      }
+     ],
+     "rows": [
+      {
+       "sub": "Running the stores and processing donated goods",
+       "cells": [
+        "Operating Supply",
+        "$37.97M",
+        {
+         "text": "69 engagements",
+         "class": "pos-lead"
+        },
+        "How much is resale inventory and how much is consumed supply",
+        "21% median recovered in this category"
+       ]
+      },
+      {
+       "sub": "The laundry relationship named in your filing",
+       "cells": [
+        "Uniforms, Workwear & Linens",
+        "$1.52M",
+        {
+         "text": "109 engagements",
+         "class": "pos-above"
+        },
+        "The contract term, and whether the last renewal was tested or rolled over",
+        "28% median recovered in this category"
+       ]
+      },
+      {
+       "sub": "Moving donated goods between sites and to customers",
+       "cells": [
+        "Small Parcels",
+        "$2.63M",
+        {
+         "text": "89 engagements",
+         "class": "pos-above"
+        },
+        "The carrier mix, and whether rates were set against today's volume",
+        "23% median recovered in this category"
+       ]
+      },
+      {
+       "sub": "The trucks that collect donations",
+       "cells": [
+        "Fleet Management",
+        "$2.12M",
+        {
+         "text": "13 engagements",
+         "class": "pos-median"
+        },
+        "Utilization, maintenance and replacement policy",
+        "Above our floor of ten, so a figure is quoted"
+       ]
+      },
+      {
+       "sub": "Payroll services, named in your filing",
+       "cells": [
+        "Payroll and HR administration",
+        "$476K",
+        {
+         "text": "101 engagements",
+         "class": "pos-above"
+        },
+        "What the per-employee fee covers, and what is billed on top",
+        "Modelled from completed work"
+       ]
+      },
+      {
+       "sub": "Third party administrators, named in your filing",
+       "cells": [
+        "Insurance",
+        "$558K",
+        {
+         "text": "152 engagements",
+         "class": "pos-above"
+        },
+        "Programme structure, claims and renewal",
+        "The deepest evidence we hold"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "Each category is compared against every nonprofit filer that breaks it out separately, as a share of total revenue. A category needs at least 30 filers before we state a position, and the categories a filing does not break out are sized in the baseline, not here."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "sunrise",
+        "heading": "Why operating supply comes first",
+        "paras": [
+         "At <b>19.4% of revenue against a 2.4% peer median</b> it is roughly eight times, on 2,573 filers. A donated-goods retailer genuinely buys more supply than most nonprofits, so part of that gap is your model rather than your buying — how much is exactly the question. ERA has completed <b>69 operating-supply engagements at a median of 21%</b>."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "navy",
+        "heading": "Why this is more than benchmarking",
+        "paras": [
+         "A benchmark tells us where a question may exist. ERA's category specialists determine whether the difference is structural, contractual, operational or genuinely addressable — and help implement the answer.",
+         "The median is drawn from organizations that have mostly never market-tested these categories either. It describes what is <i>normal</i>, not what is <i>available</i>."
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX, FY2024 &nbsp;·&nbsp; <b>BENCHMARK</b> per-category cohorts as shown, 30-filer minimum &nbsp;·&nbsp; <b>ERA RECOVERY</b> completed engagements, median of category spend. Operating, retrieved, engagement and verified are absent. Full sources overleaf."
+    }
+   ]
+  },
+  {
+   "title": "The position, as we read it",
+   "source": "Form 990 FY2024",
+   "headline": "What 533 completed engagements suggest<br>is worth testing here.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Each category below is your filed figure against the outcome our completed work in that category actually produced. It is the size of the question, not an estimate of what would be recovered at your organization."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Category",
+       "anchor": true,
+       "width": "22%"
+      },
+      {
+       "label": "Filed",
+       "num": true,
+       "width": "11%"
+      },
+      {
+       "label": "At the median",
+       "num": true,
+       "width": "12%"
+      },
+      {
+       "label": "Middle half of completed work",
+       "num": true,
+       "width": "19%"
+      },
+      {
+       "label": "What validation requires",
+       "width": "36%"
+      }
+     ],
+     "rows": [
+      {
+       "cells": [
+        "Operating Supply",
+        "$37.97M",
+        "$8.09M",
+        "$5.13M – $13.06M",
+        "Inventory split, supplier file, purchasing ownership"
+       ]
+      },
+      {
+       "cells": [
+        "Uniforms, Workwear & Linens",
+        "$1.52M",
+        "$427K",
+        "$246K – $641K",
+        "Agreement, renewal mechanism, scope and service levels"
+       ]
+      },
+      {
+       "cells": [
+        "Small Parcels",
+        "$2.63M",
+        "$605K",
+        "$361K – $961K",
+        "Shipment file, zones, weights, surcharges and service mix"
+       ]
+      },
+      {
+       "cells": [
+        "Payroll and HR administration",
+        "$476K",
+        "$148K",
+        "$83K – $222K",
+        "Employee counts, modules, transaction volume and contract"
+       ]
+      },
+      {
+       "cells": [
+        "Fleet Management",
+        "$2.12M",
+        "$314K",
+        "$166K – $698K",
+        "Asset list, utilization, maintenance, fuel and replacement policy"
+       ]
+      },
+      {
+       "cells": [
+        "Insurance",
+        "$558K",
+        "$84K",
+        "$45K – $138K",
+        "Programme structure, claims, coverage, renewal and broker data"
+       ]
+      },
+      {
+       "emphasis": "total",
+       "cells": [
+        "Six categories",
+        "$45.28M",
+        "$9.67M",
+        "$6.03M – $15.72M",
+        "Your contracts, invoices and operating detail"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "paras": [
+      "ERA does not stop at identifying a range. For every category that advances, a specialist builds the factual baseline, tests the current commercial position, develops options, supports implementation and measures the verified result."
+     ]
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "Why the total is not the sum of the extremes"
+       },
+       {
+        "type": "para",
+        "text": "Six categories do not all land at the bottom of their range, or all at the top. The middle column adds each category at its own median, which is the outcome most likely to describe the set. The range beside it is the middle half, not the best and worst case."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "What we are not saying"
+       },
+       {
+        "type": "para",
+        "text": "We are not saying you are paying too much. We have not seen a contract, an invoice or a schedule of rates, and a filing cannot show whether a price is competitive. Sitting above a peer median is not overspending; it is a difference worth understanding."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>BENCHMARK</b> 533 completed ERA engagements, quartiles per category &nbsp;·&nbsp; <b>FILED</b> Form 990 &nbsp;·&nbsp; <b>DERIVED</b> arithmetic on filed figures only. No published band is used anywhere in this Report."
+    }
+   ]
+  },
+  {
+   "title": "Where we looked",
+   "source": "Form 990 FY2024",
+   "headline": "Every indirect line on your return,<br>including the ones we left alone.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Twelve lines on your FY2024 return are indirect rather than people or non-cash. All twelve are below: six carry a figure, six do not, and the reason is stated for each."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Filed line",
+       "anchor": true,
+       "width": "24%"
+      },
+      {
+       "label": "Amount",
+       "num": true,
+       "width": "10%"
+      },
+      {
+       "label": "What the filing supports",
+       "width": "38%"
+      },
+      {
+       "label": "How ERA moves it forward",
+       "width": "28%"
+      }
+     ],
+     "rows": [
+      {
+       "cells": [
+        "MATERIALS AND SUPPLIES (line 24)",
+        "$37.97M",
+        "Modelled · Operating Supply, 69 engagements",
+        "Validate with contracts, invoices and operating detail"
+       ]
+      },
+      {
+       "cells": [
+        "Part VII Section B — “LAUNDRY DISTRIBUTION”",
+        "$1.52M",
+        "Modelled · Uniforms, Workwear & Linens, 109 engagements",
+        "Validate with contracts, invoices and operating detail"
+       ]
+      },
+      {
+       "cells": [
+        "FREIGHT AND POSTAGE (line 24)",
+        "$2.63M",
+        "Modelled · Small Parcels, 89 engagements",
+        "Validate with contracts, invoices and operating detail"
+       ]
+      },
+      {
+       "cells": [
+        "Part VII Section B — “PAYROLL SERVICES”",
+        "$476K",
+        "Modelled · Payroll and HR administration, 101 engagements",
+        "Validate with contracts, invoices and operating detail"
+       ]
+      },
+      {
+       "cells": [
+        "FLEET AND TRANSPORTATION (line 24)",
+        "$2.12M",
+        "Modelled · Fleet Management, 13 engagements",
+        "Validate with contracts, invoices and operating detail"
+       ]
+      },
+      {
+       "cells": [
+        "Part VII Section B — “THIRD PARTY ADMINISTRATORS”",
+        "$558K",
+        "Modelled · Insurance, 152 engagements",
+        "Validate with contracts, invoices and operating detail"
+       ]
+      },
+      {
+       "cells": [
+        "Occupancy (line 16)",
+        "$24.38M",
+        "One figure covering rent together with utilities, maintenance and janitorial. 151 completed engagements in those three services, none in rent. Named, not modelled.",
+        "Separate the line into addressable and non-addressable components"
+       ]
+      },
+      {
+       "cells": [
+        "Fees for services — Other (line 11g), not itemised",
+        "$5.53M",
+        "Your filing itemises $2.55M of this line to three named relationships — three of the six categories above. The remainder is not itemised and we will not guess.",
+        "Identify what the line contains before assigning a category"
+       ]
+      },
+      {
+       "cells": [
+        "SERVICE CHARGES (line 24)",
+        "$2.42M",
+        "A description we cannot read from outside. A question for the call, not a category.",
+        "Identify what the line contains before assigning a category"
+       ]
+      },
+      {
+       "cells": [
+        "All other expenses (line 24e)",
+        "$1.50M",
+        "The catch-all. By definition it holds what did not fit anywhere else.",
+        "Identify what the line contains before assigning a category"
+       ]
+      },
+      {
+       "cells": [
+        "Office expenses (line 13)",
+        "$1.37M",
+        "Line 13 mixes consumables with equipment. 204 completed engagements in office supply, and we still will not model a blended line.",
+        "Separate the line into addressable and non-addressable components"
+       ]
+      },
+      {
+       "cells": [
+        "Advertising and promotion (line 12)",
+        "$482K",
+        "A category we work. Five completed engagements is below our floor of ten, so a median would be noise.",
+        "Investigate without publishing an unsupported recovery median"
+       ]
+      },
+      {
+       "cells": [
+        "Travel (line 17)",
+        "$450K",
+        "A category we work, at the 39th percentile of 8,769 peers. Eight engagements, below our floor of ten.",
+        "Investigate without publishing an unsupported recovery median"
+       ]
+      },
+      {
+       "cells": [
+        "Fees for services — Legal and Lobbying (lines 11b, 11d)",
+        "$701K",
+        "Fiduciary appointments. Not vendor spend.",
+        "Excluded, and the reason stated"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "paras": [
+      "The filing lets us model <b>$45.28M</b> and identify another <b>$36.84M</b> that needs your detail. It does not show the many indirect categories reported elsewhere — or not separated at all. ERA's 55-category capability is how the analysis expands from a public filing into an organization-wide cost review."
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "nested",
+     "label": "Examples of categories internal data may reveal",
+     "paras": [
+      "Waste &nbsp;·&nbsp; Telecom &nbsp;·&nbsp; Packaging &nbsp;·&nbsp; Payment processing &nbsp;·&nbsp; Utilities &nbsp;·&nbsp; Maintenance &nbsp;·&nbsp; Office supply"
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX and Part VII B, FY2024. Contractor names are held on file and are not printed. A line we declined to estimate is better shown than left out."
+    }
+   ]
+  },
+  {
+   "title": "Priority 1 — Operating Supply",
+   "source": "Form 990 FY2024",
+   "headline": "Operating Supply — $37.97M",
+   "blocks": [
+    {
+     "type": "eyebrow",
+     "text": "Priority 1 of 2"
+    },
+    {
+     "type": "lede",
+     "text": "69 completed ERA engagements in this category. The middle half landed between 13.5% and 34.4%, at a median of 21.3% — $8.09M against your filed figure. It sits at the 98th percentile of 2,573 peers. That is the size of the question, not an estimate of what would be recovered here."
+    },
+    {
+     "type": "h2",
+     "text": "What we see"
+    },
+    {
+     "type": "para",
+     "text": "$37.97M reported as materials and supplies, the largest line on your return after people. At 19.4% of revenue against a peer median of 2.40%, it is the most distinctive position on the filing."
+    },
+    {
+     "type": "h2",
+     "text": "Why it matters"
+    },
+    {
+     "type": "para",
+     "text": "In most organizations this line is administrative and small. In yours it is close to the work itself. That does not make it inefficient — it makes it the line where a percentage point is worth more than anywhere else on the return."
+    },
+    {
+     "type": "h2",
+     "text": "What may be driving it"
+    },
+    {
+     "type": "para",
+     "text": "<i>In our experience a supply line of this weight is usually several buying relationships reported as one figure, with different parts of the organization holding different pieces. That is category inference from completed work elsewhere, not a finding about you.</i>"
+    },
+    {
+     "type": "h2",
+     "text": "What we do not know"
+    },
+    {
+     "type": "para",
+     "text": "How many suppliers sit behind the line. Whether any of it is bought through a group purchasing arrangement. How much is resale inventory rather than consumed supply, which your return does not separate and which would change the answer materially."
+    },
+    {
+     "type": "h2",
+     "text": "What we would test first"
+    },
+    {
+     "type": "para",
+     "text": "The split between what is resold and what is consumed. Then the number of suppliers, and whether anyone in the organization sees the whole of it."
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "heading": "How ERA would help",
+     "paras": [
+      "1. Separate resale inventory from supplies consumed in the operation.",
+      "2. Consolidate the supplier, item and location view so the full buying pattern is visible.",
+      "3. Normalize specifications and service requirements before comparing alternatives.",
+      "4. Test pricing, rebates, terms, fulfillment and supplier concentration with an operating-supply specialist.",
+      "5. Present options that preserve what works, support implementation of the approved choice, and measure the verified result. <b>Current suppliers may remain.</b>"
+     ]
+    },
+    {
+     "type": "h2",
+     "text": "Potential impact if validated"
+    },
+    {
+     "type": "para",
+     "text": "At the median of completed work this category alone is $8.09M a year. If the line turns out to be mostly resale inventory, the addressable part is smaller and we would say so before doing any work."
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX &nbsp;·&nbsp; <b>BENCHMARK</b> 69 completed ERA engagements &nbsp;·&nbsp; <b>DERIVED</b> peer percentile, 2,573 organizations &nbsp;·&nbsp; OPERATING, RETRIEVED absent"
+    }
+   ]
+  },
+  {
+   "title": "Priority 2 — Uniforms and Linens",
+   "source": "Form 990 FY2024",
+   "headline": "Uniforms, Workwear &amp; Linens — $1.52M",
+   "blocks": [
+    {
+     "type": "eyebrow",
+     "text": "Priority 2 of 2"
+    },
+    {
+     "type": "lede",
+     "text": "109 completed ERA engagements in this category. The middle half landed between 16.2% and 42.2%, at a median of 28.1% — $427K against your filed figure. That is the size of the question, not an estimate of what would be recovered here."
+    },
+    {
+     "type": "panel",
+     "ground": "nested",
+     "paras": [
+      "Priority 2 is not the second largest line. Small Parcels and Fleet are both bigger. It is here because 109 completed engagements is the second deepest evidence we hold, and because your own return states the service and the amount for it. <b>Size does not earn a section; evidence does.</b>"
+     ]
+    },
+    {
+     "type": "h2",
+     "text": "What we see"
+    },
+    {
+     "type": "para",
+     "text": "$1.52M paid to a single relationship your filing describes as laundry distribution. It is disclosed in Part VII Section B, which asks for your highest-paid contractors and what each was engaged to do."
+    },
+    {
+     "type": "h2",
+     "text": "Why it matters"
+    },
+    {
+     "type": "para",
+     "text": "Uniform and linen arrangements are among the longest-running contracts an organization holds. They renew quietly, the terms are rarely re-read, and the middle half of our completed work in this category ran from 16.2% to 42.2% — one of the widest spreads we see."
+    },
+    {
+     "type": "h2",
+     "text": "What may be driving it"
+    },
+    {
+     "type": "para",
+     "text": "<i>A wide spread usually means the outcome depends less on the market than on how the agreement was structured and how long it has run. Category experience, not something your filing shows.</i>"
+    },
+    {
+     "type": "h2",
+     "text": "What we do not know"
+    },
+    {
+     "type": "para",
+     "text": "When the arrangement was last tested. What the agreement covers beyond distribution. Whether the amount disclosed is the whole of what is spent on this service or only what went to the one relationship your filing names."
+    },
+    {
+     "type": "h2",
+     "text": "What we would test first"
+    },
+    {
+     "type": "para",
+     "text": "The contract term and the renewal mechanism, and whether the last renewal was a re-marketing or a rollover."
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "heading": "How ERA would help",
+     "paras": [
+      "1. Read the agreement, amendments, renewal language and service schedule.",
+      "2. Reconcile invoices to contracted rates, quantities, replacements, losses, minimums and ancillary charges.",
+      "3. Validate the service model by location and user requirement.",
+      "4. Compare the complete commercial structure — not only the unit price — with relevant alternatives.",
+      "5. Negotiate or redesign the arrangement approved by Goodwill, support the transition if one is needed, and verify the result after implementation."
+     ]
+    },
+    {
+     "type": "h2",
+     "text": "Potential impact if validated"
+    },
+    {
+     "type": "para",
+     "text": "At the median, $427K a year. Smaller than Priority 1 and considerably faster to resolve, because it is one agreement rather than a buying pattern."
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part VII Section B &nbsp;·&nbsp; <b>BENCHMARK</b> 109 completed ERA engagements &nbsp;·&nbsp; the counterparty is named in your filing and is not printed here"
+    }
+   ]
+  },
+  {
+   "title": "What this rests on",
+   "source": "Form 990 FY2024",
+   "headline": "Every figure, where it came from,<br>and what we could not see.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Nine layers of evidence exist in our work. Five of them are empty for your organization, and they are shown empty rather than filled."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Layer",
+       "anchor": true,
+       "width": "12%"
+      },
+      {
+       "label": "State",
+       "width": "10%"
+      },
+      {
+       "label": "What it contributed",
+       "width": "43%"
+      },
+      {
+       "label": "How the layer is added",
+       "width": "35%"
+      }
+     ],
+     "rows": [
+      {
+       "cells": [
+        "Filed",
+        {
+         "text": "Present",
+         "class": "pos-above"
+        },
+        "Form 990 Part IX, FY2024, period 202412. Nineteen expense lines, twelve indirect, all twelve shown on page 9.",
+        "Available before we meet"
+       ],
+       "emphasis": "shortlist"
+      },
+      {
+       "cells": [
+        "Registry",
+        {
+         "text": "Present",
+         "class": "pos-above"
+        },
+        "Form 990 Part VII Section B. Three named service relationships with the service stated and the amount disclosed.",
+        "Available before we meet"
+       ],
+       "emphasis": "shortlist"
+      },
+      {
+       "cells": [
+        "Benchmark",
+        {
+         "text": "Present",
+         "class": "pos-above"
+        },
+        "533 completed ERA engagements across the six categories, quoted as quartiles of what those engagements produced.",
+        "Available before we meet"
+       ],
+       "emphasis": "shortlist"
+      },
+      {
+       "cells": [
+        "Derived",
+        {
+         "text": "Present",
+         "class": "pos-above"
+        },
+        "Peer percentiles against organizations of your type, and arithmetic on filed figures only.",
+        "Available before we meet"
+       ],
+       "emphasis": "shortlist"
+      },
+      {
+       "cells": [
+        "Operating",
+        {
+         "text": "Absent",
+         "class": "pos-median"
+        },
+        "Nothing found specific enough to this organization to be worth stating. Omitted rather than filled.",
+        "Your volumes, service requirements, locations and workflows"
+       ],
+       "emphasis": ""
+      },
+      {
+       "cells": [
+        "Retrieved",
+        {
+         "text": "Absent",
+         "class": "pos-median"
+        },
+        "No verified quotation from your own published material.",
+        "Contracts, invoices, rate schedules, supplier files and transaction detail"
+       ],
+       "emphasis": ""
+      },
+      {
+       "cells": [
+        "Ecosystem",
+        {
+         "text": "Absent",
+         "class": "pos-median"
+        },
+        "No dated external event connected closely enough to your organization to print.",
+        "Category market conditions, supplier capabilities and relevant external events"
+       ],
+       "emphasis": ""
+      },
+      {
+       "cells": [
+        "Engagement",
+        {
+         "text": "Absent",
+         "class": "pos-median"
+        },
+        "You have not told us anything yet. This is the layer that only exists after a conversation.",
+        "What leadership, users and category owners tell us"
+       ],
+       "emphasis": ""
+      },
+      {
+       "cells": [
+        "Verified",
+        {
+         "text": "Absent",
+         "class": "pos-median"
+        },
+        "Nothing has been checked against a contract, an invoice or a schedule of rates.",
+        "Evidence checked against source documents and agreed operating facts"
+       ],
+       "emphasis": ""
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "decision",
+     "rail": "sunrise",
+     "paras": [
+      "This is why ERA is more than a benchmark. We combine what is public with what is operational, contractual and market-tested, then remain involved through implementation and measurement.",
+      "<b>The first four layers are available before we meet. The remaining five are built with you.</b>"
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "No inference is stated in this Report except where it is labelled as such, in italics, and attributed to category experience. You will find two of those, on pages 10 and 11. No published market range is used anywhere: every percentage in this document is the outcome of engagements ERA has finished. &nbsp;·&nbsp; <b>55 categories &nbsp;·&nbsp; 6,420 engagements &nbsp;·&nbsp; 916 organizations &nbsp;·&nbsp; $2.25B reviewed</b>"
+    }
+   ]
+  },
+  {
+   "title": "What happens next",
+   "source": "Form 990 FY2024",
+   "headline": "A conversation. That is the whole of the ask.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "There is no proposal in this document and no scope of work. The next step is replacing what we assumed with what you know."
+    },
+    {
+     "type": "cards",
+     "items": [
+      {
+       "eyebrow": "Step one",
+       "heading": "A conversation",
+       "paras": [
+        "We walk the operating supply question together and you tell us what the filing could not: how much of it is resale, and who buys it."
+       ],
+       "why": "Costs you: the time it takes."
+      },
+      {
+       "eyebrow": "Step two",
+       "heading": "A no-cost baseline",
+       "paras": [
+        "If it is worth going further, we replace what we have inferred with your actual contract data — across every applicable category, not only the six shown."
+       ],
+       "why": "Costs you: nothing."
+      },
+      {
+       "eyebrow": "Step three",
+       "heading": "A category-by-category action plan",
+       "paras": [
+        "Our specialists validate the facts, explain which arrangements should remain, and present practical options for the categories where action is justified."
+       ],
+       "why": "Costs you: nothing, and nothing changes without your approval."
+      },
+      {
+       "eyebrow": "Step four",
+       "heading": "Implementation and verified recovery",
+       "set_apart": true,
+       "paras": [
+        "For the actions you approve, ERA supports negotiation, implementation and measurement so identified value becomes an operating result rather than a recommendation left on a shelf."
+       ],
+       "why": "Costs you: a share only of verified recovery, after you receive it."
+      }
+     ]
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "navy",
+        "heading": "And if the answer is no",
+        "paras": [
+         "If a current arrangement is already competitive, we will say so and show why. Independent validation is a useful result. Where value is verified, we help capture it. In either case, Goodwill keeps control of every decision.",
+         "<b>Our fee: a share of what is actually recovered, after you have it. No recovery, no fee.</b>"
+        ]
+       }
+      ],
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "sunrise",
+        "heading": "Every figure is live online",
+        "paras": [
+         "Change any assumption and the model moves with it — and if we have read something wrongly, the page will record your correction as yours.",
+         "<b>portal.wpp-us.com/goodwillsouthflorida-benchmark</b><br><b>No code. No form. No login.</b>"
+        ]
+       }
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Before we meet",
+   "source": "Form 990 FY2024",
+   "headline": "Everything you have just read was prepared<br>before we ever spoke.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Some of it may prove accurate. Some of it may not. That is not the point. The purpose of this Report is not to prove an estimate. It is to work out — using your own contracts and data — whether opportunity genuinely exists, and to tell you honestly when it does not."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "Why ERA"
+       },
+       {
+        "type": "rows",
+        "items": [
+         "<b>Category depth.</b> Specialists across 55 indirect-spend categories, not a generalist review of one or two lines.",
+         "<b>Evidence before opinion.</b> Public filings identify the questions; contracts, invoices and operating facts determine the answer.",
+         "<b>Execution, not a report.</b> We help implement approved changes and verify the result.",
+         "<b>Aligned economics.</b> No verified recovery means no fee."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "What Goodwill receives"
+       },
+       {
+        "type": "rows",
+        "items": [
+         "A complete view of the applicable indirect-spend portfolio.",
+         "Independent validation of arrangements that are already strong.",
+         "Category-specific options where evidence supports action.",
+         "Implementation and measurement support for every approved change."
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "decision",
+     "rail": "sunrise",
+     "paras": [
+      "What we found in the filing is the beginning of the work. The value ERA brings is knowing where else to look, how to test each category, and how to turn the right findings into dollars that stay closer to mission."
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "We recommend keeping incumbents whenever they are the right choice. The objective is not changing suppliers. You remain in complete control — nothing changes without your approval, ever."
+    }
+   ]
+  }
+ ]
+}

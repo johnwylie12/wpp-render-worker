@@ -132,6 +132,15 @@ b,strong{ font-weight:700 }
 .card .why{ margin-top:5pt; padding-top:4pt; border-top:1pt solid var(--hairline);
             font-size:var(--t-table); color:var(--slate); }
 .card .why b{ color:var(--daybreak-blue) }
+/* the two-column card footer: what the finding means, and what ERA does about
+   it. Without the second column every card ends on an observation. */
+.card .foot2{ display:flex; gap:16pt; margin-top:5pt; padding-top:4pt;
+              border-top:1pt solid var(--hairline);
+              font-size:var(--t-table); color:var(--slate); }
+.card .foot2 > div{ flex:1 }
+.card .foot2 .lbl{ font-size:var(--t-eyebrow); letter-spacing:.11em;
+                   text-transform:uppercase; font-weight:700;
+                   color:var(--daybreak-blue); margin-bottom:3pt; }
 
 /* ── STAT ROW. One treatment for all of them. The measured file gave the first
       card a gold border and the others grey — three treatments in one row.
@@ -184,9 +193,16 @@ tr.total td{ background:var(--panel-deep); font-weight:700; border-bottom:none; 
 .rows .row:last-child{ border-bottom:none; color:var(--cool-grey) }
 
 /* ── provenance. Its own line, every page. An absent layer is shown absent. ─ */
+/* A source note belongs to the thing above it. Left to itself it breaks onto
+   the next page alone and produces a sheet that is 13% full — which is what the
+   first v2 render did on four pages. */
 .prov{ font-size:var(--t-meta); color:var(--slate); line-height:1.45;
        padding-top:7pt; border-top:1pt solid var(--hairline);
-       margin-top:14pt; margin-bottom:15pt; }
+       margin-top:14pt; margin-bottom:15pt;
+       break-before:avoid; break-inside:avoid; }
+/* the same for a panel that closes a section, and for the last table row */
+table{ break-inside:auto }
+tbody tr:last-child{ break-after:avoid }
 .prov b{ color:var(--daybreak-blue); font-weight:700 }
 
 /* ── the running foot. The mark is the ASSET, never type — settled #175 /

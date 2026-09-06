@@ -81,13 +81,19 @@ def esc(s):
             if s is not None else "")
 
 
+import re as _re
+
 def rich(s):
-    """Content may carry <b> and <br>, and nothing else. Headlines break where
-    the writer breaks them (settled #169), so <br> has to survive."""
+    """Content may carry <b>, <i>, <br> and HTML entities, and nothing else.
+    Headlines break where the writer breaks them (settled #169), so <br> has to
+    survive. Entities have to survive too: escaping the ampersand in &nbsp;
+    prints the entity as literal text, which is what the first v2 render did."""
     out = esc(s)
     for tag in ("b", "i"):
         out = out.replace(f"&lt;{tag}&gt;", f"<{tag}>").replace(f"&lt;/{tag}&gt;", f"</{tag}>")
-    return out.replace("&lt;br&gt;", "<br>")
+    out = out.replace("&lt;br&gt;", "<br>")
+    # put back any entity the author wrote deliberately (&nbsp; &mdash; &amp; ...)
+    return _re.sub(r"&amp;(#?\w{1,8});", r"&\1;", out)
 
 
 def block(b):
@@ -132,7 +138,15 @@ def block(b):
                 inner += f'<div class="h2">{rich(c["heading"])}</div>'
             for p in c.get("paras", []):
                 inner += f"<p>{rich(p)}</p>"
-            if c.get("why"):
+            # A finding that stops at "why it matters" tells the reader something
+            # is true and nothing about what we would do. The second footer is
+            # the whole point of the value-selling pass.
+            if c.get("why") and c.get("how"):
+                inner += ('<div class="foot2">'
+                          f'<div><div class="lbl">Why it matters</div>{rich(c["why"])}</div>'
+                          f'<div><div class="lbl">How ERA helps</div>{rich(c["how"])}</div>'
+                          '</div>')
+            elif c.get("why"):
                 inner += f'<div class="why"><b>Why it matters:</b> {rich(c["why"])}</div>'
             out.append(f'<div class="{cls}">{inner}</div>')
         out.append("</div>")
