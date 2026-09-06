@@ -1,0 +1,217 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   The Executive Opportunity Brief — one stylesheet for every interior sheet.
+
+   WHY THIS FILE EXISTS. Before it, the cover was set in Poppins, every other
+   sheet in Liberation Sans, and neither is an ERA typeface. The old engine
+   asked for "'Liberation Sans','Trebuchet MS',Arial" — Liberation Sans first —
+   so the real Trebuchet sitting in fonts/ was never reached and Paralucent was
+   never declared at all. Fonts and components are defined here ONCE and every
+   page uses them. If a page needs a look this file cannot give it, change this
+   file, not that page.
+
+   COLOUR. Every colour below is a var() filled from brand_tokens by
+   generate_tokens.py. Do not write a hex in this file. A near-miss brand colour
+   is the specific failure the tokens exist to prevent, and six of them are
+   named as forbidden.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── the ERA faces, from the repo. Paralucent is the primary, Trebuchet the
+      secondary. Liberation Sans is last-resort only so a missing file degrades
+      instead of silently taking over, which is what happened before. ──────── */
+@font-face { font-family:'Paralucent'; font-weight:500;
+             src:url('FONTS/fonnts.com-Paralucent_Medium.otf') format('opentype'); }
+@font-face { font-family:'Paralucent'; font-weight:700;
+             src:url('FONTS/fonnts.com-Paralucent_Demi_Bold.otf') format('opentype'); }
+@font-face { font-family:'Paralucent Text'; font-weight:400;
+             src:url('FONTS/fonnts.com-Paralucent_Text_Book.otf') format('opentype'); }
+@font-face { font-family:'Paralucent Text'; font-weight:700;
+             src:url('FONTS/fonnts.com-Paralucent_Text_Bold.otf') format('opentype'); }
+@font-face { font-family:'Trebuchet MS'; font-weight:400;
+             src:url('FONTS/Trebuchet MS.ttf') format('truetype'); }
+@font-face { font-family:'Trebuchet MS'; font-weight:700;
+             src:url('FONTS/Trebuchet MS Bold.ttf') format('truetype'); }
+
+:root{
+  TOKENS_HERE
+
+  /* TYPE SCALE. Nothing here is below 10pt, and that is load-bearing:
+     brand_tokens makes Arial Nova mandatory for any body copy under 10pt, and
+     Arial Nova is not in this repo. Holding the floor at 10pt keeps the
+     document compliant with a font we actually have. The measured file had 112
+     spans under 9.5pt, down to 7.4pt. Page count absorbs that, not the reader. */
+  --t-headline: 16pt;   --t-headline-lh: 1.22;
+  --t-subhead:  12pt;   --t-subhead-lh:  1.30;
+  --t-lede:     11pt;   --t-lede-lh:     1.52;
+  --t-body:     10.5pt; --t-body-lh:     1.52;
+  --t-table:    10pt;   --t-table-lh:    1.40;
+  --t-eyebrow:  10pt;                 /* letterspaced caps. the floor, not below */
+  --t-meta:     10pt;                 /* provenance, source lines */
+  --t-figure:   19pt;                 /* the stat figures */
+
+  --rail: 3pt;                        /* the Sunrise rail. punctuation, not decoration */
+  --gut: 22pt;
+}
+
+/* The header and the foot are PAGE FURNITURE, not content. They are declared
+   once here and drawn by the page, so a sheet whose content runs long becomes
+   two properly-dressed pages instead of one page plus an orphaned fragment.
+   That is what lets the page count float: John, 2026-09-06 — "we do not have to
+   freeze the number of the pages... if it takes a few more pages, then great."
+   The first render of this document produced four orphan pages, one of which
+   carried nothing but a header. */
+@page {
+  size: Letter;
+  margin: 0.92in 0.62in 0.62in 0.62in;
+  @top-left  { content: element(hdr); width: 100%; }
+  @bottom-left { content: element(ftr); width: 100%; }
+}
+
+*{ box-sizing:border-box; margin:0; padding:0 }
+
+body{
+  font-family:'Trebuchet MS','Paralucent Text',sans-serif;
+  font-size:var(--t-body); line-height:var(--t-body-lh);
+  color:var(--ink);
+}
+
+/* ── the running header: who this is about, what this page is, what it is from.
+      Identical on every interior sheet. ──────────────────────────────────── */
+.hdr{ position:running(hdr); display:flex; align-items:baseline; gap:12pt; width:100%;
+      padding-bottom:5pt; border-bottom:1.4pt solid var(--daybreak-blue); }
+.hdr .who{ font-size:var(--t-meta); color:var(--slate); }
+.hdr .what{ font-family:'Paralucent',sans-serif; font-weight:700;
+            font-size:11.5pt; color:var(--daybreak-blue); }
+.hdr .from{ margin-left:auto; font-size:var(--t-meta); color:var(--slate); text-align:right; }
+
+/* ── headline and lede ─────────────────────────────────────────────────────
+      Headlines break where the writer breaks them (settled #169), never on the
+      renderer's word wrap, so .h1 carries explicit <br> and never balances. */
+.h1{ font-family:'Paralucent',sans-serif; font-weight:500;
+     font-size:var(--t-headline); line-height:var(--t-headline-lh);
+     color:var(--daybreak-blue); margin-bottom:11pt; }
+.h2{ font-family:'Paralucent',sans-serif; font-weight:700;
+     font-size:var(--t-subhead); line-height:var(--t-subhead-lh);
+     color:var(--daybreak-blue); margin-bottom:7pt; }
+.lede{ font-size:var(--t-lede); line-height:var(--t-lede-lh); margin-bottom:12pt; max-width:64em; }
+p{ margin-bottom:8pt; }
+p:last-child{ margin-bottom:0 }
+b,strong{ font-weight:700 }
+
+/* ── the eyebrow: letterspaced caps. Slate, not Cool Grey — this is the review's
+      single strongest point, that supporting type must survive an office
+      printer. Cool Grey is reserved for true metadata. ───────────────────── */
+.eyebrow{ font-size:var(--t-eyebrow); letter-spacing:.13em; text-transform:uppercase;
+          font-weight:700; color:var(--slate); margin-bottom:7pt; }
+
+/* Vertical rhythm is tuned in this block and nowhere else. Settled #172:
+   "Page count is held by taking space out of the LAYOUT, never out of the type."
+   So when a sheet spills a few lines onto a thin second page, tighten here —
+   never the type scale, which is at its 10pt floor for a brand reason.
+
+   ── PANELS. Three grounds, three meanings, and nothing else.
+      Mist = evidence and reasoning.  Cream = decision and commercial consequence.
+      Deep = a nested panel or a table head.  A fourth ground would kill the
+      signal, which is why the measured file's four different panel greys were a
+      defect rather than a palette. ───────────────────────────────────────── */
+.panel{ padding:11pt 15pt; margin:11pt 0; }
+.panel > :last-child{ margin-bottom:0 }
+.panel--evidence{ background:var(--panel-mist); }
+.panel--nested{ background:var(--panel-deep); }
+.panel--decision{ background:var(--decision-cream); border:1pt solid var(--cream-edge); }
+.panel--rail{ border-left:var(--rail) solid var(--sunrise-yellow); }
+.panel--rail-quiet{ border-left:var(--rail) solid var(--daybreak-blue); }
+.panel--label{ font-size:var(--t-eyebrow); letter-spacing:.13em; text-transform:uppercase;
+               font-weight:700; color:var(--daybreak-blue); margin-bottom:6pt; }
+
+/* ── CARDS. One card component. The fifth card on the bridge page is set apart
+      by taking .card--set-apart, not by being a different kind of card. ──── */
+.cards{ display:flex; flex-direction:column; gap:7pt; }
+.card{ border:1pt solid var(--hairline); padding:9pt 13pt; }
+.card--set-apart{ background:var(--decision-cream);
+                  border:1pt solid var(--cream-edge); border-left:var(--rail) solid var(--sunrise-yellow); }
+.card .why{ margin-top:6pt; padding-top:5pt; border-top:1pt solid var(--hairline);
+            font-size:var(--t-table); color:var(--slate); }
+.card .why b{ color:var(--daybreak-blue) }
+
+/* ── STAT ROW. One treatment for all of them. The measured file gave the first
+      card a gold border and the others grey — three treatments in one row.
+      Exactly one stat may carry .stat--lead, and that is the Sunrise moment. */
+.stats{ display:flex; gap:10pt; margin:11pt 0; }
+.stat{ flex:1; border:1pt solid var(--hairline); border-top:2.2pt solid var(--daybreak-blue);
+       padding:10pt 12pt; }
+.stat--lead{ border-top-color:var(--sunrise-yellow); }
+.stat .fig{ font-family:'Paralucent',sans-serif; font-weight:700;
+            font-size:var(--t-figure); color:var(--daybreak-blue); line-height:1.1; }
+.stat--lead .fig{ color:var(--daybreak-blue) }
+.stat .lab{ font-size:var(--t-eyebrow); letter-spacing:.10em; text-transform:uppercase;
+            color:var(--slate); margin:5pt 0 4pt; font-weight:700; }
+.stat .note{ font-size:var(--t-meta); color:var(--slate); line-height:1.42; }
+
+/* ── TABLES. White ground, navy rule, hairline rows. Figures are tabular and
+      right-aligned; the category name is the anchor. A fill on a row means
+      "this is the shortlist", never "this is a stripe". ─────────────────── */
+table{ width:100%; border-collapse:collapse; table-layout:fixed;
+       font-size:var(--t-table); line-height:var(--t-table-lh); margin:11pt 0; }
+thead{ display:table-header-group; }   /* repeats if a table crosses a page */
+thead th{ font-size:var(--t-eyebrow); letter-spacing:.09em; text-transform:uppercase;
+          font-weight:700; color:var(--slate); text-align:left;
+          padding:0 8pt 6pt; border-bottom:1.6pt solid var(--daybreak-blue); vertical-align:bottom; }
+td{ padding:8pt; border-bottom:1pt solid var(--hairline); vertical-align:top; color:var(--ink); }
+/* nowrap belongs on the FIGURE, never on the column head: a long head like
+   "YOUR % OF REVENUE" then overflows its column and collides with its
+   neighbour, which is what the first render did. */
+td.num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+th.num{ text-align:right; }
+.cat{ font-weight:700; color:var(--ink); }
+.cat .sub{ display:block; font-weight:400; font-size:var(--t-meta);
+           color:var(--slate); margin-top:2pt; }
+tr.shortlist td{ background:var(--panel-mist); }
+tr.total td{ background:var(--panel-deep); font-weight:700; border-bottom:none; }
+/* position readings. Navy = materially above the peer set, Cool Grey = at or
+   below the median, Sunrise = the one thing on the page to see first. No
+   fourth hue, and never a hyperlink blue — the measured file had one. */
+.pos-above{ color:var(--daybreak-blue); font-weight:700 }
+.pos-median{ color:var(--cool-grey); font-weight:700 }
+.pos-lead{ color:var(--sunrise-yellow); font-weight:700 }
+.recovered{ color:var(--slate) }
+.absent{ color:var(--cool-grey) }
+
+/* ── two-column reasoning block ───────────────────────────────────────────── */
+.cols{ display:flex; gap:var(--gut); }
+.cols > *{ flex:1 }
+.rows{ }
+.rows .row{ padding:7pt 0; border-bottom:1pt solid var(--hairline); font-size:var(--t-table); }
+.rows .row:last-child{ border-bottom:none; color:var(--cool-grey) }
+
+/* ── provenance. Its own line, every page. An absent layer is shown absent. ─ */
+.prov{ font-size:var(--t-meta); color:var(--slate); line-height:1.45;
+       padding-top:7pt; border-top:1pt solid var(--hairline);
+       margin-top:14pt; margin-bottom:15pt; }
+.prov b{ color:var(--daybreak-blue); font-weight:700 }
+
+/* ── the running foot. The mark is the ASSET, never type — settled #175 /
+      LAW 23. The measured cover set VALUE THROUGH INSIGHT as 19 hand-
+      letterspaced Poppins spans; that is the thing this rule forbids. ────── */
+.ftr{ position:running(ftr); display:flex; align-items:center; gap:12pt; width:100%;
+      padding-top:6pt; border-top:1pt solid var(--hairline); }
+.ftr img{ height:11pt; width:auto; }
+.ftr .who{ font-family:'Paralucent',sans-serif; font-weight:700;
+           font-size:var(--t-meta); color:var(--daybreak-blue); }
+.ftr .pg{ margin-left:auto; font-size:var(--t-meta); color:var(--slate);
+          letter-spacing:.06em; }
+.ftr .pg::after{ content:"PAGE " counter(page) " OF " counter(pages); }
+
+/* ── dark closing ground. Midnight Blue is the deep ground token. NOT #002B54,
+      which the measured file used once and which rule 34 forbids by name. ── */
+.closing{ background:var(--midnight-blue); color:#fff; padding:20pt 22pt; margin-top:15pt; }
+.closing .h2{ color:#fff }
+.closing p{ color:var(--panel-deep) }
+.closing .accent{ color:var(--sunrise-yellow); font-weight:700 }
+
+.sheet{ break-after:page; }
+.sheet:last-child{ break-after:auto; }
+/* never strand a heading, a table head, or one line of a paragraph */
+.h1,.h2,.eyebrow,thead{ break-after:avoid; }
+.card,.stat,.panel,tr{ break-inside:avoid; }
+p{ orphans:2; widows:2; }
+.h1{ margin-top:0 }

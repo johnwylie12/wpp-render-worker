@@ -1,0 +1,861 @@
+{
+ "slug": "Goodwill_SouthFlorida",
+ "organization": "Goodwill Industries of South Florida",
+ "source": "Form 990 FY2024",
+ "vti_lockup": "meeting_label/assets/vti_logo.png",
+ "sheets": [
+  {
+   "title": "You may already have this covered",
+   "source": "Form 990 FY2024",
+   "headline": "You may have tested the price.<br>Has anyone read the agreement?",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Your filing gives us enough to see where the questions are. It does not tell us whether the economics you have are the ones available to you today."
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "label": "Why a second look",
+     "paras": [
+      "A bid can test price. A broker can test one market. Your buyers can run a strong process. <b>None of them necessarily reads the agreement underneath the spend</b> — the term, the fees, the minimums, the usage bands, the renewal mechanics, and what is actually being billed against what was agreed.",
+      "That is where a category specialist earns the hour."
+     ]
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "If the arrangement is already strong"
+       },
+       {
+        "type": "para",
+        "text": "We will tell you so, and you keep it — with something you did not have before: an independent read you can stand behind."
+       },
+       {
+        "type": "h2",
+        "text": "If it is not"
+       },
+       {
+        "type": "para",
+        "text": "You see the options before anything changes, and you decide whether to act."
+       },
+       {
+        "type": "para",
+        "text": "<b>Either answer is worth having.</b>"
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "What we did before writing"
+       },
+       {
+        "type": "rows",
+        "items": [
+         "Read your FY2024 Form 990, line by line.",
+         "Read Part VII Section B, where your filing names three of your suppliers.",
+         "Compared each line against filers of your type.",
+         "Checked it against 533 jobs we have finished in these categories.",
+         "None of it required anything from you."
+        ]
+       }
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "title": "What stood out",
+   "source": "Form 990 FY2024",
+   "headline": "Five things stood out.<br>None of them is a conclusion.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Four observations from the filing, and one thing no filing can show."
+    },
+    {
+     "type": "cards",
+     "items": [
+      {
+       "eyebrow": "What you buy is what you sell",
+       "heading": "Your largest indirect line is not overhead. It is inventory.",
+       "paras": [
+        "The biggest expense your filing breaks out apart from people is materials and supplies. In most organizations that line is small and administrative. In yours it is close to the work itself."
+       ],
+       "why": "it means the usual assumption about this line is wrong, and we have said so before quoting anything."
+      },
+      {
+       "eyebrow": "Your filing names its own suppliers",
+       "heading": "Three relationships are stated in your own words, with amounts.",
+       "paras": [
+        "Part VII Section B asks for the highest-paid contractors, what each was engaged to do and what each was paid. Yours describes the service. Most filings say less."
+       ],
+       "why": "it lets us speak about specific arrangements rather than about categories in general."
+      },
+      {
+       "eyebrow": "The largest line is not the strongest evidence",
+       "heading": "The category we can say most about is not the one with the most money in it.",
+       "paras": [
+        "Depth of completed work and size of spend are different things, and here they do not point at the same category. We ordered what follows by evidence."
+       ],
+       "why": "it is why the second section is not simply the second largest number."
+      },
+      {
+       "eyebrow": "One line is a fifth of everything, and we left it alone",
+       "heading": "The single biggest cost after people is reported in a way we will not model.",
+       "paras": [
+        "It combines something we work with something we do not, in one figure, and your return is not required to separate them. We named it and stopped there."
+       ],
+       "why": "what we decline to estimate tells you as much as what we estimate."
+      },
+      {
+       "eyebrow": "What a filing cannot show",
+       "set_apart": true,
+       "heading": "Whether the agreement behind the spend has ever been read by a specialist.",
+       "paras": [
+        "A category can have been bid, renewed, brokered and reviewed, and still carry terms nobody has looked at closely in years. That is not a failure of process. It is what a normal sourcing cycle is not built to catch."
+       ],
+       "why": "it is the reason a recent bid is a starting point rather than an answer."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Executive Opportunity Snapshot",
+   "source": "Form 990 FY2024",
+   "headline": "$82.1M of indirect spend, six categories modelled,<br>and one is eight times the peer median.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Indirect spend is the recurring operating cost that sits outside your program delivery and outside your payroll — it is the only thing we work. What follows compares the categories your Form 990 names separately against organizations of comparable size and type: a starting point for a question, never a verdict on how you are run."
+    },
+    {
+     "type": "stats",
+     "items": [
+      {
+       "figure": "$82.1M",
+       "label": "Indirect spend, as filed",
+       "note": "Salaries, depreciation and interest are excluded — they are not indirect and not ours to work."
+      },
+      {
+       "figure": "$45.3M",
+       "label": "Named by category",
+       "note": "A further $36.84M sits in lines the filing does not name. ERA works 55 categories; the baseline covers every one that applies."
+      },
+      {
+       "figure": "2",
+       "label": "Priorities the record can already evidence",
+       "note": "Operating supply, 98th percentile of 2,573 filers; uniforms and linens, 109 completed engagements. Six categories carry a figure."
+      }
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "Evidence depth: four of nine layers carry something for this organization — filed, benchmark, derived and registry. Operating, retrieved, engagement and verified are empty, and are shown as empty rather than filled."
+    },
+    {
+     "type": "h2",
+     "text": "Where each category sits"
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Category — and what it is in your operation",
+       "anchor": true,
+       "width": "30%"
+      },
+      {
+       "label": "Filed",
+       "num": true,
+       "width": "11%"
+      },
+      {
+       "label": "Your % of revenue",
+       "num": true,
+       "width": "13%"
+      },
+      {
+       "label": "Peer median",
+       "num": true,
+       "width": "12%"
+      },
+      {
+       "label": "Position",
+       "width": "15%"
+      },
+      {
+       "label": "What ERA has recovered here",
+       "width": "19%"
+      }
+     ],
+     "rows": [
+      {
+       "sub": "Running the stores and processing donated goods",
+       "cells": [
+        "Operating Supply",
+        "$37.97M",
+        "19.36%",
+        "2.40%",
+        {
+         "text": "Well above · 98th",
+         "class": "pos-lead"
+        },
+        {
+         "text": "21% median · 69 projects",
+         "class": "recovered"
+        }
+       ]
+      },
+      {
+       "sub": "Moving donated goods between sites and to customers",
+       "cells": [
+        "Freight / Small Parcel",
+        "$2.63M",
+        "1.34%",
+        "0.79%",
+        {
+         "text": "Above · 64th",
+         "class": "pos-above"
+        },
+        {
+         "text": "23% median · 89 projects",
+         "class": "recovered"
+        }
+       ]
+      },
+      {
+       "sub": "Donor and retail advertising",
+       "cells": [
+        "Marketing Services",
+        "$482K",
+        "0.25%",
+        "0.26%",
+        {
+         "text": "Below · 49th",
+         "class": "pos-median"
+        },
+        {
+         "text": "—",
+         "class": "absent"
+        }
+       ]
+      },
+      {
+       "sub": "The trucks that collect donations",
+       "cells": [
+        "Fleet Management",
+        "$2.12M",
+        "1.08%",
+        "1.21%",
+        {
+         "text": "Below · 46th",
+         "class": "pos-median"
+        },
+        {
+         "text": "—",
+         "class": "absent"
+        }
+       ]
+      },
+      {
+       "sub": "Staff movement across the program",
+       "cells": [
+        "Travel",
+        "$450K",
+        "0.23%",
+        "0.37%",
+        {
+         "text": "Below · 39th",
+         "class": "pos-median"
+        },
+        {
+         "text": "—",
+         "class": "absent"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "Each category is compared against every nonprofit filer that breaks it out separately, as a share of total revenue. A category needs at least 30 filers before we state a position, and the categories a filing does not break out are sized in the baseline, not here."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "sunrise",
+        "heading": "Why operating supply comes first",
+        "paras": [
+         "At <b>19.4% of revenue against a 2.4% peer median</b> it is roughly eight times, on 2,573 filers. A donated-goods retailer genuinely buys more supply than most nonprofits, so part of that gap is your model rather than your buying — how much is exactly the question. ERA has completed <b>69 operating-supply engagements at a median of 21%</b>."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "navy",
+        "heading": "Being at the median is not the same as being competitive",
+        "paras": [
+         "The median is drawn from organizations that have mostly never market-tested these categories either. It describes what is <i>normal</i>, not what is <i>available</i>. Of <b>2,660 completed ERA engagements, 2,649 recovered value</b> — a median of 28% of category spend, and the weakest quarter still returned 14%. Almost none of those clients were outliers on a filing."
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX, FY2024 · <b>BENCHMARK</b> per-category cohorts as shown, 30-filer minimum · <b>ERA RECOVERY</b> completed engagements, median of category spend. Operating, retrieved, engagement and verified are absent. Full sources overleaf."
+    }
+   ]
+  },
+  {
+   "title": "Where we would start",
+   "source": "Form 990 FY2024",
+   "headline": "Four lines. Cut it to one if you would rather.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "These are the four we would open with. Not because they are the biggest, but because we have finished the most work in them and your filing names them clearly enough to ask a real question."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Category",
+       "anchor": true,
+       "width": "31%"
+      },
+      {
+       "label": "On your filing",
+       "num": true,
+       "width": "13%"
+      },
+      {
+       "label": "What we would ask first",
+       "width": "56%"
+      }
+     ],
+     "rows": [
+      {
+       "sub": "MATERIALS AND SUPPLIES (line 24)",
+       "cells": [
+        "Operating Supply",
+        "$37.97M",
+        "we would ask how much is resale inventory and how much is consumed supply"
+       ]
+      },
+      {
+       "sub": "Part VII Section B — “LAUNDRY DISTRIBUTION”",
+       "cells": [
+        "Uniforms, Workwear & Linens",
+        "$1.52M",
+        "we would ask the contract term, and whether the last renewal was tested or rolled over"
+       ]
+      },
+      {
+       "sub": "FREIGHT AND POSTAGE (line 24)",
+       "cells": [
+        "Small Parcels",
+        "$2.63M",
+        "we would ask the carrier mix, and whether rates were set against today's volume"
+       ]
+      },
+      {
+       "sub": "Part VII Section B — “PAYROLL SERVICES”",
+       "cells": [
+        "Payroll and HR administration",
+        "$476K",
+        "we would ask what the per-employee fee covers, and what is billed on top"
+       ]
+      },
+      {
+       "emphasis": "total",
+       "cells": [
+        "Four categories",
+        "$42.60M",
+        "At the median of our finished work, $9.27M a year"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "label": "Why these four",
+     "paras": [
+      "<b>Why four and not one.</b> One category tells you whether we are useful in that category. Four tells you whether we are useful. You can cut it to one at any point, and most people do.",
+      "<b>Why four and not everything.</b> We work fifty-five categories. Your filing lets us see twelve. Starting everywhere is how these things stall."
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>ON YOUR FILING</b> Form 990 Part IX and Part VII B, FY2024 · <b>THE PERCENTAGES</b> come from jobs we have finished, never a published range"
+    }
+   ]
+  },
+  {
+   "title": "Every line",
+   "source": "Form 990 FY2024",
+   "headline": "Every indirect line on your return.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Twelve lines are indirect rather than people or non-cash. We looked at all twelve. Six carry a figure. The rest do not, and we say why."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Filed line",
+       "anchor": true,
+       "width": "27%"
+      },
+      {
+       "label": "Amount",
+       "num": true,
+       "width": "11%"
+      },
+      {
+       "label": "What we did with it",
+       "width": "62%"
+      }
+     ],
+     "rows": [
+      {
+       "emphasis": "shortlist",
+       "cells": [
+        "MATERIALS AND SUPPLIES · 24",
+        "$37.97M",
+        "We would start here · Operating Supply"
+       ]
+      },
+      {
+       "emphasis": "shortlist",
+       "cells": [
+        "Part VII B “LAUNDRY DISTRIBUTION”",
+        "$1.52M",
+        "We would start here · Uniforms, Workwear & Linens"
+       ]
+      },
+      {
+       "emphasis": "shortlist",
+       "cells": [
+        "FREIGHT AND POSTAGE · 24",
+        "$2.63M",
+        "We would start here · Small Parcels"
+       ]
+      },
+      {
+       "emphasis": "shortlist",
+       "cells": [
+        "Part VII B “PAYROLL SERVICES”",
+        "$476K",
+        "We would start here · Payroll and HR administration"
+       ]
+      },
+      {
+       "cells": [
+        "FLEET AND TRANSPORTATION · 24",
+        "$2.12M",
+        "Fleet Management"
+       ]
+      },
+      {
+       "cells": [
+        "Part VII B “THIRD PARTY ADMINISTRATORS”",
+        "$558K",
+        "Insurance"
+       ]
+      },
+      {
+       "cells": [
+        "Occupancy (line 16)",
+        "$24.38M",
+        "One figure covering rent with utilities, maintenance and janitorial. We work three of those four, not the rent, and a 990 does not separate them. We would ask whether your service charge reconciles to the apportionment schedule in your lease."
+       ]
+      },
+      {
+       "cells": [
+        "Fees for services — Other (line 11g), not itemised",
+        "$5.53M",
+        "Your filing itemises $2.55M of it to three named relationships — three of the six above. The rest is not itemised. We would ask what sits inside it."
+       ]
+      },
+      {
+       "cells": [
+        "SERVICE CHARGES (line 24)",
+        "$2.42M",
+        "A description we cannot read from outside. A question for the call, not a category."
+       ]
+      },
+      {
+       "cells": [
+        "All other expenses (line 24e)",
+        "$1.50M",
+        "The catch-all. By definition it holds what did not fit anywhere else."
+       ]
+      },
+      {
+       "cells": [
+        "Office expenses (line 13)",
+        "$1.37M",
+        "Line 13 mixes consumables with equipment. We work the consumables, not the equipment, and the line does not separate them."
+       ]
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "paras": [
+      "We only quote a percentage where we have finished at least ten jobs in that category. Where we have fewer, we name the line and quote nothing. Three more indirect lines carry no figure: advertising, $482K and travel, $450K sit under that bar, and legal and lobbying, $701K are fiduciary, not vendor spend."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "How this works, on one of your lines",
+   "source": "Form 990 FY2024",
+   "headline": "Uniforms and linens, start to finish.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "So you can see exactly what we do, rather than read about it. We picked this line because your filing names it, not because it is the biggest."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "Step",
+       "anchor": true,
+       "width": "21%"
+      },
+      {
+       "label": "What happens",
+       "width": "57%"
+      },
+      {
+       "label": "What it costs you",
+       "width": "22%"
+      }
+     ],
+     "rows": [
+      {
+       "cells": [
+        "1. You tell us when",
+        "When was this arrangement last tested against the market, and against what? If the answer is recent, we stop here.",
+        "Five minutes"
+       ]
+      },
+      {
+       "cells": [
+        "2. We read the agreement",
+        "Term, renewal mechanism, service specification, ancillary charges, minimums, and what happens on rollover.",
+        "You send one contract"
+       ]
+      },
+      {
+       "cells": [
+        "3. We read the invoices",
+        "Three months. What is actually being billed against what was agreed. This is where most of it lives.",
+        "An export"
+       ]
+      },
+      {
+       "cells": [
+        "4. A specialist looks",
+        "Someone who works this category repeatedly, not a generalist. They compare your terms against what the market is doing now.",
+        "Nothing"
+       ]
+      },
+      {
+       "cells": [
+        "5. We come back with options",
+        "Including keeping your supplier on better terms, which is the most common outcome.",
+        "Nothing"
+       ]
+      },
+      {
+       "cells": [
+        "6. You choose, or you do not",
+        "Nothing changes without you saying so, and keeping your supplier on better terms is the most common outcome.",
+        "Nothing"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "decision",
+     "rail": "sunrise",
+     "paras": [
+      "A recent market test is useful. We still read the agreement. In this category the value usually sits in the structure rather than the quoted rate — renewal terms, ancillary charges, minimums, replacement practice, service specification, inventory treatment, and what is actually billed. That is why a category can have been reviewed and still be worth an expert second look. The middle half of our finished work here came back <b>between 16% and 42%</b>, and the spread is that wide because the answer depends on the agreement."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "The big one",
+   "source": "Form 990 FY2024",
+   "headline": "Operating supply is the largest line, and the least certain.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "$37.97M. We are putting it second on purpose, and this page explains why."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "What we can see"
+       },
+       {
+        "type": "para",
+        "text": "Most organizations like you spend about 2.4% of revenue on this line. You spend about 19%. Of 2,573 comparable filers, roughly 2,522 spend a smaller share than you do."
+       },
+       {
+        "type": "h2",
+        "text": "Why that is probably fine"
+       },
+       {
+        "type": "para",
+        "text": "You run stores. A donated-goods retailer buys supply the way a retailer does. The gap is very likely your model, not your buying."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "What we cannot see"
+       },
+       {
+        "type": "para",
+        "text": "How much of it is resale inventory and how much is consumed supply. Your return does not separate them, and the difference changes the answer completely."
+       },
+       {
+        "type": "h2",
+        "text": "So we would ask that first"
+       },
+       {
+        "type": "para",
+        "text": "Before anything else. If most of it is inventory, the part worth working is much smaller and we would tell you so before doing any work."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "paras": [
+      "This is the biggest number in the Report and the one we are least sure about. We would rather say that than lead with it."
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>ON YOUR FILING</b> Form 990 Part IX · <b>THE COMPARISON</b> your spend on the line as a share of your revenue, against every comparable filer that reports the same line"
+    }
+   ]
+  },
+  {
+   "title": "A second opinion",
+   "source": "Form 990 FY2024",
+   "headline": "We are not replacing your process.<br>We are giving it a second opinion.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Your buyers know the operation. Finance sees the spend. A broker knows its market. A group purchasing agreement gives you negotiated access. Your suppliers know the service. None of that is a problem — it is the environment we expect to find."
+    },
+    {
+     "type": "table",
+     "columns": [
+      {
+       "label": "What you already have",
+       "anchor": true,
+       "width": "20%"
+      },
+      {
+       "label": "What it does well",
+       "width": "33%"
+      },
+      {
+       "label": "What a specialist adds",
+       "width": "47%"
+      }
+     ],
+     "rows": [
+      {
+       "cells": [
+        "Your buyers",
+        "Run the process, hold the relationships, know the operation",
+        "Depth in one category, and the time to spend on it"
+       ]
+      },
+      {
+       "cells": [
+        "Finance",
+        "Sees the spend, the budget and the variance",
+        "Reads the agreement underneath the spend — term, fees, minimums, what is billed on top"
+       ]
+      },
+      {
+       "cells": [
+        "A broker",
+        "Real expertise in one domain",
+        "The same depth across fifty-five categories"
+       ]
+      },
+      {
+       "cells": [
+        "A purchasing group",
+        "Negotiated access and a floor on price",
+        "Tests whether your actual mix and volume are getting the benefit on paper"
+       ]
+      },
+      {
+       "cells": [
+        "Your supplier",
+        "Knows your operation and keeps it running",
+        "An independent read, without having to replace them"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "decision",
+     "rail": "sunrise",
+     "heading": "What you get when we find nothing",
+     "paras": [
+      "Confirmation that the incumbent and your process are delivering competitive economics. Evidence that the category was independently reviewed. A record of why no change was recommended.",
+      "No unnecessary disruption to a supplier who is doing the job. A baseline to revisit at renewal, or when volume moves. A defensible answer if the category is questioned later."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "What happens next",
+   "source": "Form 990 FY2024",
+   "headline": "Answer one question and we will know.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "There is no proposal here and no scope of work. The next step is you telling us something the filing could not."
+    },
+    {
+     "type": "cards",
+     "items": [
+      {
+       "eyebrow": "First",
+       "heading": "You tell us when",
+       "paras": [
+        "For any one of the four lines: when was it last tested, and against what? If the answer is recent, we say so and stop."
+       ],
+       "why": "Costs you: a few minutes."
+      },
+      {
+       "eyebrow": "Then",
+       "heading": "One contract and three months of invoices",
+       "paras": [
+        "For whichever line you pick. That is the whole of the first data request. Redacted is fine."
+       ],
+       "why": "Costs you: an export and an email."
+      },
+      {
+       "eyebrow": "After that",
+       "heading": "We come back with what we found",
+       "paras": [
+        "Category by category, including where we think you are already in good shape. You decide what, if anything, to do."
+       ],
+       "why": "Costs you: nothing, and nothing changes without your say-so."
+      },
+      {
+       "eyebrow": "And the fee",
+       "set_apart": true,
+       "heading": "Only out of what is actually recovered",
+       "paras": [
+        "We share in the value only when it is actually recovered, after you have it and after it is verified. If we find nothing, there is no fee and no invoice for the work."
+       ],
+       "why": "Costs you: nothing, either way."
+      }
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "paras": [
+      "Everything in this Report is also online, where you can change any assumption and watch the model move.",
+      "<b>portal.wpp-us.com/goodwillsouthflorida-benchmark</b><br><b>No code. No form. No login.</b>"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "The look",
+   "source": "Form 990 FY2024",
+   "headline": "You may already have this covered.<br>We are not asking you to assume you do not.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "We are asking whether an independent category specialist should validate it."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "navy",
+        "heading": "If your arrangement is strong",
+        "paras": [
+         "Keep it, with confidence, and with an independent read behind the decision."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "panel",
+        "ground": "evidence",
+        "rail": "sunrise",
+        "heading": "If there is value left",
+        "paras": [
+         "You see it before anything changes, and you decide whether to act."
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "closing",
+     "heading": "Either way you know more than you knew before.",
+     "paras": [
+      "That is the value of the look. The first one needs one contract and a small sample of invoices, and creates no obligation to change a supplier."
+     ]
+    },
+    {
+     "type": "h2",
+     "text": "And what your filing could never show us"
+    },
+    {
+     "type": "para",
+     "text": "A Form 990 breaks out only the lines the form asks for. We work fifty-five categories; your filing shows us twelve. Waste, telecoms, packaging, payment processing, maintenance and grounds never reach a return at all. We cannot size them from outside. You can."
+    }
+   ]
+  }
+ ]
+}
