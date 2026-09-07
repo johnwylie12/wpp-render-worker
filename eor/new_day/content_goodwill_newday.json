@@ -1,0 +1,1294 @@
+{
+ "slug": "Goodwill_NewDay",
+ "organization": "Goodwill Industries of South Florida",
+ "source": "Form 990 FY2024",
+ "vti_lockup": "meeting_label/assets/vti_logo.png",
+ "imposition": [
+  "cover",
+  "letter",
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  "back"
+ ],
+ "sheets": [
+  {
+   "title": "The comparison",
+   "source": "Form 990 FY2024",
+   "headline": "We did not compare you<br>to nonprofits.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Most outside analysis measures a Goodwill against charities in general. That comparison is easy to make and easy to dismiss, because a donated-goods retailer does not buy like a charity. So we did not make it."
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "rail": "sunrise",
+     "paras": [
+      "We compared you to <b>forty Goodwill affiliates that break out the same operating supply line on their own Form 990.</b> Same model. Same donated-goods retail economics. Same line on the same return.",
+      "Ninety-one affiliates are in the public book, eighty-eight buildable, $5.72 billion of combined revenue across thirty-seven states. Forty of them separate this line."
+     ]
+    },
+    {
+     "type": "para",
+     "text": "What follows is that comparison, and a second one built from what your own named suppliers charge other organisations. Two independent readings of public filings. They point at the same three questions."
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX, FY2024 · <b>COHORT</b> 40 Goodwill affiliates, queried 2026-09-07 · <b>PUBLIC RECORD</b> everything in this Brief is drawn from filed returns."
+    }
+   ]
+  },
+  {
+   "title": "The affiliate distribution",
+   "source": "Form 990 FY2024",
+   "headline": "Forty Goodwill affiliates break out this line.<br>Thirty-nine spend less than you.",
+   "blocks": [
+    {
+     "type": "chart",
+     "chart": "affiliate_beeswarm",
+     "args": {
+      "rows": [
+       {
+        "account_id": 26570,
+        "name": "Goodwill Industries of Southwestern Michigan Inc",
+        "short": "Southwestern Michigan",
+        "state": "MI",
+        "rev": 13250042,
+        "pct": 20.21
+       },
+       {
+        "account_id": 23895,
+        "name": "Goodwill Industries of South Florida Inc",
+        "short": "Goodwill South Florida",
+        "state": "FL",
+        "rev": 196096296,
+        "pct": 19.36
+       },
+       {
+        "account_id": 25890,
+        "name": "Gulfstream Goodwill Industries Inc",
+        "short": "Gulfstream",
+        "state": "FL",
+        "rev": 17807529,
+        "pct": 17.21
+       },
+       {
+        "account_id": 24355,
+        "name": "Goodwill of Western and Northern Connecticut Inc",
+        "short": "W & N Connecticut",
+        "state": "CT",
+        "rev": 57351173,
+        "pct": 6.15
+       },
+       {
+        "account_id": 24364,
+        "name": "Goodwill Industries of the Inland Northwest",
+        "short": "Inland Northwest",
+        "state": "WA",
+        "rev": 56874255,
+        "pct": 4.76
+       },
+       {
+        "account_id": 18357,
+        "name": "Goodwill Industries of Western NY",
+        "short": "Western NY",
+        "state": "NY",
+        "rev": 26782991,
+        "pct": 4.67
+       },
+       {
+        "account_id": 15844,
+        "name": "Goodwill Industries of the Valley Works",
+        "short": "Valley Works",
+        "state": "VA",
+        "rev": 104197127,
+        "pct": 4.5
+       },
+       {
+        "account_id": 24912,
+        "name": "Goodwill Industries of the Gulf Coast Inc",
+        "short": "Gulf Coast",
+        "state": "AL",
+        "rev": 32346532,
+        "pct": 4.18
+       },
+       {
+        "account_id": 24513,
+        "name": "Goodwill Central Coast",
+        "short": "Central Coast",
+        "state": "CA",
+        "rev": 47424830,
+        "pct": 4.08
+       },
+       {
+        "account_id": 25211,
+        "name": "Heart of Texas Goodwill Industries",
+        "short": "Heart of Texas",
+        "state": "TX",
+        "rev": 26205578,
+        "pct": 3.95
+       },
+       {
+        "account_id": 24089,
+        "name": "Goodwill Keystone Area",
+        "short": "Keystone Area",
+        "state": "PA",
+        "rev": 97096239,
+        "pct": 3.84
+       },
+       {
+        "account_id": 25657,
+        "name": "Goodwill Industries of South Central California",
+        "short": "South Central California",
+        "state": "CA",
+        "rev": 20067335,
+        "pct": 3.63
+       },
+       {
+        "account_id": 24514,
+        "name": "Goodwill Industries of Middle Georgia Inc",
+        "short": "Middle Georgia",
+        "state": "GA",
+        "rev": 47414283,
+        "pct": 3.49
+       },
+       {
+        "account_id": 26435,
+        "name": "Goodwill Industries of Lubbock Inc",
+        "short": "Lubbock",
+        "state": "TX",
+        "rev": 13945956,
+        "pct": 2.91
+       },
+       {
+        "account_id": 25597,
+        "name": "Evansville Goodwill Industries Inc",
+        "short": "Evansville",
+        "state": "IN",
+        "rev": 22187893,
+        "pct": 2.68
+       },
+       {
+        "account_id": 24349,
+        "name": "Goodwill Industries of Southwest Florida Inc",
+        "short": "Southwest Florida",
+        "state": "FL",
+        "rev": 58002127,
+        "pct": 2.66
+       },
+       {
+        "account_id": 24552,
+        "name": "Goodwill Industries of the Southern Rivers Inc",
+        "short": "Southern Rivers",
+        "state": "GA",
+        "rev": 45317200,
+        "pct": 2.63
+       },
+       {
+        "account_id": 27203,
+        "name": "Goodwill Industries of South Mississippi Inc",
+        "short": "South Mississippi",
+        "state": "MS",
+        "rev": 10562372,
+        "pct": 2.57
+       },
+       {
+        "account_id": 24645,
+        "name": "Morgan Memorial Goodwill Industries Inc",
+        "short": "Morgan Memorial",
+        "state": "MA",
+        "rev": 41467625,
+        "pct": 2.54
+       },
+       {
+        "account_id": 25751,
+        "name": "Goodwill Industries of Northwest Ohio Inc",
+        "short": "Northwest Ohio",
+        "state": "OH",
+        "rev": 19212542,
+        "pct": 2.5
+       },
+       {
+        "account_id": 24275,
+        "name": "Goodwill of Central and Coastal Virginia Inc",
+        "short": "Central & Coastal Virginia",
+        "state": "VA",
+        "rev": 67197242,
+        "pct": 2.37
+       },
+       {
+        "account_id": 26541,
+        "name": "Goodwill Industries of South Central Ohio",
+        "short": "South Central Ohio",
+        "state": "OH",
+        "rev": 13385424,
+        "pct": 2.35
+       },
+       {
+        "account_id": 23965,
+        "name": "Goodwill Industries of Kentucky Inc",
+        "short": "Kentucky",
+        "state": "KY",
+        "rev": 138259072,
+        "pct": 2.21
+       },
+       {
+        "account_id": 23876,
+        "name": "Goodwill Industries of the Columbia Willamette",
+        "short": "Columbia Willamette",
+        "state": "OR",
+        "rev": 215516137,
+        "pct": 2.18
+       },
+       {
+        "account_id": 26560,
+        "name": "Goodwill Industries of North Louisiana Inc",
+        "short": "North Louisiana",
+        "state": "LA",
+        "rev": 13286272,
+        "pct": 2.13
+       },
+       {
+        "account_id": 24757,
+        "name": "Goodwill Industries of Mid-Michigan Inc",
+        "short": "Mid-Michigan",
+        "state": "MI",
+        "rev": 37194858,
+        "pct": 2.09
+       },
+       {
+        "account_id": 24593,
+        "name": "Goodwill of the Coastal Empire Inc",
+        "short": "Coastal Empire",
+        "state": "GA",
+        "rev": 43813912,
+        "pct": 1.91
+       },
+       {
+        "account_id": 24477,
+        "name": "Goodwill Industries of Lane County",
+        "short": "Lane County",
+        "state": "OR",
+        "rev": 50042331,
+        "pct": 1.86
+       },
+       {
+        "account_id": 25377,
+        "name": "Abilene Goodwill Industries Inc",
+        "short": "Abilene",
+        "state": "TX",
+        "rev": 23380370,
+        "pct": 1.75
+       },
+       {
+        "account_id": 24973,
+        "name": "Goodwill Southern Los Angeles County",
+        "short": "Southern LA County",
+        "state": "CA",
+        "rev": 30773976,
+        "pct": 1.72
+       },
+       {
+        "account_id": 23868,
+        "name": "Goodwill Industries of Houston",
+        "short": "Houston",
+        "state": "TX",
+        "rev": 224604694,
+        "pct": 1.71
+       },
+       {
+        "account_id": 26313,
+        "name": "Hagerstown Goodwill Industries Inc",
+        "short": "Hagerstown",
+        "state": "MD",
+        "rev": 14584952,
+        "pct": 1.63
+       },
+       {
+        "account_id": 26305,
+        "name": "Zanesville Welfare Org & Goodwill Industries",
+        "short": "Zanesville",
+        "state": "OH",
+        "rev": 14644315,
+        "pct": 1.45
+       },
+       {
+        "account_id": 24834,
+        "name": "Goodwill Industries of Hawaii Inc",
+        "short": "Hawaii",
+        "state": "HI",
+        "rev": 34510070,
+        "pct": 1.44
+       },
+       {
+        "account_id": 25645,
+        "name": "Goodwill Industries of Northeast Iowa Inc",
+        "short": "Northeast Iowa",
+        "state": "IA",
+        "rev": 20160203,
+        "pct": 1.21
+       },
+       {
+        "account_id": 24806,
+        "name": "Goodwill Temporary Services Inc",
+        "short": "Goodwill Temporary Services",
+        "state": "TX",
+        "rev": 35707645,
+        "pct": 1.01
+       },
+       {
+        "account_id": 23951,
+        "name": "Goodwill Industries Manasota Inc",
+        "short": "Manasota",
+        "state": "FL",
+        "rev": 146987524,
+        "pct": 0.8
+       },
+       {
+        "account_id": 24145,
+        "name": "Goodwill of Southwestern Pennsylvania",
+        "short": "Southwestern Pennsylvania",
+        "state": "PA",
+        "rev": 86731401,
+        "pct": 0.8
+       },
+       {
+        "account_id": 25058,
+        "name": "Goodwill Industries of Redwood Empire",
+        "short": "Redwood Empire",
+        "state": "CA",
+        "rev": 28918453,
+        "pct": 0.77
+       },
+       {
+        "account_id": 24040,
+        "name": "Goodwill Industries of North Central Wisc Inc",
+        "short": "North Central Wisconsin",
+        "state": "WI",
+        "rev": 106744713,
+        "pct": 0.75
+       }
+      ],
+      "subject_id": 23895,
+      "median": 2.44,
+      "q1": 1.71,
+      "q3": 3.86
+     },
+     "takeaway": "Operating supply is <b>19.36% of your total revenue</b>. The median across your own affiliates is <b>2.44%</b>."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "The defence that does not hold"
+       },
+       {
+        "type": "para",
+        "text": "The obvious answer is that a donated-goods retailer buys supply the way a retailer does, so the ratio should be higher. That would be persuasive if the comparison were against charities. It is not."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "Why it does not hold"
+       },
+       {
+        "type": "para",
+        "text": "The all-nonprofit median for this line is <b>2.40%</b>. The Goodwill affiliate median is <b>2.44%</b>. Running the identical model produces the identical ratio. The model does not move the number."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX, FY2024, each affiliate's own return · <b>DERIVED</b> operating supply divided by total revenue, per filer."
+    }
+   ]
+  },
+  {
+   "title": "Size and state",
+   "source": "Form 990 FY2024",
+   "headline": "It is not scale,<br>and it is not Florida.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Two explanations remain once the model is ruled out. Both are testable against the same forty filings, and both fail."
+    },
+    {
+     "type": "chart",
+     "chart": "size_and_state",
+     "args": {
+      "rows": [
+       {
+        "account_id": 26570,
+        "name": "Goodwill Industries of Southwestern Michigan Inc",
+        "short": "Southwestern Michigan",
+        "state": "MI",
+        "rev": 13250042,
+        "pct": 20.21
+       },
+       {
+        "account_id": 23895,
+        "name": "Goodwill Industries of South Florida Inc",
+        "short": "Goodwill South Florida",
+        "state": "FL",
+        "rev": 196096296,
+        "pct": 19.36
+       },
+       {
+        "account_id": 25890,
+        "name": "Gulfstream Goodwill Industries Inc",
+        "short": "Gulfstream",
+        "state": "FL",
+        "rev": 17807529,
+        "pct": 17.21
+       },
+       {
+        "account_id": 24355,
+        "name": "Goodwill of Western and Northern Connecticut Inc",
+        "short": "W & N Connecticut",
+        "state": "CT",
+        "rev": 57351173,
+        "pct": 6.15
+       },
+       {
+        "account_id": 24364,
+        "name": "Goodwill Industries of the Inland Northwest",
+        "short": "Inland Northwest",
+        "state": "WA",
+        "rev": 56874255,
+        "pct": 4.76
+       },
+       {
+        "account_id": 18357,
+        "name": "Goodwill Industries of Western NY",
+        "short": "Western NY",
+        "state": "NY",
+        "rev": 26782991,
+        "pct": 4.67
+       },
+       {
+        "account_id": 15844,
+        "name": "Goodwill Industries of the Valley Works",
+        "short": "Valley Works",
+        "state": "VA",
+        "rev": 104197127,
+        "pct": 4.5
+       },
+       {
+        "account_id": 24912,
+        "name": "Goodwill Industries of the Gulf Coast Inc",
+        "short": "Gulf Coast",
+        "state": "AL",
+        "rev": 32346532,
+        "pct": 4.18
+       },
+       {
+        "account_id": 24513,
+        "name": "Goodwill Central Coast",
+        "short": "Central Coast",
+        "state": "CA",
+        "rev": 47424830,
+        "pct": 4.08
+       },
+       {
+        "account_id": 25211,
+        "name": "Heart of Texas Goodwill Industries",
+        "short": "Heart of Texas",
+        "state": "TX",
+        "rev": 26205578,
+        "pct": 3.95
+       },
+       {
+        "account_id": 24089,
+        "name": "Goodwill Keystone Area",
+        "short": "Keystone Area",
+        "state": "PA",
+        "rev": 97096239,
+        "pct": 3.84
+       },
+       {
+        "account_id": 25657,
+        "name": "Goodwill Industries of South Central California",
+        "short": "South Central California",
+        "state": "CA",
+        "rev": 20067335,
+        "pct": 3.63
+       },
+       {
+        "account_id": 24514,
+        "name": "Goodwill Industries of Middle Georgia Inc",
+        "short": "Middle Georgia",
+        "state": "GA",
+        "rev": 47414283,
+        "pct": 3.49
+       },
+       {
+        "account_id": 26435,
+        "name": "Goodwill Industries of Lubbock Inc",
+        "short": "Lubbock",
+        "state": "TX",
+        "rev": 13945956,
+        "pct": 2.91
+       },
+       {
+        "account_id": 25597,
+        "name": "Evansville Goodwill Industries Inc",
+        "short": "Evansville",
+        "state": "IN",
+        "rev": 22187893,
+        "pct": 2.68
+       },
+       {
+        "account_id": 24349,
+        "name": "Goodwill Industries of Southwest Florida Inc",
+        "short": "Southwest Florida",
+        "state": "FL",
+        "rev": 58002127,
+        "pct": 2.66
+       },
+       {
+        "account_id": 24552,
+        "name": "Goodwill Industries of the Southern Rivers Inc",
+        "short": "Southern Rivers",
+        "state": "GA",
+        "rev": 45317200,
+        "pct": 2.63
+       },
+       {
+        "account_id": 27203,
+        "name": "Goodwill Industries of South Mississippi Inc",
+        "short": "South Mississippi",
+        "state": "MS",
+        "rev": 10562372,
+        "pct": 2.57
+       },
+       {
+        "account_id": 24645,
+        "name": "Morgan Memorial Goodwill Industries Inc",
+        "short": "Morgan Memorial",
+        "state": "MA",
+        "rev": 41467625,
+        "pct": 2.54
+       },
+       {
+        "account_id": 25751,
+        "name": "Goodwill Industries of Northwest Ohio Inc",
+        "short": "Northwest Ohio",
+        "state": "OH",
+        "rev": 19212542,
+        "pct": 2.5
+       },
+       {
+        "account_id": 24275,
+        "name": "Goodwill of Central and Coastal Virginia Inc",
+        "short": "Central & Coastal Virginia",
+        "state": "VA",
+        "rev": 67197242,
+        "pct": 2.37
+       },
+       {
+        "account_id": 26541,
+        "name": "Goodwill Industries of South Central Ohio",
+        "short": "South Central Ohio",
+        "state": "OH",
+        "rev": 13385424,
+        "pct": 2.35
+       },
+       {
+        "account_id": 23965,
+        "name": "Goodwill Industries of Kentucky Inc",
+        "short": "Kentucky",
+        "state": "KY",
+        "rev": 138259072,
+        "pct": 2.21
+       },
+       {
+        "account_id": 23876,
+        "name": "Goodwill Industries of the Columbia Willamette",
+        "short": "Columbia Willamette",
+        "state": "OR",
+        "rev": 215516137,
+        "pct": 2.18
+       },
+       {
+        "account_id": 26560,
+        "name": "Goodwill Industries of North Louisiana Inc",
+        "short": "North Louisiana",
+        "state": "LA",
+        "rev": 13286272,
+        "pct": 2.13
+       },
+       {
+        "account_id": 24757,
+        "name": "Goodwill Industries of Mid-Michigan Inc",
+        "short": "Mid-Michigan",
+        "state": "MI",
+        "rev": 37194858,
+        "pct": 2.09
+       },
+       {
+        "account_id": 24593,
+        "name": "Goodwill of the Coastal Empire Inc",
+        "short": "Coastal Empire",
+        "state": "GA",
+        "rev": 43813912,
+        "pct": 1.91
+       },
+       {
+        "account_id": 24477,
+        "name": "Goodwill Industries of Lane County",
+        "short": "Lane County",
+        "state": "OR",
+        "rev": 50042331,
+        "pct": 1.86
+       },
+       {
+        "account_id": 25377,
+        "name": "Abilene Goodwill Industries Inc",
+        "short": "Abilene",
+        "state": "TX",
+        "rev": 23380370,
+        "pct": 1.75
+       },
+       {
+        "account_id": 24973,
+        "name": "Goodwill Southern Los Angeles County",
+        "short": "Southern LA County",
+        "state": "CA",
+        "rev": 30773976,
+        "pct": 1.72
+       },
+       {
+        "account_id": 23868,
+        "name": "Goodwill Industries of Houston",
+        "short": "Houston",
+        "state": "TX",
+        "rev": 224604694,
+        "pct": 1.71
+       },
+       {
+        "account_id": 26313,
+        "name": "Hagerstown Goodwill Industries Inc",
+        "short": "Hagerstown",
+        "state": "MD",
+        "rev": 14584952,
+        "pct": 1.63
+       },
+       {
+        "account_id": 26305,
+        "name": "Zanesville Welfare Org & Goodwill Industries",
+        "short": "Zanesville",
+        "state": "OH",
+        "rev": 14644315,
+        "pct": 1.45
+       },
+       {
+        "account_id": 24834,
+        "name": "Goodwill Industries of Hawaii Inc",
+        "short": "Hawaii",
+        "state": "HI",
+        "rev": 34510070,
+        "pct": 1.44
+       },
+       {
+        "account_id": 25645,
+        "name": "Goodwill Industries of Northeast Iowa Inc",
+        "short": "Northeast Iowa",
+        "state": "IA",
+        "rev": 20160203,
+        "pct": 1.21
+       },
+       {
+        "account_id": 24806,
+        "name": "Goodwill Temporary Services Inc",
+        "short": "Goodwill Temporary Services",
+        "state": "TX",
+        "rev": 35707645,
+        "pct": 1.01
+       },
+       {
+        "account_id": 23951,
+        "name": "Goodwill Industries Manasota Inc",
+        "short": "Manasota",
+        "state": "FL",
+        "rev": 146987524,
+        "pct": 0.8
+       },
+       {
+        "account_id": 24145,
+        "name": "Goodwill of Southwestern Pennsylvania",
+        "short": "Southwestern Pennsylvania",
+        "state": "PA",
+        "rev": 86731401,
+        "pct": 0.8
+       },
+       {
+        "account_id": 25058,
+        "name": "Goodwill Industries of Redwood Empire",
+        "short": "Redwood Empire",
+        "state": "CA",
+        "rev": 28918453,
+        "pct": 0.77
+       },
+       {
+        "account_id": 24040,
+        "name": "Goodwill Industries of North Central Wisc Inc",
+        "short": "North Central Wisconsin",
+        "state": "WI",
+        "rev": 106744713,
+        "pct": 0.75
+       }
+      ],
+      "subject_id": 23895,
+      "label_ids": [
+       23868,
+       23876,
+       23951,
+       25890,
+       23895
+      ]
+     },
+     "takeaway": "The two largest affiliates in this comparison spend less than a tenth of what you do."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "Not scale"
+       },
+       {
+        "type": "para",
+        "text": "Goodwill Industries of Houston is larger than you at $224.6M and sits at <b>1.71%</b>. Columbia Willamette is larger at $215.5M and sits at <b>2.18%</b>. Both run more revenue through the same model."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "Not Florida"
+       },
+       {
+        "type": "para",
+        "text": "Four Florida affiliates break out the line and they split. Southwest Florida is at 2.66% and Manasota, at $147.0M, is at <b>0.80%</b> &mdash; among the lowest in the country."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX, FY2024 · <b>DERIVED</b> arithmetic on filed figures only. No modelled or estimated value appears on this page."
+    }
+   ]
+  },
+  {
+   "title": "The question",
+   "source": "Form 990 FY2024",
+   "headline": "So what is it?<br>We cannot answer that from outside.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "A filing shows a position. It does not show a cause. Every explanation we can test from public data has now failed, and the ones that remain are internal. Three of them, specifically."
+    },
+    {
+     "type": "rows",
+     "items": [
+      "<b>1 &nbsp; Is it accounting treatment?</b> &nbsp; If purchased goods for resale sit in this line rather than in cost of goods, the ratio is a classification artefact and there is nothing to recover. That is a real and welcome answer, and it takes one conversation to establish.",
+      "<b>2 &nbsp; Is it purchasing?</b> &nbsp; If the line is genuinely consumable supply, then $37.97M is being bought somehow, and the question becomes what was last tested and against what.",
+      "<b>3 &nbsp; Is it both?</b> &nbsp; Most often it is. Part of the line reclassifies and part of it does not, and the part that does not is where the work is."
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "decision",
+     "rail": "sunrise",
+     "paras": [
+      "We are not suggesting the number is wrong, and we are not suggesting anyone is overpaying. We are saying that your own peer set does not explain it, and that <b>the explanation is in your ledger rather than in ours.</b>"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Your suppliers",
+   "source": "Form 990 FY2024",
+   "headline": "Your filing names five suppliers.<br>Those suppliers file too.",
+   "blocks": [
+    {
+     "type": "lede",
+     "text": "Part VII Section B requires an organisation to name its five highest-paid independent contractors, describe what they do, and state what they were paid. Your filing names five. So do thousands of others."
+    },
+    {
+     "type": "table",
+     "rows": [
+      {
+       "cells": [
+        "N&K ENTERPRISES",
+        "LAUNDRY DISTRIBUTION",
+        "$1,518,596",
+        "Coral Gables, FL"
+       ]
+      },
+      {
+       "cells": [
+        "SOURCEAMERICA",
+        "CONSULTING SERVICES",
+        "$1,332,881",
+        "Vienna, VA"
+       ]
+      },
+      {
+       "cells": [
+        "GALLAGHER BASSETT SERVICES INC",
+        "THIRD PARTY ADMINISTRATORS",
+        "$558,228",
+        "Chicago, IL"
+       ]
+      },
+      {
+       "cells": [
+        "ADP INC",
+        "PAYROLL SERVICES",
+        "$476,232",
+        "Boston, MA"
+       ]
+      },
+      {
+       "cells": [
+        "HAMMOQ INC",
+        "CONSULTING",
+        "$312,577",
+        "Phoenix, AZ"
+       ]
+      }
+     ],
+     "columns": [
+      {
+       "label": "Named contractor",
+       "anchor": true,
+       "width": "30%"
+      },
+      {
+       "label": "Described as",
+       "width": "30%"
+      },
+      {
+       "label": "Disclosed",
+       "num": true,
+       "width": "18%"
+      },
+      {
+       "label": "Located",
+       "width": "22%"
+      }
+     ]
+    },
+    {
+     "type": "para",
+     "text": "Across the public book we hold <b>18,482 named contracts</b> from <b>4,542 organisations</b>, totalling <b>$22.19 billion</b>. That is not a benchmark. It is what comparable organisations disclosed paying, under penalty of perjury, on a filed return."
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part VII Section B, FY2024 · <b>PUBLIC RECORD</b> contractor names and amounts as filed. Names are held on file and are not printed beyond your own."
+    }
+   ]
+  },
+  {
+   "title": "What they charge others",
+   "source": "Form 990 FY2024",
+   "headline": "Two of your five named suppliers appear<br>in enough other filings to place.",
+   "blocks": [
+    {
+     "type": "chart",
+     "chart": "vendor_dumbbell",
+     "args": {
+      "vendors": [
+       {
+        "name": "ADP",
+        "orgs": 19,
+        "median": 225708,
+        "lo": 108830,
+        "hi": 678036,
+        "theirs": 476232,
+        "service": "Payroll services"
+       },
+       {
+        "name": "SourceAmerica",
+        "orgs": 13,
+        "median": 411983,
+        "lo": null,
+        "hi": 1332881,
+        "theirs": 1332881,
+        "service": "Consulting services"
+       }
+      ]
+     },
+     "takeaway": "SourceAmerica is paid <b>$1.33M</b> by you. The median across the thirteen organisations that name it is <b>$412K</b>."
+    },
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "Why only two"
+       },
+       {
+        "type": "para",
+        "text": "Gallagher Bassett is named by one other organisation in the entire book. One comparator is not a distribution, so we do not draw one. N&amp;K Enterprises and HAMMOQ appear nowhere else &mdash; that is normal for a regional supplier and is not a finding."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "What this is worth"
+       },
+       {
+        "type": "para",
+        "text": "It is a question with a filed number attached, not a conclusion. Scope explains a great deal of variation in a services contract. It is the kind of question a specialist puts to an arrangement on day one, and it is the kind you cannot ask without this data."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part VII Section B · <b>METHOD</b> exact-firm match; SourceAmerica is filed under three spellings and all three are included. <b>Amounts are annual totals, not rates.</b>"
+    }
+   ]
+  },
+  {
+   "title": "Where the lens reaches",
+   "source": "Form 990 FY2024",
+   "headline": "Your filing shows six categories.<br>We work fifty-five.",
+   "blocks": [
+    {
+     "type": "chart",
+     "chart": "observable_universe",
+     "args": {
+      "evidenced": 42726083,
+      "evidenced_n": 3,
+      "separated": 39030121,
+      "separated_n": 9,
+      "worked_n": 55
+     },
+     "takeaway": "Three categories carry completed ERA work behind them. Nine more are separated on your return but name no supplier."
+    },
+    {
+     "type": "para",
+     "text": "We only quote a percentage where we have finished at least ten jobs in that category. Where we have fewer, we name the line and quote nothing. That rule is why the outer ring above carries no number."
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "paras": [
+      "<b>We cannot size the outer ring from outside. You can.</b> Waste, telecom, packaging, payment processing, utilities, maintenance and office supply rarely appear separately on a Form 990. We are not asserting there is spend there. We are saying neither of us knows yet, and that finding out is a week of work rather than a project."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Every line",
+   "source": "Form 990 FY2024",
+   "headline": "Every indirect line on your return,<br>and what we did with each one.",
+   "blocks": [
+    {
+     "type": "table",
+     "rows": [
+      {
+       "cells": [
+        "MATERIALS AND SUPPLIES (line 24)",
+        "$37,971,710",
+        "Modelled &mdash; completed ERA work in this category"
+       ]
+      },
+      {
+       "cells": [
+        "Occupancy (line 16)",
+        "$24,376,137",
+        "Not an indirect vendor line, or blended &mdash; we do not size it"
+       ]
+      },
+      {
+       "cells": [
+        "Fees for services — Other (line 11g)",
+        "$8,082,654",
+        "Not an indirect vendor line, or blended &mdash; we do not size it"
+       ]
+      },
+      {
+       "cells": [
+        "FREIGHT AND POSTAGE (line 24)",
+        "$2,631,840",
+        "Modelled &mdash; completed ERA work in this category"
+       ]
+      },
+      {
+       "cells": [
+        "SERVICE CHARGES (line 24)",
+        "$2,423,261",
+        "Not an indirect vendor line, or blended &mdash; we do not size it"
+       ]
+      },
+      {
+       "cells": [
+        "FLEET AND TRANSPORTATION (line 24)",
+        "$2,122,533",
+        "Modelled &mdash; completed ERA work in this category"
+       ]
+      },
+      {
+       "cells": [
+        "All other expenses (line 24e)",
+        "$1,502,571",
+        "Not an indirect vendor line, or blended &mdash; we do not size it"
+       ]
+      },
+      {
+       "cells": [
+        "Office expenses (line 13)",
+        "$1,372,501",
+        "Named, not modelled &mdash; fewer than ten completed jobs in this category"
+       ]
+      },
+      {
+       "cells": [
+        "Fees for services — Legal (line 11b)",
+        "$637,913",
+        "Named, not modelled &mdash; fewer than ten completed jobs in this category"
+       ]
+      },
+      {
+       "cells": [
+        "Advertising and promotion (line 12)",
+        "$482,421",
+        "Named, not modelled &mdash; fewer than ten completed jobs in this category"
+       ]
+      },
+      {
+       "cells": [
+        "Travel (line 17)",
+        "$449,863",
+        "Named, not modelled &mdash; fewer than ten completed jobs in this category"
+       ]
+      },
+      {
+       "cells": [
+        "Fees for services — Lobbying (line 11d)",
+        "$63,200",
+        "Not an indirect vendor line, or blended &mdash; we do not size it"
+       ]
+      }
+     ],
+     "columns": [
+      {
+       "label": "Filed line",
+       "anchor": true,
+       "width": "36%"
+      },
+      {
+       "label": "Amount",
+       "num": true,
+       "width": "16%"
+      },
+      {
+       "label": "What we did with it",
+       "width": "48%"
+      }
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>FILED</b> Form 990 Part IX, FY2024. Occupancy and fees for services are blended lines that mix addressable and non-addressable elements; separating them needs your detail, not our assumption."
+    }
+   ]
+  },
+  {
+   "title": "Specialist depth",
+   "source": "Form 990 FY2024",
+   "headline": "What a specialist does<br>that a bid does not.",
+   "blocks": [
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "A bid tests price"
+       },
+       {
+        "type": "para",
+        "text": "It asks the market what it would charge for the thing you say you buy. It is useful, and it is where most reviews stop."
+       },
+       {
+        "type": "h2",
+        "text": "A specialist tests the arrangement"
+       },
+       {
+        "type": "para",
+        "text": "The contract underneath the spend. The minimums, the usage bands, the renewal mechanics, the ancillary charges, and what is actually being billed against them."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "Why that matters here"
+       },
+       {
+        "type": "para",
+        "text": "A category can have been bid, renewed, brokered and reviewed and still carry terms nobody has looked at in years. That is not a failure of process. It is what a normal sourcing cycle is not designed to catch."
+       },
+       {
+        "type": "h2",
+        "text": "The depth behind it"
+       },
+       {
+        "type": "para",
+        "text": "Sixty-nine completed engagements in operating supply. Eighty-nine in small parcels. Thirteen in fleet. That is the evidence base, and it is why we quote in those three and nowhere else."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "prov",
+     "text": "<b>BENCHMARK</b> completed ERA engagements per category, quartiles only · No published market band is used anywhere in this Brief."
+    }
+   ]
+  },
+  {
+   "title": "From clue to value",
+   "source": "Form 990 FY2024",
+   "headline": "A clue becomes verified value in six steps,<br>and you approve every one.",
+   "blocks": [
+    {
+     "type": "chart",
+     "chart": "evidence_to_action",
+     "args": {
+      "steps": [
+       [
+        "The clue in the filing",
+        "era"
+       ],
+       [
+        "A specialist reads it",
+        "era"
+       ],
+       [
+        "One contract, one invoice export",
+        "them"
+       ],
+       [
+        "Options, priced",
+        "era"
+       ],
+       [
+        "Your decision",
+        "them"
+       ],
+       [
+        "Implementation and verified value",
+        "era"
+       ]
+      ]
+     },
+     "takeaway": "Two of the six steps need anything from your team. The rest is ERA capacity."
+    },
+    {
+     "type": "para",
+     "text": "This is the part that is hard to see from a proposal. The analysis is not the product &mdash; implementation and measurement are. A recommendation that nobody has the time to carry out returns nothing."
+    }
+   ]
+  },
+  {
+   "title": "How we would work",
+   "source": "Form 990 FY2024",
+   "headline": "Control stays with you.<br>The incumbent may be the right answer.",
+   "blocks": [
+    {
+     "type": "rows",
+     "items": [
+      "<b>Nothing changes without your approval.</b> &nbsp; You choose which categories advance, and which recommendations are implemented. We do not have authority we were not given.",
+      "<b>Incumbents frequently remain.</b> &nbsp; The objective is the right commercial outcome, not supplier churn. A validated arrangement is a real result and we will say so plainly.",
+      "<b>Value can come from terms, structure, process or validation.</b> &nbsp; Not only from replacing a supplier.",
+      "<b>Our economics depend on yours.</b> &nbsp; If we create no verified recovery, there is no fee. We are paid from value after you have received it."
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "evidence",
+     "paras": [
+      "The recovery model on your three evidenced categories, at the median of completed ERA work, is <b>$9.01M a year</b> against <b>$42.73M</b> of filed spend. That is the size of the question, not a promise, and it is drawn from 171 completed engagements rather than a published range."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "The next step",
+   "source": "Form 990 FY2024",
+   "headline": "Ninety minutes, and you will know<br>whether any of this is real.",
+   "blocks": [
+    {
+     "type": "cols",
+     "columns": [
+      [
+       {
+        "type": "h2",
+        "text": "Who should be there"
+       },
+       {
+        "type": "para",
+        "text": "You, and whoever owns the general ledger. Nobody else is needed and nothing has to be prepared."
+       },
+       {
+        "type": "h2",
+        "text": "What happens"
+       },
+       {
+        "type": "para",
+        "text": "We put the affiliate comparison on the table and you tell us what is in the materials and supplies line. That single answer either closes the question or opens it."
+       }
+      ],
+      [
+       {
+        "type": "h2",
+        "text": "What you leave with"
+       },
+       {
+        "type": "para",
+        "text": "A written read of where your position is explained by treatment and where it is not &mdash; whether or not you engage ERA. It is yours either way."
+       },
+       {
+        "type": "h2",
+        "text": "Why it is worth it regardless"
+       },
+       {
+        "type": "para",
+        "text": "If the line reclassifies, you have an independent confirmation of something you believed. If it does not, you have found $37.97M that nobody has tested."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "panel",
+     "ground": "decision",
+     "rail": "sunrise",
+     "paras": [
+      "<b>Would you give us ninety minutes?</b> Your Brief is also live online &mdash; the code on the letter opens it. No code. No form. No login."
+     ]
+    }
+   ]
+  }
+ ]
+}

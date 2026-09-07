@@ -48,6 +48,8 @@ sys.path.insert(0, HERE)
 from tokens_generated import TOKENS, FORBIDDEN_HEXES  # noqa: E402
 import charts  # noqa: E402
 import charts_v3  # noqa: E402
+sys.path.insert(0, os.path.join(os.path.dirname(HERE), "new_day"))
+import charts_nd  # noqa: E402
 
 
 # ── the stylesheet, with the palette poured in from the generated tokens ─────
@@ -229,7 +231,10 @@ def block(b):
         # answering the question the copy left open.
         # charts_v3 holds the CFO-rebuild hero visuals and wins where a name
         # exists in both, so a v3 sheet never silently gets a v2 chart.
-        fn = getattr(charts_v3, b["chart"], None) or getattr(charts, b["chart"])
+        # newest module wins, so a New Day sheet never silently gets an older chart
+        fn = (getattr(charts_nd, b["chart"], None)
+              or getattr(charts_v3, b["chart"], None)
+              or getattr(charts, b["chart"]))
         svg = fn(**b.get("args", {}))
         out = '<div class="fig-wrap">'
         if b.get("takeaway"):
