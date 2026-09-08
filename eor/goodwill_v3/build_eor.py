@@ -696,8 +696,8 @@ page(9, "The categories your return does not show", """
       <td class='n'>19.2%</td><td class='n'><span class='dol'>$1,169,146</span></td>
       <td>Implication, not finding</td></tr>
   </tbody></table>
-<p class='capt'><b>These are implications, not findings.</b> Your return contains no figure for any
-  of them, which is why none of it is in the $2.51M.</p>
+<p class='capt'><b>Implications, not findings.</b> Your return contains no figure for any of them,
+  which is why none of it is in the $2.51M.</p>
 
 <h2 style='margin-top:14px'>And $69.6M your return reports as single figures</h2>
 <table>
@@ -705,24 +705,22 @@ page(9, "The categories your return does not show", """
     <th style='width:50%'>What sits inside it</th></tr></thead>
   <tbody>
     <tr><td class='cat'>Materials above the floor</td><td class='n'>$33,196,074</td>
-      <td>Production input, resale or consumed supply. One answer splits it.</td></tr>
+      <td>Production input, resale or consumed supply.</td></tr>
     <tr><td class='cat'>Occupancy · 16</td><td class='n'>$24,376,137</td>
-      <td>Rent with utilities, maintenance and janitorial in one figure. We work three of those four.</td></tr>
+      <td>Rent with utilities, maintenance and janitorial as one figure.</td></tr>
     <tr><td class='cat'>Fees for services — Other · 11g</td><td class='n'>$8,082,654</td>
       <td>Itemized only in part. We will not guess at the remainder.</td></tr>
     <tr><td class='cat'>Service charges · 24</td><td class='n'>$2,423,261</td>
-      <td>A description we cannot read from outside. A question for the call.</td></tr>
+      <td>A description we cannot read from outside.</td></tr>
     <tr><td class='cat'>All other expenses · 24e</td><td class='n'>$1,502,571</td>
       <td>The catch-all. By definition it holds what did not fit anywhere else.</td></tr>
   </tbody></table>
 <div class='panel deep'>
   <p style='margin:0'><b>This is the larger half of your indirect spend, and none of it is priced
     here.</b> Not because it is out of scope — occupancy alone holds three categories we work — but
-    because a Form 990 reports it in a way we cannot separate from outside. Most of it resolves in
-    one conversation with your controller.</p>
-  <p style='margin-top:7px;font-size:9.5pt;color:#5A6577'><b style='color:#003A70'>IMPLIED</b> median
-    share reported by comparable filers &middot; method in Appendix C &middot; none of this page is
-    included elsewhere in the Brief.</p></div>
+    because a Form 990 reports it in a way we cannot separate. Most of it resolves in one
+    conversation with your controller.</p></div>
+<div class='prov'><b>IMPLIED</b> median share reported by comparable filers &middot; Appendix C</div>
 
 """)
 
@@ -1036,28 +1034,28 @@ page(17, "Appendix C · The comparison group", """
 # ══════════ APPENDIX D ══════════
 page(18, "Appendix D · Every filed line", """
 <h1>Every indirect line on your return,<br>and what we did with each one.</h1>
-<p class='lede'>Eleven expense lines on your return are indirect rather than people or non-cash, and
-  your return separately names four service relationships. All fifteen are below with the reason
-  stated for each — <b>a line we declined to price is better shown than left out.</b></p>
+<p class='lede'>Eleven expense lines are indirect rather than people or non-cash, and your return
+  separately names four service relationships. All fifteen are below — <b>a line we declined to
+  price is better shown than left out.</b></p>
 <table>
   <thead><tr><th style='width:31%'>Filed line</th><th class='n' style='width:14%'>Amount</th>
     <th style='width:55%'>Disposition</th></tr></thead>
   <tbody>
-    <tr><td>MATERIALS AND SUPPLIES · 24</td><td class='n'>$37.97M</td><td><b>Priced to a floor</b> · Operating Supply, $4.78M in scope</td></tr>
+    <tr><td>MATERIALS AND SUPPLIES · 24</td><td class='n'>$37.97M</td><td><b>Priced to a floor</b> · $4.78M in scope</td></tr>
     <tr><td>Part VII B — service stated</td><td class='n'>$1.52M</td><td><b>Priced</b> · Uniforms, Workwear &amp; Linens</td></tr>
     <tr><td>FREIGHT AND POSTAGE · 24</td><td class='n'>$2.63M</td><td><b>Priced</b> · Small Parcels</td></tr>
     <tr class='q'><td>Office expenses · 13</td><td class='n'>$1.37M</td><td>Line 13 mixes consumables with equipment. We work the consumables, not the equipment, and the line does not separate them.</td></tr>
-    <tr><td>FLEET AND TRANSPORTATION · 24</td><td class='n'>$2.12M</td><td><b>Priced</b> · Fleet Management, on thirteen completed engagements</td></tr>
-    <tr class='q'><td>Fees for services — Legal · 11b</td><td class='n'>$638K</td><td>Fiduciary appointment, consistent with line 11d below. Not ordinary vendor spend.</td></tr>
+    <tr><td>FLEET AND TRANSPORTATION · 24</td><td class='n'>$2.12M</td><td><b>Priced</b> · Fleet Management</td></tr>
+    <tr class='q'><td>Fees for services — Legal · 11b</td><td class='n'>$638K</td><td>Fiduciary appointment, as line 11d. Not vendor spend.</td></tr>
     <tr><td>Part VII B — service stated</td><td class='n'>$476K</td><td><b>Priced</b> · Payroll and HR administration</td></tr>
-    <tr><td>Part VII B — service stated</td><td class='n'>$558K</td><td>Benefits Administration. Named, at the threshold, not included in the total.</td></tr>
-    <tr class='q'><td>Occupancy · 16</td><td class='n'>$24.38M</td><td>Rent together with utilities, maintenance and janitorial in one figure. We work three of the four.</td></tr>
-    <tr class='q'><td>Fees for services — Other · 11g</td><td class='n'>$8.08M</td><td>Itemized only in part on your return. The remainder is not itemized and we will not guess.</td></tr>
-    <tr class='q'><td>SERVICE CHARGES · 24</td><td class='n'>$2.42M</td><td>A description we cannot read from outside. A question for the call, not a category.</td></tr>
-    <tr class='q'><td>All other expenses · 24e</td><td class='n'>$1.50M</td><td>The catch-all. By definition it holds what did not fit anywhere else.</td></tr>
-    <tr class='q'><td>Advertising and promotion · 12</td><td class='n'>$482K</td><td>A category we work. Below our evidence threshold, so named and not priced.</td></tr>
-    <tr class='q'><td>Travel · 17</td><td class='n'>$450K</td><td>A category we work. Below our evidence threshold, so named and not priced.</td></tr>
-    <tr class='q'><td>Fees — Legal and Lobbying · 11d</td><td class='n'>$701K</td><td>Fiduciary appointments. Not vendor spend, and outside our scope.</td></tr>
+    <tr><td>Part VII B — service stated</td><td class='n'>$558K</td><td>Benefits Administration. At the threshold, not in the total.</td></tr>
+    <tr class='q'><td>Occupancy · 16</td><td class='n'>$24.38M</td><td>Rent with utilities, maintenance and janitorial as one figure.</td></tr>
+    <tr class='q'><td>Fees for services — Other · 11g</td><td class='n'>$8.08M</td><td>Itemized only in part. We will not guess at the remainder.</td></tr>
+    <tr class='q'><td>SERVICE CHARGES · 24</td><td class='n'>$2.42M</td><td>A description we cannot read from outside.</td></tr>
+    <tr class='q'><td>All other expenses · 24e</td><td class='n'>$1.50M</td><td>The catch-all, by definition.</td></tr>
+    <tr class='q'><td>Advertising and promotion · 12</td><td class='n'>$482K</td><td>Below our evidence threshold. Named, not priced.</td></tr>
+    <tr class='q'><td>Travel · 17</td><td class='n'>$450K</td><td>Below our evidence threshold. Named, not priced.</td></tr>
+    <tr class='q'><td>Fees — Legal and Lobbying · 11d</td><td class='n'>$701K</td><td>Fiduciary appointments. Outside our scope.</td></tr>
   </tbody></table>
 """)
 
