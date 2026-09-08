@@ -505,106 +505,49 @@ page(7, "How your categories compare", f"""
   <b>A difference is a reason to ask a better question, never a verdict on how you are run</b> —
   and the midpoint is drawn from organizations that have mostly never tested these lines either.</p>
 
-<svg viewBox="0 0 620 332" width="100%" height="332" font-family="Arial">
-  <g font-size="8.6" fill="#003A70" font-weight="bold">
-    <text x="0" y="9">CATEGORY</text><text x="188" y="9" text-anchor="end">FY2024</text>
-    <text x="196" y="9">SHARE OF OPERATING EXPENSE</text>
-    <text x="448" y="9" text-anchor="end">DIFFERENCE</text><text x="462" y="9">WHAT IT MEANS</text></g>
-  <line x1="0" y1="14" x2="620" y2="14" stroke="#003A70" stroke-width="1.3"/>
-  <g transform="translate(0,26)">
-    <text x="0" y="13" fill="#003A70" font-weight="bold" font-size="9.6">Operating Supply</text>
-    <text x="0" y="25" fill="#97999B" font-size="8.4">480 filers report this line</text>
-    <text x="188" y="19" text-anchor="end" fill="#1B2A41" font-size="9.6">$37.97M</text>
-    <rect x="196" y="6" width="103.0" height="8" fill="#D7DFE9"/>
-    <rect x="196" y="18" width="150.0" height="8" fill="#FF9C00"/>
-    <rect x="343.0" y="18" width="3" height="8" fill="#fff"/>
-    <rect x="346.0" y="18" width="2" height="8" fill="#FF9C00"/>
-    <text x="372" y="14" text-anchor="end" fill="#5A6577" font-size="8.8">2.06%</text>
-    <text x="372" y="26" text-anchor="end" fill="#003A70" font-size="9.6" font-weight="bold">20.51%</text>
-    <text x="448" y="21" text-anchor="end" fill="#5A6577" font-size="9.2">+1845 bps</text>
-    <text x="462" y="14" fill="#003A70" font-size="9.2" font-weight="bold">Ask about this first</text>
-    <text x="462" y="26" fill="#5A6577" font-size="8.6">A filing cannot explain it</text>
-  </g>
-  <g transform="translate(0,66)">
-    <text x="0" y="13" fill="#003A70" font-weight="bold" font-size="9.6">Small Parcels</text>
-    <text x="0" y="25" fill="#97999B" font-size="8.4">33 filers report this line</text>
-    <text x="188" y="19" text-anchor="end" fill="#1B2A41" font-size="9.6">$2.63M</text>
-    <rect x="196" y="6" width="68.0" height="8" fill="#D7DFE9"/>
-    <rect x="196" y="18" width="71.0" height="8" fill="#FF9C00"/>
-    <text x="372" y="14" text-anchor="end" fill="#5A6577" font-size="8.8">1.36%</text>
-    <text x="372" y="26" text-anchor="end" fill="#003A70" font-size="9.6" font-weight="bold">1.42%</text>
-    <text x="448" y="21" text-anchor="end" fill="#5A6577" font-size="9.2">+6 bps</text>
-    <text x="462" y="14" fill="#003A70" font-size="9.2" font-weight="bold">At the midpoint</text>
-    <text x="462" y="26" fill="#5A6577" font-size="8.6">Typical, not tested</text>
-  </g>
-  <g transform="translate(0,106)">
-    <text x="0" y="13" fill="#003A70" font-weight="bold" font-size="9.6">Fleet Management</text>
-    <text x="0" y="25" fill="#97999B" font-size="8.4">68 filers report this line</text>
-    <text x="188" y="19" text-anchor="end" fill="#1B2A41" font-size="9.6">$2.12M</text>
-    <rect x="196" y="6" width="53.5" height="8" fill="#D7DFE9"/>
-    <rect x="196" y="18" width="57.5" height="8" fill="#FF9C00"/>
-    <text x="372" y="14" text-anchor="end" fill="#5A6577" font-size="8.8">1.07%</text>
-    <text x="372" y="26" text-anchor="end" fill="#003A70" font-size="9.6" font-weight="bold">1.15%</text>
-    <text x="448" y="21" text-anchor="end" fill="#5A6577" font-size="9.2">+8 bps</text>
-    <text x="462" y="14" fill="#003A70" font-size="9.2" font-weight="bold">At the midpoint</text>
-    <text x="462" y="26" fill="#5A6577" font-size="8.6">Typical, not tested</text>
-  </g>
-  <g transform="translate(0,146)">
-    <text x="0" y="13" fill="#003A70" font-weight="bold" font-size="9.6">Marketing Services</text>
-    <text x="0" y="25" fill="#97999B" font-size="8.4">1,617 filers report this line</text>
-    <text x="188" y="19" text-anchor="end" fill="#1B2A41" font-size="9.6">$482K</text>
-    <rect x="196" y="6" width="10.0" height="8" fill="#D7DFE9"/>
-    <rect x="196" y="18" width="13.0" height="8" fill="#FF9C00"/>
-    <text x="372" y="14" text-anchor="end" fill="#5A6577" font-size="8.8">0.20%</text>
-    <text x="372" y="26" text-anchor="end" fill="#003A70" font-size="9.6" font-weight="bold">0.26%</text>
-    <text x="448" y="21" text-anchor="end" fill="#5A6577" font-size="9.2">+6 bps</text>
-    <text x="462" y="14" fill="#003A70" font-size="9.2" font-weight="bold">At the midpoint</text>
-    <text x="462" y="26" fill="#5A6577" font-size="8.6">Typical, not tested</text>
-  </g>
-  <g transform="translate(0,186)">
-    <text x="0" y="13" fill="#003A70" font-weight="bold" font-size="9.6">Professional Services</text>
-    <text x="0" y="25" fill="#97999B" font-size="8.4">1,878 filers report this line</text>
-    <text x="188" y="19" text-anchor="end" fill="#1B2A41" font-size="9.6">$638K</text>
-    <rect x="196" y="6" width="15.0" height="8" fill="#D7DFE9"/>
-    <rect x="196" y="18" width="17.0" height="8" fill="#FF9C00"/>
-    <text x="372" y="14" text-anchor="end" fill="#5A6577" font-size="8.8">0.30%</text>
-    <text x="372" y="26" text-anchor="end" fill="#003A70" font-size="9.6" font-weight="bold">0.34%</text>
-    <text x="448" y="21" text-anchor="end" fill="#5A6577" font-size="9.2">+4 bps</text>
-    <text x="462" y="14" fill="#003A70" font-size="9.2" font-weight="bold">At the midpoint</text>
-    <text x="462" y="26" fill="#5A6577" font-size="8.6">Typical, not tested</text>
-  </g>
-  <g transform="translate(0,226)">
-    <text x="0" y="13" fill="#003A70" font-weight="bold" font-size="9.6">Travel</text>
-    <text x="0" y="25" fill="#97999B" font-size="8.4">1,917 filers report this line</text>
-    <text x="188" y="19" text-anchor="end" fill="#1B2A41" font-size="9.6">$450K</text>
-    <rect x="196" y="6" width="12.5" height="8" fill="#D7DFE9"/>
-    <rect x="196" y="18" width="12.0" height="8" fill="#7E97B4"/>
-    <text x="372" y="14" text-anchor="end" fill="#5A6577" font-size="8.8">0.25%</text>
-    <text x="372" y="26" text-anchor="end" fill="#003A70" font-size="9.6" font-weight="bold">0.24%</text>
-    <text x="448" y="21" text-anchor="end" fill="#5A6577" font-size="9.2">-1 bps</text>
-    <text x="462" y="14" fill="#003A70" font-size="9.2" font-weight="bold">Below the midpoint</text>
-    <text x="462" y="26" fill="#5A6577" font-size="8.6">No question here</text>
-  </g>
-  <g transform="translate(0,266)">
-    <text x="0" y="13" fill="#003A70" font-weight="bold" font-size="9.6">Office Supplies</text>
-    <text x="0" y="25" fill="#97999B" font-size="8.4">1,984 filers report this line</text>
-    <text x="188" y="19" text-anchor="end" fill="#1B2A41" font-size="9.6">$1.37M</text>
-    <rect x="196" y="6" width="53.5" height="8" fill="#D7DFE9"/>
-    <rect x="196" y="18" width="37.0" height="8" fill="#7E97B4"/>
-    <text x="372" y="14" text-anchor="end" fill="#5A6577" font-size="8.8">1.07%</text>
-    <text x="372" y="26" text-anchor="end" fill="#003A70" font-size="9.6" font-weight="bold">0.74%</text>
-    <text x="448" y="21" text-anchor="end" fill="#5A6577" font-size="9.2">-33 bps</text>
-    <text x="462" y="14" fill="#003A70" font-size="9.2" font-weight="bold">Below the midpoint</text>
-    <text x="462" y="26" fill="#5A6577" font-size="8.6">No question here</text>
-  </g>
-  <line x1="0" y1="306" x2="620" y2="306" stroke="#D7DFE9"/>
-  <g font-size="8.4" fill="#5A6577">
-    <rect x="0" y="315" width="14" height="7" fill="#D7DFE9"/><text x="19" y="322">comparable filers</text>
-    <rect x="118" y="315" width="14" height="7" fill="#FF9C00"/><text x="137" y="322">you, above</text>
-    <rect x="208" y="315" width="14" height="7" fill="#7E97B4"/><text x="227" y="322">you, below</text>
-    <text x="462" y="322">bars scale to 3%</text>
-  </g>
-</svg>
+<table class='tight' style='margin-top:12px'>
+  <thead><tr><th style='width:27%'>Category</th><th class='n' style='width:12%'>FY2024</th>
+    <th class='n' style='width:13%'>Comparable filers</th><th class='n' style='width:10%'>You</th>
+    <th class='n' style='width:11%'>Difference, bps</th><th style='width:27%'>What it means</th></tr></thead>
+  <tbody>
+    <tr style='background:#F2F5F8'><td><div class='cat'>Operating Supply</div><div class='sub'>480 filers report this line</div></td>
+      <td class='n'>$37.97M</td><td class='n'>2.06%</td>
+      <td class='n'><span style='color:#C07400;font-weight:700;font-size:10.5pt'>20.51%</span></td>
+      <td class='n'>+1845</td>
+      <td><span style='color:#003A70;font-weight:700'>Ask about this first</span><div class='sub'>A filing cannot explain it</div></td></tr>
+    <tr><td><div class='cat'>Small Parcels</div><div class='sub'>33 filers report this line</div></td>
+      <td class='n'>$2.63M</td><td class='n'>1.36%</td>
+      <td class='n'><span style='color:#003A70;font-weight:700;font-size:10.5pt'>1.42%</span></td>
+      <td class='n'>+6</td>
+      <td><span style='color:#003A70;font-weight:700'>At the midpoint</span><div class='sub'>Typical, not tested</div></td></tr>
+    <tr><td><div class='cat'>Fleet Management</div><div class='sub'>68 filers report this line</div></td>
+      <td class='n'>$2.12M</td><td class='n'>1.07%</td>
+      <td class='n'><span style='color:#003A70;font-weight:700;font-size:10.5pt'>1.15%</span></td>
+      <td class='n'>+8</td>
+      <td><span style='color:#003A70;font-weight:700'>At the midpoint</span><div class='sub'>Typical, not tested</div></td></tr>
+    <tr><td><div class='cat'>Marketing Services</div><div class='sub'>1,617 filers report this line</div></td>
+      <td class='n'>$482K</td><td class='n'>0.20%</td>
+      <td class='n'><span style='color:#003A70;font-weight:700;font-size:10.5pt'>0.26%</span></td>
+      <td class='n'>+6</td>
+      <td><span style='color:#003A70;font-weight:700'>At the midpoint</span><div class='sub'>Typical, not tested</div></td></tr>
+    <tr><td><div class='cat'>Professional Services</div><div class='sub'>1,878 filers report this line</div></td>
+      <td class='n'>$638K</td><td class='n'>0.30%</td>
+      <td class='n'><span style='color:#003A70;font-weight:700;font-size:10.5pt'>0.34%</span></td>
+      <td class='n'>+4</td>
+      <td><span style='color:#003A70;font-weight:700'>At the midpoint</span><div class='sub'>Typical, not tested</div></td></tr>
+    <tr><td><div class='cat'>Travel</div><div class='sub'>1,917 filers report this line</div></td>
+      <td class='n'>$450K</td><td class='n'>0.25%</td>
+      <td class='n'><span style='color:#5A6577;font-weight:700;font-size:10.5pt'>0.24%</span></td>
+      <td class='n'>-1</td>
+      <td><span style='color:#003A70;font-weight:700'>Below the midpoint</span><div class='sub'>No question here</div></td></tr>
+    <tr><td><div class='cat'>Office Supplies</div><div class='sub'>1,984 filers report this line</div></td>
+      <td class='n'>$1.37M</td><td class='n'>1.07%</td>
+      <td class='n'><span style='color:#5A6577;font-weight:700;font-size:10.5pt'>0.74%</span></td>
+      <td class='n'>-33</td>
+      <td><span style='color:#003A70;font-weight:700'>Below the midpoint</span><div class='sub'>No question here</div></td></tr>
+  </tbody></table>
+<p class='capt'>Share of total operating expense. Uniforms and payroll administration are named in
+  Part VII Section B and have no comparable filed cohort.</p>
 
 <div class='panel cream'>
   <p style='margin:0'><b>Five of these seven sit within a few basis points of the midpoint, and that
