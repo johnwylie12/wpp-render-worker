@@ -34,8 +34,12 @@ Env
     SNAPSHOT_DOC_TYPES           (default: opportunity_snapshot)  comma-separated
     POLL_SECONDS                 (default: 60)
 """
-import os, sys, json, time, re, tempfile, subprocess, datetime, traceback
+import os, sys, json, time, re, tempfile, subprocess, datetime, traceback, logging
 import httpx
+
+# fetch_signoff() warns through `log`; it was never defined, so any account with no
+# assigned_to raised NameError and the cover / note card render failed.
+log = logging.getLogger("wpp-render-worker")
 from pypdf import PdfReader, PdfWriter
 import release_gate
 
