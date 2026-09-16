@@ -75,6 +75,10 @@ class GateTest(unittest.TestCase):
                                   "Professional Services $4,789,"]), IDENTITY)
         self.assertTrue(any("currency stopped mid-render" in x for x in f), f)
 
+    def test_a_sentence_ending_on_a_full_figure_passes(self):
+        f = rg.check(self.render(self.clean_lines() + ["Exact figures, on $25,303,506."]), IDENTITY)
+        self.assertFalse(any("currency stopped mid-render" in x for x in f), f)
+
     def test_sign_with_no_number_fails(self):
         f = rg.check(self.render(["Hilltop Health", "portal.wpp-us.com/htop-benchmark",
                                   "Change + against last year"]), IDENTITY)
@@ -109,6 +113,32 @@ class GateTest(unittest.TestCase):
         f = rg.check(self.render(self.clean_lines() + ["We surface three priorities."]),
                      IDENTITY, priority_count=2)
         self.assertTrue(any("executive summary claims 3" in x for x in f), f)
+
+    # SETTLED #257. The Goodwill Brief pointed at laundry; the long form named
+    # "four categories to open first". Both capped the engagement.
+    def test_naming_a_starting_category_fails(self):
+        for bad in ["If we were choosing, we would start with uniforms, workwear and linens.",
+                    "Laundry distribution  START HERE",
+                    "Four categories to open first, and why these four.",
+                    "Recommendation - open the four categories your return names.",
+                    "One answer and one contract to start.",
+                    "We recommend starting with fleet."]:
+            f = rg.check(self.render(self.clean_lines() + [bad]), IDENTITY)
+            self.assertTrue(any("settled #257" in x for x in f), (bad, f))
+
+    def test_starting_point_language_is_not_a_starting_set(self):
+        f = rg.check(self.render(self.clean_lines() + [
+            "A starting point rather than a conclusion.",
+            "Every line on page 3, at the same time.",
+            "Is your laundry distribution one agreement or several?"]), IDENTITY)
+        self.assertFalse(any("settled #257" in x for x in f), f)
+
+    def test_completeness_runs_when_line_items_are_supplied(self):
+        # check() used line_items without declaring it, so every call raised
+        # NameError and the gate could not run at all.
+        f = rg.check(self.render(self.clean_lines()), IDENTITY,
+                     line_items=[{"label": "Occupancy (line 16)", "amount": 24376137}])
+        self.assertTrue(any("LAW 26" in x for x in f), f)
 
     def test_enforce_raises_rather_than_reports(self):
         with self.assertRaises(rg.ReleaseFailure):
