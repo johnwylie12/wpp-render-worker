@@ -43,6 +43,29 @@ BANNED = [
     (r"\bsavings?\b(?!\s+account)", "savings"),
 ]
 
+# SETTLED #257 (amends LAW 30.4) — NEVER NAME A STARTING CATEGORY OR SET.
+# ERA works every line it can size at once and the client decides each one.
+# A Brief that says "start with uniforms" or "four categories to open first"
+# caps a multi-project engagement at one line before the first call. This
+# shipped repeatedly because LAW 30.4 carried "start with uniforms" as its
+# example. Mirrors public.v_starting_set_violations; keep the two in step.
+STARTING_SET = [
+    (r"\bstart here\b", "start here"),
+    (r"\b(?:we|i) (?:would|'d|will|recommend|suggest)\s+(?:start|begin|open)(?:ing)?\b", "we would start"),
+    (r"\b(?:recommend|suggest)(?:ed|s)?\s+(?:starting|beginning|opening)\b", "recommend starting"),
+    (r"\bwhere (?:we|i) (?:would|'d) (?:start|begin)\b", "where we would start"),
+    (r"\b(?:start|begin|open)(?:ing)?\s+(?:with|on)\s+(?:the\s+|your\s+)?"
+     r"(?:uniform|laundry|linen|fleet|parcel|freight|insurance|telecom|payroll|office|waste|energy|"
+     r"utilit|janitorial|cleaning|technology|food|print|packag|supply|supplies|travel|marketing|"
+     r"benefit|banking|merchant|facilit|maintenance)", "start with a named category"),
+    (r"\b(?:open|start|review|tackle)(?:ed)?\s+first\b", "open first"),
+    (r"\b(?:one|two|three|four|five|six|a single|\d+)\s+(?:categor(?:y|ies)|lines?|contracts?|agreements?)"
+     r"\s+(?:to\s+)?(?:start|open|begin|first)", "n to start"),
+    (r"\b(?:open|review|start)\s+(?:the\s+)?(?:one|two|three|four|five|six|\d+)\s+categor", "open the n categories"),
+    (r"\b(?:one|a single)\s+(?:contract|agreement)\s+to\s+(?:start|begin)", "one contract to start"),
+    (r"\bif (?:we|i) were choosing\b", "if we were choosing"),
+]
+
 # THE ONE EXEMPTION LAW 8 GRANTS, AND THE GATE DID NOT HONOUR IT.
 #
 # LAW 8, verbatim: '"Opportunity" for prospect estimates. "Savings" only for
@@ -79,7 +102,9 @@ UNRESOLVED_TOKEN = re.compile(r"\{[A-Za-z]?\[[^\]]*\]\}|\{\{[^}]*\}\}|\{[A-Z_]{3
 # A number that stopped mid-render. The category table printed "$4,789," where
 # "$4.79M" belonged, and the change column printed a sign with no number. Both
 # were invisible to every check that existed.
-TRUNCATED_MONEY = re.compile(r"\$\s?[\d,]*[.,]\s*(?=$|[^\d])", re.M)
+# A sentence may end on a full figure ("on $25,303,506."), so a trailing period
+# is not a truncation. The failure that shipped was a trailing comma.
+TRUNCATED_MONEY = re.compile(r"\$\s?[\d,]*,\s*(?=$|[^\d])", re.M)
 NAKED_SIGN = re.compile(r"(?<![\w$])[+−-]\s*(?=$|[^\d.\s])", re.M)
 TRUNCATED_PCT = re.compile(r"\d[.,]\s*%")
 
@@ -105,13 +130,16 @@ def pdf_text(path):
     return "\n".join(pages), pages
 
 
-def check(rendered_pdf, identity, frozen_plan=None, qr_payloads=(), priority_count=None):
+def check(rendered_pdf, identity, frozen_plan=None, qr_payloads=(), priority_count=None,
+          line_items=None, declared_absent=()):
     """Run every release check. Returns the list of failures; raises nothing.
 
     identity      the ONE identity object off the frozen plan
     frozen_plan   the plan the render was authorized by (for the page count)
     qr_payloads   every string a QR in this package was generated from
     priority_count  how many priority modules the executive summary claims
+    line_items    account_financials.line_items, for the LAW 26 completeness check
+    declared_absent  filed labels deliberately named-but-not-modeled
     """
     failures = []
     text, pages = pdf_text(rendered_pdf)
@@ -179,6 +207,14 @@ def check(rendered_pdf, identity, frozen_plan=None, qr_payloads=(), priority_cou
         if planned and int(planned) != len(pages):
             failures.append(f"page count {len(pages)} does not match the frozen plan ({planned})")
 
+    # 9 — settled #257: no starting category or starting set, anywhere in print
+    flat = re.sub(r"\s+", " ", low)
+    for pattern, label in STARTING_SET:
+        m = re.search(pattern, flat)
+        if m:
+            ctx = flat[max(0, m.start() - 30): m.end() + 30].strip()
+            failures.append(f"names a starting category or set ({label}): ...{ctx}... (settled #257)")
+
     return failures
 
 
@@ -216,7 +252,7 @@ def _completeness_failures(text, line_items, declared_absent=()):
 
     A line counts as present if its amount appears in the rendered text in any of
     the forms the Report uses - $24,376,137 / $24.4M / $24,376K - or if its label
-    was explicitly declared as named-but-not-modelled by the caller.
+    was explicitly declared as named-but-not-modeled by the caller.
     """
     if not line_items:
         return ["completeness: no line items supplied; cannot verify LAW 26"]
