@@ -65,7 +65,16 @@ body { color:#1a1a1a; font-size:11pt; line-height:1.45; }
 p     { margin:0 0 9px; }
 .vale { margin:6px 0 0; }
 
-.sig img { width:115px; height:auto; display:block; margin:4px 0 2px; }   /* fallback; the inline style from signature_width_px wins */
+/* CONSTRAIN BOTH AXES. A mark is sized by HEIGHT, so every partner signs at the
+   same visual weight, with max-width as the guard so a wide mark cannot run out
+   of the text column. The mark's own aspect ratio decides which one binds.
+   Pinning width alone is what broke this. John's mark is 640x472 (aspect 1.36),
+   Jodi's is 640x122 (aspect 5.25), so one width gives them very different
+   heights. Measured at the old fixed widths: John 115x85, Jodi 330x63 here and
+   192x37 on the note card - under half John's height on a 5x7 card.
+   Measured now: John 115x85 (unchanged), Arvo 259x85, Jodi 446x85 in the 624px
+   column. This is the rule .sig.two .mk img below already used. */
+.sig img { max-width:100%; max-height:85px; width:auto; height:auto; display:block; margin:4px 0 2px; }
 .sig .nm { font-weight:bold; }
 .sig .tl { font-size:10pt; }
 .sig .ct { font-size:10pt; color:#4a4a4a; }
@@ -149,7 +158,10 @@ p     { margin:0 0 9px; }
   </div>
   {% else %}
   <div class="sig" style="max-width:3.5in">
-    {% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}" style="width:{{signature_width_px}}px">{% endif %}
+    {# No inline width: .sig img caps height AND width, and the mark's own aspect
+       ratio picks which binds. An inline width would beat the stylesheet and put
+       us back to one number that suits only a 1.36-aspect mark. #}
+    {% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}">{% endif %}
     <div class="nm">{{signoff_name}}</div>
     <div class="tl">{{signoff_title}} &middot; {{signoff_firm}}</div>
     <div class="ct">{{signoff_email}} &middot; {{signoff_phone}}</div>

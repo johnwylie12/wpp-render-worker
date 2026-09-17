@@ -12,7 +12,13 @@
   .body p{color:var(--blue);font-size:12pt;line-height:1.4;margin:0 0 13px;font-weight:400;}
   .regards{color:var(--blue);font-size:12pt;margin:0.24in 0 0;}
   .sig{margin-top:0.32in;}
-  .sig .mark{display:block;width:96px;height:auto;margin:0 0 6px;}  /* fallback; the inline sig_width_px wins */
+  /* CONSTRAIN BOTH AXES — see the same rule in the cover letter. Sized by HEIGHT
+     so every partner signs at the same weight, with max-width as the guard so a
+     wide mark cannot run off the 3.68in card measure. Pinning width alone gave
+     John 96x77 and Jodi 192x37 - under half his height, on a 5x7 card where it
+     is least readable. Measured now: John 96x77 (unchanged), Arvo 235x77,
+     Jodi 353x67 (max-width binds, and that is the card's full measure). */
+  .sig .mark{display:block;max-width:100%;max-height:77px;width:auto;height:auto;margin:0 0 6px;}
   .sig .nm{color:var(--navy);font-weight:700;font-size:13pt;}
   .sig .role{color:var(--navy);font-size:10.5pt;margin-top:3px;}
   .sig .contact{color:var(--grey);font-size:10pt;margin-top:3px;}
@@ -25,7 +31,8 @@
     <div class="body">{% for p in body %}<p>{{ p }}</p>{% endfor %}</div>
     <div class="regards">Best regards,</div>
     <div class="sig">
-      <img class="mark" src="{{ sig_uri }}" alt="" style="width:{{ sig_width_px }}px"/>
+      {# No inline width — it would beat .sig .mark and re-pin one axis. #}
+      <img class="mark" src="{{ sig_uri }}" alt=""/>
       <div class="nm">{{ signoff.name }}</div>
       {% if signoff.role %}<div class="role">{{ signoff.role }}</div>{% endif %}
       {% if signoff.contact %}<div class="contact">{{ signoff.contact }}</div>{% endif %}
