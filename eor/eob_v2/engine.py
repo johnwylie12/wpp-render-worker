@@ -79,6 +79,7 @@ def _signer(row):
         "pid": pid, "name": row["signoff_name"], "title": row["signoff_title"],
         "firm": row["signoff_firm"], "email": row["signoff_email"], "phone": row["signoff_phone"],
         "booking": row.get("booking_url"), "sig": wpp_signatures.signature_data_uri(key),
+        "photo": row.get("headshot"),
     }
 
 
@@ -303,7 +304,8 @@ def p7(c, lead):
             ("You stay in control.", "Nothing changes without your approval."),
             ("My success depends on yours.", "If we recover nothing, there is no fee.")]
     pr = "".join("<div><b>%s</b>%s</div>" % p for p in prom)
-    photo = "<img class='ph' src='%s'>" % L.PHOTO if lead["pid"] in JOHN_PARTNERS else ""
+    photo = lead.get("photo") or (L.PHOTO if lead["pid"] in JOHN_PARTNERS else None)
+    photo = "<img class='ph' src='%s'>" % photo if photo else ""
     book = ""
     if lead.get("booking"):
         shown = lead["booking"].split("://", 1)[-1]
@@ -369,8 +371,10 @@ def render(content, signoff, cosignoff, workdir):
     if not signer:
         raise EobV2Error("no signoff resolved for this account")
     co = _signer(cosignoff)
+    # The letter is signed ERA partner first (settled #260). Every other page belongs
+    # to the person who will take the meeting: the account's own owner.
     signers = [co, signer] if co else [signer]
-    lead = signers[0]
+    lead = signer
     os.makedirs(workdir, exist_ok=True)
     cv = cover(content, workdir)
     lt = letter(content, signers, workdir)
