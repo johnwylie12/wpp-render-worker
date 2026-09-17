@@ -86,8 +86,11 @@ PACKAGE_DOC_TYPES = [s.strip() for s in os.environ.get("PACKAGE_DOC_TYPES",
 NOTE_CARD_DOC_TYPES = [s.strip() for s in os.environ.get("NOTE_CARD_DOC_TYPES", "note_card").split(",") if s.strip()]
 WAVE_DOC_TYPES = [s.strip() for s in os.environ.get("WAVE_DOC_TYPES", "wave").split(",") if s.strip()]
 EXEC_BRIEF_DOC_TYPES = [s.strip() for s in os.environ.get("EXEC_BRIEF_DOC_TYPES", "exec_brief").split(",") if s.strip()]
+# Executive Opportunity Brief v2 (settled #262): the locked v6 design, per account,
+# from params.content = fn_eob_v2_content(account_id) frozen at enqueue.
+EOB_V2_DOC_TYPES = [s.strip() for s in os.environ.get("EOB_V2_DOC_TYPES", "eob_v2").split(",") if s.strip()]
 # Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default - no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES + EXEC_BRIEF_DOC_TYPES) if s not in SUPPORTED]
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES + EXEC_BRIEF_DOC_TYPES + EOB_V2_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -653,6 +656,51 @@ def stitch_and_stamp(labeled_paths, out_pdf, org_name, total_mode=None):
     return out_pdf
 
 
+_EOB_V2 = None
+
+
+def _eob_v2_engine():
+    """Loaded on first use, so a problem in it can never stop the worker booting."""
+    global _EOB_V2
+    if _EOB_V2 is None:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "eob_v2_engine", os.path.join(HERE, "eor", "eob_v2", "engine.py"))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _EOB_V2 = mod
+    return _EOB_V2
+
+
+def _build_eob_v2(cx, brief, params, workdir):
+    """EOB v2: cover + letter + six pages. Signed by the account's owner, with the
+    ERA partner first when the owner is an associate (wpp_cosignoff). The release
+    gate runs on the bound PDF and raises; nothing is uploaded unless it passes."""
+    content = params.get("content") or {}
+    if content.get("error"):
+        raise RenderError("eob_v2: content could not be built: %s" % content["error"])
+    if not content.get("portal"):
+        raise RenderError("eob_v2: params.content has no portal. Publish the portal, then freeze "
+                          "fn_eob_v2_content again; the Brief prints its address and QR.")
+    eng = _eob_v2_engine()
+    signoff = fetch_signoff(cx, brief.get("account_id"))
+    if not signoff:
+        raise RenderError("eob_v2: account %s has no owner, so no one can sign it" % brief.get("account_id"))
+    cosign = fetch_cosignoff(cx, brief.get("account_id"))
+    try:
+        out, npages = eng.render(content, signoff, cosign, workdir)
+    except eng.EobV2Error as e:
+        raise RenderError("eob_v2: %s" % e)
+    org = content.get("org") or {}
+    release_gate.enforce(
+        out,
+        {"short_name": org.get("display"), "legal_name": org.get("legal"),
+         "portal_subdomain": content["portal"].get("subdomain")},
+        qr_payloads=eng.qr_payloads(content),
+    )
+    return out, npages, None, None, "eob_v2"
+
+
 def build_pdf(cx, brief, workdir):
     """Render the brief; return (final_path, page_count, cover_path|None, cover_size|None, kind).
 
@@ -694,6 +742,9 @@ def build_pdf(cx, brief, workdir):
         return close_pdf, len(PdfReader(close_pdf).pages), None, None, "closing"
 
     # ---- note card: standalone 5x7 intro card (loose piece).
+    if brief.get("doc_type") in EOB_V2_DOC_TYPES:
+        return _build_eob_v2(cx, brief, params, workdir)
+
     if brief.get("doc_type") in NOTE_CARD_DOC_TYPES:
         nc = params.get("note_card") or {}
         # A user-supplied body gets its {org}/{first} tokens substituted here, then
