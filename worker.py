@@ -698,6 +698,9 @@ def _build_eob_v2(cx, brief, params, workdir):
          "portal_subdomain": content["portal"].get("subdomain")},
         qr_payloads=eng.qr_payloads(content),
     )
+    if brief.get("doc_type") in PACKAGE_DOC_TYPES:
+        # Same contract as the package path: the standalone cover rides along as cover_url.
+        return out, npages, os.path.join(workdir, "eob_v2_cover.pdf"), "letter", "package"
     return out, npages, None, None, "eob_v2"
 
 
@@ -742,7 +745,10 @@ def build_pdf(cx, brief, workdir):
         return close_pdf, len(PdfReader(close_pdf).pages), None, None, "closing"
 
     # ---- note card: standalone 5x7 intro card (loose piece).
-    if brief.get("doc_type") in EOB_V2_DOC_TYPES:
+    # EOB v2 rides the package rails (params.version = "eob_v2"), so triage, print,
+    # labels and cadence see it as the package it is. doc_type eob_v2 stays for proofs.
+    if brief.get("doc_type") in EOB_V2_DOC_TYPES or (
+            brief.get("doc_type") in PACKAGE_DOC_TYPES and params.get("version") == "eob_v2"):
         return _build_eob_v2(cx, brief, params, workdir)
 
     if brief.get("doc_type") in NOTE_CARD_DOC_TYPES:
