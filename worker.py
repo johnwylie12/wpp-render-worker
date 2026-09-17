@@ -89,8 +89,10 @@ EXEC_BRIEF_DOC_TYPES = [s.strip() for s in os.environ.get("EXEC_BRIEF_DOC_TYPES"
 # Executive Opportunity Brief v2 (settled #262): the locked v6 design, per account,
 # from params.content = fn_eob_v2_content(account_id) frozen at enqueue.
 EOB_V2_DOC_TYPES = [s.strip() for s in os.environ.get("EOB_V2_DOC_TYPES", "eob_v2").split(",") if s.strip()]
+# One printable file from many rendered ones (all Briefs, all note cards), in the given order.
+PRINT_BATCH_DOC_TYPES = [s.strip() for s in os.environ.get("PRINT_BATCH_DOC_TYPES", "print_batch").split(",") if s.strip()]
 # Claim CIR + snapshot + cover_page + benchmark + case_study + closing + package by default - no Railway env edit required.
-CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES + EXEC_BRIEF_DOC_TYPES + EOB_V2_DOC_TYPES) if s not in SUPPORTED]
+CLAIM_DOC_TYPES = SUPPORTED + [s for s in (SNAPSHOT_DOC_TYPES + COVER_PAGE_DOC_TYPES + BENCHMARK_DOC_TYPES + CASE_STUDY_DOC_TYPES + CLOSING_DOC_TYPES + PACKAGE_DOC_TYPES) if s not in SUPPORTED] + [s for s in (NOTE_CARD_DOC_TYPES + WAVE_DOC_TYPES + EXEC_BRIEF_DOC_TYPES + EOB_V2_DOC_TYPES + PRINT_BATCH_DOC_TYPES) if s not in SUPPORTED]
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "60"))
 
 
@@ -704,6 +706,34 @@ def _build_eob_v2(cx, brief, params, workdir):
     return out, npages, None, None, "eob_v2"
 
 
+def _build_print_batch(cx, brief, params, workdir):
+    """Merge already-rendered PDFs into ONE file, in the order given.
+
+    params.sources is the ordered list of rendered_url values. Only files in this
+    project's own storage are accepted, so a batch can never pull from elsewhere.
+    Identical images and fonts (logo, headshot, signatures) are stored once."""
+    sources = params.get("sources") or []
+    prefix = SUPABASE_URL.rstrip("/") + "/storage/v1/object/public/"
+    if not sources or any(not isinstance(u, str) or not u.startswith(prefix) for u in sources):
+        raise RenderError("print_batch: sources must be rendered files in this project's storage")
+    writer = PdfWriter()
+    for i, url in enumerate(sources):
+        r = cx.get(url, timeout=180)
+        r.raise_for_status()
+        path = os.path.join(workdir, "src_%03d.pdf" % i)
+        with open(path, "wb") as fh:
+            fh.write(r.content)
+        writer.append(path)
+    try:
+        writer.compress_identical_objects(remove_identicals=True, remove_orphans=True)
+    except Exception as e:  # size only; the merge itself is complete
+        print(f"[print_batch] dedupe skipped: {e}")
+    out = os.path.join(workdir, "print_batch.pdf")
+    with open(out, "wb") as fh:
+        writer.write(fh)
+    return out, len(PdfReader(out).pages), None, None, "print_batch"
+
+
 def build_pdf(cx, brief, workdir):
     """Render the brief; return (final_path, page_count, cover_path|None, cover_size|None, kind).
 
@@ -745,6 +775,9 @@ def build_pdf(cx, brief, workdir):
         return close_pdf, len(PdfReader(close_pdf).pages), None, None, "closing"
 
     # ---- note card: standalone 5x7 intro card (loose piece).
+    if brief.get("doc_type") in PRINT_BATCH_DOC_TYPES:
+        return _build_print_batch(cx, brief, params, workdir)
+
     # EOB v2 rides the package rails (params.version = "eob_v2"), so triage, print,
     # labels and cadence see it as the package it is. doc_type eob_v2 stays for proofs.
     if brief.get("doc_type") in EOB_V2_DOC_TYPES or (
