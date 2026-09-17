@@ -674,6 +674,21 @@ def _eob_v2_engine():
     return _EOB_V2
 
 
+def fetch_headshot(cx, partner_id):
+    """The signer's own photo for their page. None when they have not registered one."""
+    if not partner_id:
+        return None
+    try:
+        r = cx.get(f"{SUPABASE_URL}/rest/v1/partner_signature"
+                   f"?partner_id=eq.{partner_id}&select=headshot_b64", headers=_headers())
+        r.raise_for_status()
+        rows = r.json()
+        return (rows[0].get("headshot_b64") if rows else None) or None
+    except Exception as e:
+        log.warning("eob_v2: no headshot for partner %s (%s)", partner_id, e)
+        return None
+
+
 def _build_eob_v2(cx, brief, params, workdir):
     """EOB v2: cover + letter + six pages. Signed by the account's owner, with the
     ERA partner first when the owner is an associate (wpp_cosignoff). The release
@@ -686,6 +701,8 @@ def _build_eob_v2(cx, brief, params, workdir):
                           "fn_eob_v2_content again; the Brief prints its address and QR.")
     eng = _eob_v2_engine()
     signoff = fetch_signoff(cx, brief.get("account_id"))
+    if signoff:
+        signoff = dict(signoff, headshot=fetch_headshot(cx, signoff.get("partner_id")))
     if not signoff:
         raise RenderError("eob_v2: account %s has no owner, so no one can sign it" % brief.get("account_id"))
     cosign = fetch_cosignoff(cx, brief.get("account_id"))
