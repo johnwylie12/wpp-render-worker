@@ -63,8 +63,10 @@ SIGNATURE_WIDTH_DEFAULT = 115
 # partner_signature.partner_id -> signature key. THE mapping; nothing else may
 # decide whose mark goes on a document.
 #   1 Arvo Kaseorg  2 Reggie Bowers (no mark yet)  3 John Wylie  7 Jodi Wiktor
-#   (6 is John's producer-test login and deliberately has no mark.)
-PARTNER_SIGNATURE = {1: "ak1", 3: "3", 7: "wk1"}
+#   6 is John's working producer login (it owns every account John works), so it
+#   signs with John's mark. Corrected 2026-09-17: without it no letter for John's
+#   accounts could render.
+PARTNER_SIGNATURE = {1: "ak1", 3: "3", 6: "3", 7: "wk1"}
 
 
 def signature_b64(which: str = SIGNATURE_JW_DEFAULT) -> str:
