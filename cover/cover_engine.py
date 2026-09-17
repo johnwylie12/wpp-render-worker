@@ -308,6 +308,8 @@ def build_cover(params_cover, recipient, company, *, date_str=None):
         # WHOSE NAME GOES ON THIS. A wpp_signoff() row, supplied by the caller
         # (worker.fetch_signoff). Validated in render_cover; absent -> refuses.
         "signoff": pc.get("signoff"),
+        # A second signer (wpp_cosignoff), printed before the first. Optional.
+        "cosignoff": pc.get("cosignoff"),
     }
 
 
@@ -328,6 +330,21 @@ def resolve_page_size(page_size):
     return COVER_PAGE_SIZES.get(key, str(page_size).strip())
 
 
+def _cosigner_ctx(cosignoff):
+    """The co-signer's block, or None. Validated exactly like the signer: a
+    co-signer with no registered mark refuses rather than printing unsigned."""
+    if not cosignoff:
+        return None
+    co = resolve_signoff(cosignoff)
+    key = co.get("signature_key")
+    return {
+        "signature_uri": (_signature_uri(key) or "") if key else "",
+        "signature_width_px": co.get("signature_width_px", SIGNATURE_WIDTH_DEFAULT),
+        "name": co["signoff_name"], "title": co["signoff_title"], "firm": co["signoff_firm"],
+        "email": co["signoff_email"], "phone": co["signoff_phone"],
+    }
+
+
 def render_cover(cover, out_pdf, page_size="Letter"):
     """Render the locked template to a single-page PDF."""
     pf = _portal_fields(cover.get("portal"))
@@ -344,6 +361,7 @@ def render_cover(cover, out_pdf, page_size="Letter"):
         "signoff_firm": so["signoff_firm"],
         "signoff_email": so["signoff_email"],
         "signoff_phone": so["signoff_phone"],
+        "cosigner": _cosigner_ctx(cover.get("cosignoff")),
         "date": cover.get("date", ""),
         "first_name": cover.get("first_name", ""),
         "recipient_name": cover.get("recipient_name", ""),
