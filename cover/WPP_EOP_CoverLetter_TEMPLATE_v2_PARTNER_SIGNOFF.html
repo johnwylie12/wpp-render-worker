@@ -76,9 +76,10 @@ p     { margin:0 0 9px; }
    with the body every time its size changed. A flex row cannot overlap. */
 .close  { display:flex; gap:0.4in; margin:0.14in 0 0; align-items:flex-start; }
 .sig    { flex:1; min-width:0; }
-.sig.two { display:flex; gap:0.16in; align-items:flex-end; }
+.sig.two { display:flex; gap:0.16in; align-items:flex-start; }
 .sig.two .one { flex:1; min-width:0; }
-.sig.two img { max-width:100%; max-height:62px; width:auto !important; margin:2px 0 1px; }
+.sig.two .mk { height:62px; display:flex; align-items:flex-end; margin:2px 0 3px; }
+.sig.two .mk img { max-width:100%; max-height:62px; width:auto !important; margin:0; }
 .sig.two .tl, .sig.two .ct { font-size:9pt; line-height:1.22; white-space:nowrap; }
 .close.two { gap:0.22in; }
 .portal { flex:0 0 2.35in; border-left:3px solid #FF9C00; padding:1px 0 1px 15px; }
@@ -134,13 +135,13 @@ p     { margin:0 0 9px; }
        first and the associate second, side by side. -->
   <div class="sig two">
     <div class="one">
-      {% if cosigner.signature_uri %}<img src="{{cosigner.signature_uri}}" alt="{{cosigner.name}}" style="width:{{cosigner.signature_width_px}}px">{% endif %}
+      <div class="mk">{% if cosigner.signature_uri %}<img src="{{cosigner.signature_uri}}" alt="{{cosigner.name}}" style="width:{{cosigner.signature_width_px}}px">{% endif %}</div>
       <div class="nm">{{cosigner.name}}</div>
       <div class="tl">{{cosigner.title}}<br>{{cosigner.firm}}</div>
       <div class="ct">{{cosigner.email}}<br>{{cosigner.phone}}</div>
     </div>
     <div class="one">
-      {% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}" style="width:{{signature_width_px}}px">{% endif %}
+      <div class="mk">{% if signature_uri %}<img src="{{signature_uri}}" alt="{{signoff_name}}" style="width:{{signature_width_px}}px">{% endif %}</div>
       <div class="nm">{{signoff_name}}</div>
       <div class="tl">{{signoff_title}}<br>{{signoff_firm}}</div>
       <div class="ct">{{signoff_email}}<br>{{signoff_phone}}</div>
