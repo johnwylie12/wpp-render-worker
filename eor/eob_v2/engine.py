@@ -124,7 +124,7 @@ p{font-size:10.6pt;line-height:1.4;margin-bottom:7pt;}
 .portal .u{font-size:10pt;color:var(--ink);line-height:1.3;}
 .portal .u b{color:var(--navy);display:block;margin-top:3pt;}
 .portal .url{font-size:9pt;color:var(--ink);margin-top:3pt;}
-.foot{text-align:center;margin-top:10pt;}
+.foot{position:absolute;left:0;right:0;bottom:0;text-align:center;}
 .foot img{width:1.9in;}
 """
 
