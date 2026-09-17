@@ -256,6 +256,31 @@ def fetch_signoff(cx, account_id):
     return rows[0]
 
 
+def fetch_cosignoff(cx, account_id):
+    """WHO ELSE SIGNS THIS LETTER. wpp_cosignoff(accounts.assigned_to).
+
+    Associates whose firm is not ERA Group (partner_signature.cosign_partner_id)
+    send letters signed by both people: the ERA partner first, the associate
+    second. Returns None when there is no co-signer, which leaves the letter
+    exactly as it was. An unassigned account has no co-signer either;
+    fetch_signoff already refuses that case.
+    """
+    if not account_id:
+        return None
+    r = cx.get(f"{SUPABASE_URL}/rest/v1/accounts?id=eq.{account_id}&select=assigned_to",
+               headers=_headers())
+    r.raise_for_status()
+    rows = r.json()
+    user_id = (rows[0].get("assigned_to") if rows else None)
+    if not user_id:
+        return None
+    r = cx.post(f"{SUPABASE_URL}/rest/v1/rpc/wpp_cosignoff",
+                json={"p_user_id": user_id}, headers=_headers())
+    r.raise_for_status()
+    rows = r.json()
+    return rows[0] if rows else None
+
+
 def upload_pdf(cx, path, pdf_bytes, *, attempts=3):
     """Upload to Storage (upsert) and return the public URL.
 
@@ -844,7 +869,10 @@ def build_pdf(cx, brief, workdir):
                                           or fetch_account_sector(cx, brief.get("account_id")),
                                 # Whose name signs it. Absent -> render_cover refuses.
                                 "signoff": letter_block.get("signoff")
-                                           or fetch_signoff(cx, brief.get("account_id"))}
+                                           or fetch_signoff(cx, brief.get("account_id")),
+                                # A second signer, printed first (settled 2026-09-16).
+                                "cosignoff": letter_block.get("cosignoff")
+                                             or fetch_cosignoff(cx, brief.get("account_id"))}
                 cover = cover_engine.build_cover(letter_block, recipient, company, date_str=letter_block.get("date_str"))
                 letter_path = os.path.join(workdir, "cover_letter.pdf")
                 cover_engine.render_cover(cover, letter_path, page_size="letter")
