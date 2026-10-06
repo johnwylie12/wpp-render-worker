@@ -824,6 +824,14 @@ def build_pdf(cx, brief, workdir):
         }, card_pdf)
         return card_pdf, len(PdfReader(card_pdf).pages), None, None, "note_card"
 
+    # LEGACY FORMAT RETIRED 2026-10-06. The only letter and package John mails is the
+    # EOB v2 Brief (params.version == "eob_v2", handled above). Everything below this
+    # line built the old 8/28-style package and its "Executive Opportunity Report"
+    # cover letter. Refuse rather than render a letter that must never be mailed.
+    if brief.get("doc_type") in WAVE_DOC_TYPES or brief.get("doc_type") in PACKAGE_DOC_TYPES:
+        raise RenderError("legacy package/wave format is retired. Enqueue the Brief with "
+                          "params.version = 'eob_v2' (see claude/RULE_the_cover_letter_is_eob_v2_letter_not_cover_engine).")
+
     # ---- wave: batch of accounts -> combined, sequence-ordered PDFs (cards,
     # letters, packages) + a collation index. Reuses the package assembler per
     # account; uploads all four and records URLs in content_briefs.wave_urls.
