@@ -3,7 +3,7 @@ def L(i,lo,hi,label,amt,md,disp,cat,tier="filed"):
     return {"id":i,"low":lo,"high":hi,"tier":tier,"label":label,"amount":amt,"median":md,"display":disp,"category":cat}
 TEST = {"org":{"fy":"FY2024","legal":"Wylie Memorial Health System (TEST)","display":"Wylie Memorial Health System (TEST)",
  "mission":"caring for the patients and communities you serve","revenue":88400000,"industry":"Health — other",
- "hero_file":"heroes/human_services.png","cover_noun":"care program",
+ "hero_file":"heroes/health_system.png","cover_noun":"care program",
  "peer_label":"health — other filers at half to double your revenue","filing_object":None},
  "firm":FIRM,
  "lines":[L("c31",1054000,2827200,"Medical Supply",12400000,1711200,"medical supplies","Medical Supply"),

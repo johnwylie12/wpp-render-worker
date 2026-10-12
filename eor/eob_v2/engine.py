@@ -182,8 +182,15 @@ def letter(c, signers, workdir):
 # ------------------------------------------------------------------- cover ----
 def cover(c, workdir):
     o = c["org"]
-    ctx = L.cpe.build({"org": {"name": o["display"], "vertical": "human_services"}},
-                      hero_lookup=lambda v: o.get("hero_file") or "heroes/human_services.png",
+    # The hero is resolved per account upstream (fn_eob_v2_content_base -> hero_vertical_map)
+    # and arrives as org.hero_file. It is passed as the explicit override and NEVER
+    # defaulted here: a cover with the wrong photograph is worse than one that did not
+    # print (cover_page_engine.resolve_hero, 2026-08-27).
+    hero = str(o.get("hero_file") or "").strip()
+    if not hero:
+        raise EobV2Error("no hero: content.org.hero_file is empty; the Brief never defaults a cover photo")
+    ctx = L.cpe.build({"org": {"name": o["display"]}, "assets": {"hero": hero}},
+                      hero_lookup=None,
                       title="EXECUTIVE OPPORTUNITY BRIEF", subtitle=o["fy"] + " FORM 990",
                       date_str=c["month"], doc_type="package")
     ctx["statement_html"] = ("Your next <span class='g'>%s</span> may already be sitting "
