@@ -69,3 +69,26 @@ def test_refuses_what_it_must_not_print(tmp_path, patch, why):
 def test_refuses_without_a_signer(tmp_path):
     with pytest.raises(engine.EobV2Error):
         engine.render(F.HUDSON, None, None, str(tmp_path))
+
+
+
+def test_refuses_to_default_a_hero(tmp_path):
+    c = dict(F.HUDSON, org=dict(F.HUDSON["org"], hero_file=""))
+    with pytest.raises(engine.EobV2Error) as e:
+        engine.render(c, F.JOHN6, None, str(tmp_path))
+    assert "hero" in str(e.value)
+
+
+def test_cover_uses_the_hero_the_account_resolved(tmp_path, monkeypatch):
+    seen = []
+    real = engine.L.cpe.build
+
+    def spy(content, **kw):
+        seen.append((content.get("assets") or {}).get("hero"))
+        return real(content, **kw)
+
+    monkeypatch.setattr(engine.L.cpe, "build", spy)
+    for hero in ("heroes/senior_living.png", "heroes/health_system.png"):
+        c = dict(F.HUDSON, org=dict(F.HUDSON["org"], hero_file=hero))
+        engine.cover(c, str(tmp_path))
+    assert seen == ["heroes/senior_living.png", "heroes/health_system.png"]
