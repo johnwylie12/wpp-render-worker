@@ -733,6 +733,16 @@ def _build_print_batch(cx, brief, params, workdir):
     prefix = SUPABASE_URL.rstrip("/") + "/storage/v1/object/public/"
     if not sources or any(not isinstance(u, str) or not u.startswith(prefix) for u in sources):
         raise RenderError("print_batch: sources must be rendered files in this project's storage")
+    if params.get("copy_only"):
+        # Publish one finished file under a new name, byte for byte (no re-merge).
+        if len(sources) != 1:
+            raise RenderError("print_batch: copy_only takes exactly one source")
+        r = cx.get(sources[0], timeout=300)
+        r.raise_for_status()
+        out = os.path.join(workdir, "print_batch.pdf")
+        with open(out, "wb") as fh:
+            fh.write(r.content)
+        return out, len(PdfReader(out).pages), None, None, "print_batch"
     writer = PdfWriter()
     bleed_in = float(params.get("bleed_in") or 0)   # e.g. 0.125 for the printer; 0 = trim size
     if bleed_in < 0 or bleed_in > 0.5:
@@ -1150,6 +1160,9 @@ def process_one(cx):
                        brief.get("params") or {}).get("org", {}).get("name")
             name = _slug(company or brief.get("title") or f"brief-{bid}")
             base = f"{kind}/{brief.get('account_id') or 'misc'}/{bid}-{name}"
+            fn = (brief.get("params") or {}).get("file_name")
+            if kind == "print_batch" and isinstance(fn, str) and re.fullmatch(r"[A-Za-z0-9_\-]{3,120}", fn):
+                base = f"{kind}/{fn}"   # a clean, human file name chosen by the requester
             with open(final, "rb") as fh:
                 url = upload_pdf(cx, f"{base}.pdf", fh.read())
             cover_url = None
