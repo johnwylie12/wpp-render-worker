@@ -6,3 +6,6 @@ fonttools>=4.40
 reportlab==4.2.5
 segno==1.6.1
 qrcode==8.2
+pypdfium2==5.13.0
+Pillow>=10.0
+numpy>=1.26
