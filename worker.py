@@ -734,12 +734,20 @@ def _build_print_batch(cx, brief, params, workdir):
     if not sources or any(not isinstance(u, str) or not u.startswith(prefix) for u in sources):
         raise RenderError("print_batch: sources must be rendered files in this project's storage")
     writer = PdfWriter()
+    bleed_in = float(params.get("bleed_in") or 0)   # e.g. 0.125 for the printer; 0 = trim size
+    if bleed_in < 0 or bleed_in > 0.5:
+        raise RenderError("print_batch: bleed_in must be between 0 and 0.5 inch")
     for i, url in enumerate(sources):
         r = cx.get(url, timeout=180)
         r.raise_for_status()
         path = os.path.join(workdir, "src_%03d.pdf" % i)
         with open(path, "wb") as fh:
             fh.write(r.content)
+        if bleed_in:
+            import bleed
+            bpath = os.path.join(workdir, "bleed_%03d.pdf" % i)
+            bleed.add_bleed(path, bpath, bleed_in)
+            path = bpath
         writer.append(path)
     try:
         writer.compress_identical_objects(remove_identicals=True, remove_orphans=True)
